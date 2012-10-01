@@ -5,9 +5,8 @@ jieba
 Feature
 ========
 * 支持两种分词模式：
-
-** 1）默认模式，试图将句子最精确地切开，适合文本分析；
-** 2）全模式，把句子中所有的可以成词的词语都扫描出来，适合搜索引擎。
+* 1）默认模式，试图将句子最精确地切开，适合文本分析；
+* 2）全模式，把句子中所有的可以成词的词语都扫描出来，适合搜索引擎。
 
 Usage
 ========
@@ -32,11 +31,16 @@ Algorithm
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
 	print "Default Mode:", "/ ".join(seg_list) #默认模式
 
+	seg_list = jieba.cut("他来到了网易杭研大厦")
+	print ", ".join(seg_list)
+
 Output:
 
 	Full Mode: 我/ 来/ 来到/ 到/ 北/ 北京/ 京/ 清/ 清华/ 清华大学/ 华/ 华大/ 大/ 大学/ 学
 
 	Default Mode: 我/ 来到/ 北京/ 清华大学
+
+	他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
 
 Performance
 =========

@@ -10,7 +10,8 @@ Feature
 
 Usage
 ========
-* 将jieba目录放置于当前目录或者site-packages目录
+* 自动安装：python setup.py install
+* 手动安装：将jieba目录放置于当前目录或者site-packages目录
 * 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）
 
 Algorithm

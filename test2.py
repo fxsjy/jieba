@@ -4,7 +4,7 @@ sys.path.append("../")
 import jieba
 
 def cuttest(test_sent):
-	result = jieba.cut(test_sent)
+	result = jieba.cut(test_sent,cut_all=True)
 	for word in result:
 		print word, "/", 
 	print ""

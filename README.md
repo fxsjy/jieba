@@ -1,11 +1,24 @@
 jieba
 ========
-结巴中文分词：像结巴说话一样把所有词都分出来
+"结巴"中文分词：做最好的Python中文分词组件
+
+Feature
+========
+* 支持两种分词模式：
+
+** 1）默认模式，试图将句子最精确地切开，适合文本分析；
+** 2）全模式，把句子中所有的可以成词的词语都扫描出来，适合搜索引擎。
 
 Usage
 ========
 * 将jieba目录放置于当前目录或者site-packages目录
+* 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）
 
+Algorithm
+========
+* 基于Trie树结构实现高效的词图扫描，生成句子中汉字构成的有向无环图（DAG)
+* 采用了记忆化搜索实现最大概率路径的计算, 找出基于词频的最大切分组合
+* 对于未登录词，采用了基于汉字位置概率的模型，使用了Viterbi算法
 
 
 代码示例
@@ -13,17 +26,21 @@ Usage
 	#encoding=utf-8
 	import jieba
 
-	seg_list = jieba.cut("我爱北京天安门")
-	print "/ ".join(seg_list)
+	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
+	print "Full Mode:", "/ ".join(seg_list) #全模式
+
+	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
+	print "Default Mode:", "/ ".join(seg_list) #默认模式
 
 Output:
-	* 我/ 爱/ 北/ 北京/ 天/ 天安/ 天安门/ 门
+
+	Full Mode: 我/ 来/ 来到/ 到/ 北/ 北京/ 京/ 清/ 清华/ 清华大学/ 华/ 华大/ 大/ 大学/ 学
+
+	Default Mode: 我/ 来到/ 北京/ 清华大学
 
 Performance
 =========
-* 1.5 MB / Second
+* 1.5 MB / Second in Full Mode
+* 200 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
-Example
-=========
-* 在线分词效果展示  https://jiebademo.appspot.com/   (需要翻墙)

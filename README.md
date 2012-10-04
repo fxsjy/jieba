@@ -10,7 +10,8 @@ Feature
 
 Usage
 ========
-* 自动安装：python setup.py install
+* 全自动安装：easy_install jieba
+* 半自动安装：先下载http://pypi.python.org/pypi/jieba/ ，解压后运行python setup.py install
 * 手动安装：将jieba目录放置于当前目录或者site-packages目录
 * 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）
 
@@ -20,8 +21,15 @@ Algorithm
 * 采用了记忆化搜索实现最大概率路径的计算, 找出基于词频的最大切分组合
 * 对于未登录词，采用了基于汉字位置概率的模型，使用了Viterbi算法
 
+Interface
+========
+* 组件只提供jieba.cut 方法用于分词
+* cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
+* 待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
+* jieba.cut返回的结构是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
 
-代码示例
+
+代码示例( Tutorial )
 
 	#encoding=utf-8
 	import jieba
@@ -46,6 +54,6 @@ Output:
 Performance
 =========
 * 1.5 MB / Second in Full Mode
-* 200 KB / Second in Default Mode
+* 350 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 

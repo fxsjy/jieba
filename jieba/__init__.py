@@ -106,7 +106,7 @@ def __cut_DAG(sentence):
 					yield buf
 					buf=u''
 				else:
-					regognized = finalseg.cut(buf)
+					regognized = finalseg.__cut(buf)
 					for t in regognized:
 						yield t
 					buf=u''
@@ -117,7 +117,7 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield buf
 		else:
-			regognized = finalseg.cut(buf)
+			regognized = finalseg.__cut(buf)
 			for t in regognized:
 				yield t
 

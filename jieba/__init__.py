@@ -3,17 +3,18 @@ import math
 import os,sys
 import pprint
 import finalseg
+import time
 
 FREQ = {}
-total =0
+total =0.0
 
 def gen_trie(f_name):
 	global total
 	trie = {}
-	for line in open(f_name):
-		word,freq = line.strip().split(" ")
-		word = word.decode('utf-8')
-		freq = int(freq)
+	content = open(f_name,'rb').read().decode('utf-8')
+	for line in content.split("\n"):
+		word,freq = line.split(" ")
+		freq = float(freq)
 		FREQ[word] = freq
 		total+=freq
 		p = trie
@@ -24,14 +25,16 @@ def gen_trie(f_name):
 		p['']='' #ending flag
 	return trie
 
+
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
 print >> sys.stderr, "Building Trie..."
+t1 = time.time()
 trie = gen_trie(os.path.join(_curpath,"dict.txt"))
 FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
 min_freq = min(FREQ.itervalues())
-#print min_freq
-print >> sys.stderr,"Trie has been built succesfully."
+print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
+print >> sys.stderr, "Trie has been built succesfully."
 
 
 def __cut_all(sentence):

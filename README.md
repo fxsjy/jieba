@@ -10,7 +10,7 @@ Feature
 
 Usage
 ========
-* 全自动安装：easy_install jieba
+* 全自动安装：easy_install jieba 或者 pip install jieba
 * 半自动安装：先下载http://pypi.python.org/pypi/jieba/ ，解压后运行python setup.py install
 * 手动安装：将jieba目录放置于当前目录或者site-packages目录
 * 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）

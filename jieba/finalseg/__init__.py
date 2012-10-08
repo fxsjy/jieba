@@ -27,7 +27,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 			newpath[y] = path[state] + [y]
 		path = newpath
 	
-	(prob, state) = max([(V[len(obs) - 1][y], y) for y in states])
+	(prob, state) = max([(V[len(obs) - 1][y], y) for y in ('E','S')])
 	
 	return (prob, path[state])
 
@@ -35,6 +35,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 def __cut(sentence):
 	prob, pos_list =  viterbi(sentence,('B','M','E','S'), prob_start, prob_trans, prob_emit)
 	begin, next = 0,0
+	#print pos_list, sentence
 	for i,char in enumerate(sentence):
 		pos = pos_list[i]
 		if pos=='B':

@@ -21,15 +21,14 @@ Algorithm
 * 采用了记忆化搜索实现最大概率路径的计算, 找出基于词频的最大切分组合
 * 对于未登录词，采用了基于汉字位置概率的模型，使用了Viterbi算法
 
-Interface
-========
-* 组件只提供jieba.cut 方法用于分词
-* cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
+功能：分词 
+==========
+* jieba.cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
 * 待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
 * jieba.cut返回的结构是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
 
 
-代码示例( Tutorial )
+代码示例( 分词 )
 
 	#encoding=utf-8
 	import jieba
@@ -51,10 +50,22 @@ Output:
 
 	他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
 
-Performance
+
+功能：关键词提取
+================
+* jieba.analyse.extract_tags(sentence,topK) #需要先import jieba.analyse
+* setence为待提取的文本
+* topK为返回几个权重最大的关键词，默认值为20
+
+代码示例 （关键词提取）
+
+	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+
+
+分词速度
 =========
 * 1.5 MB / Second in Full Mode
-* 350 KB / Second in Default Mode
+* 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
 在线演示

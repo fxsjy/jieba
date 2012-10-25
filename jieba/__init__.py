@@ -4,35 +4,51 @@ import os,sys
 import pprint
 import finalseg
 import time
+import tempfile
+import marshal
 
 FREQ = {}
 total =0.0
 
 def gen_trie(f_name):
-	global total
+	lfreq = {}
 	trie = {}
+	ltotal = 0.0
 	content = open(f_name,'rb').read().decode('utf-8')
 	for line in content.split("\n"):
 		word,freq = line.split(" ")
 		freq = float(freq)
-		FREQ[word] = freq
-		total+=freq
+		lfreq[word] = freq
+		ltotal+=freq
 		p = trie
 		for c in word:
 			if not c in p:
 				p[c] ={}
 			p = p[c]
 		p['']='' #ending flag
-	return trie
+	return trie, lfreq,ltotal
 
 
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
 print >> sys.stderr, "Building Trie..."
 t1 = time.time()
-trie = gen_trie(os.path.join(_curpath,"dict.txt"))
-FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
-min_freq = min(FREQ.itervalues())
+cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
+load_from_cache_fail = True
+if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,"dict.txt")):
+	print >> sys.stderr, "loading model from cache"
+	try:
+		trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+		load_from_cache_fail = False
+	except:
+		load_from_cache_fail = True
+
+if load_from_cache_fail:
+	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
+	FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
+	min_freq = min(FREQ.itervalues())
+	marshal.dump((trie,FREQ,total,min_freq),open(cache_file,'wb'))
+
 print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
 print >> sys.stderr, "Trie has been built succesfully."
 

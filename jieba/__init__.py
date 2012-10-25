@@ -47,6 +47,7 @@ if load_from_cache_fail:
 	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
 	FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
 	min_freq = min(FREQ.itervalues())
+	print >> sys.stderr, "dumping model to file cache"
 	marshal.dump((trie,FREQ,total,min_freq),open(cache_file,'wb'))
 
 print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
@@ -159,3 +160,18 @@ def cut(sentence,cut_all=False):
 			for x in tmp:
 				if x!="":
 					yield x
+
+def load_userdict(f_name):
+	global trie,total,FREQ
+	content = open(f_name,'rb').read().decode('utf-8')
+	for line in content.split("\n"):
+		if line.rstrip()=='': continue
+		word,freq = line.split(" ")
+		freq = float(freq)
+		FREQ[word] = freq / total
+		p = trie
+		for c in word:
+			if not c in p:
+				p[c] ={}
+			p = p[c]
+		p['']='' #ending flag

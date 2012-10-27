@@ -1,6 +1,8 @@
 jieba
 ========
 "结巴"中文分词：做最好的Python中文分词组件
+"Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+- _Scroll down for English documentation._
 
 Feature
 ========
@@ -10,7 +12,7 @@ Feature
 
 Usage
 ========
-* 全自动安装：easy_install jieba 或者 pip install jieba
+* 全自动安装：`easy_install jieba` 或者 `pip install jieba`
 * 半自动安装：先下载http://pypi.python.org/pypi/jieba/ ，解压后运行python setup.py install
 * 手动安装：将jieba目录放置于当前目录或者site-packages目录
 * 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）
@@ -26,7 +28,6 @@ Algorithm
 * jieba.cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
 * 待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
 * jieba.cut返回的结构是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
-
 
 代码示例( 分词 )
 
@@ -85,5 +86,95 @@ Output:
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
 在线演示
+=========
+http://209.222.69.242:9000/
+
+
+jieba
+========
+"Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+
+Features
+========
+* Support two types of segmentation mode:
+* 1) Default mode, attempt to cut the sentence into the most accurate segmentation, which is suitable for text analysis;
+* 2) Full mode, break the words of the sentence into words scanned, which is suitable for search engines.
+
+Usage 
+========
+* Fully automatic installation: `easy_install jieba` or `pip install jieba`
+* Semi-automatic installation: Download http://pypi.python.org/pypi/jieba/ , after extracting run `python setup.py install`
+* Manutal installation: place the `jieba` directory in the current directory or python site-packages directory.
+* Use `import jieba` to import, which will first build the Trie tree only on first import (takes a few seconds).
+
+Algorithm
+========
+* Based on the Trie tree structure to achieve efficient word graph scanning; sentences using Chinese characters constitute a directed acyclic graph (DAG)
+* Employs memory search to calculate the maximum probability path, in order to identify the maximum tangential points based on word frequency combination
+* For unknown words, the character position probability-based model is used, using the Viterbi algorithm
+
+Function 1): cut
+==========
+* The `jieba.cut` method accepts to input parameters: 1) the first parameter is the string that requires segmentation, and the 2) second parameter is `cut_all`, a parameter used to control the segmentation pattern.
+* `jieba.cut` returned structure is an iterative generator, where you can use a `for` loop to get the word segmentation (in unicode), or `list(jieba.cut( ... ))` to create a list.
+
+Code example: segmentation
+==========
+
+	#encoding=utf-8
+	import jieba
+
+	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
+	print "Full Mode:", "/ ".join(seg_list) #全模式
+
+	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
+	print "Default Mode:", "/ ".join(seg_list) #默认模式
+
+	seg_list = jieba.cut("他来到了网易杭研大厦")
+	print ", ".join(seg_list)
+
+
+Output:
+
+	Full Mode: 我/ 来/ 来到/ 到/ 北/ 北京/ 京/ 清/ 清华/ 清华大学/ 华/ 华大/ 大/ 大学/ 学
+
+	Default Mode: 我/ 来到/ 北京/ 清华大学
+
+	他, 来到, 了, 网易, 杭研, 大厦    (In this case, "杭研" is not in the dictionary, but is identified by the Viterbi algorithm)
+
+Function 2): Add a custom dictionary
+==========
+
+* Developers can specify their own custom dictionary to include in the jieba thesaurus. jieba has the ability to identify new words, but adding your own new words can ensure a higher rate of correct segmentation.
+* Usage： `jieba.load_userdict(file_name) # file_name is a custom dictionary path`
+* The dictionary format is the same as that of `dict.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
+* Example：
+
+		云计算 5
+		李小福 2
+		创新办 3
+
+		之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
+
+		加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
+
+Function 3): Keyword Extraction
+================
+* `jieba.analyse.extract_tags(sentence,topK) # needs to first import jieba.analyse`
+* `setence`: the text to be extracted
+* `topK`: To return several TF / IDF weights for the biggest keywords, the default value is 20
+
+Code sample (keyword extraction)
+
+	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+
+
+Segmentation speed
+=========
+* 1.5 MB / Second in Full Mode
+* 400 KB / Second in Default Mode
+* Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
+
+Online demo
 =========
 http://209.222.69.242:9000/

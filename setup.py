@@ -7,5 +7,5 @@ setup(name='jieba',
       url='http://github.com/fxsjy',  
       packages=['jieba'],  
       package_dir={'jieba':'jieba'},
-      package_data={'jieba':['*.*','finalseg/*']}
+      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*']}
 )  

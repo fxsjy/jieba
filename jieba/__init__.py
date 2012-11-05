@@ -82,7 +82,7 @@ def calc(sentence,DAG,idx,route):
 		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) * route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)
 
-def __cut_DAG(sentence):
+def get_DAG(sentence):
 	N = len(sentence)
 	i,j=0,0
 	p = trie
@@ -107,11 +107,15 @@ def __cut_DAG(sentence):
 	for i in xrange(len(sentence)):
 		if not i in DAG:
 			DAG[i] =[i]
-	#pprint.pprint(DAG)
+	return DAG
+
+def __cut_DAG(sentence):
+	DAG = get_DAG(sentence)
 	route ={}
 	calc(sentence,DAG,0,route=route)
 	x = 0
 	buf =u''
+	N = len(sentence)
 	while x<N:
 		y = route[x][1]+1
 		l_word = sentence[x:y]

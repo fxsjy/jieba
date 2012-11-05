@@ -2,7 +2,8 @@ import re
 import os
 import viterbi
 import jieba
-
+import sys
+default_encoding = sys.getfilesystemencoding()
 
 def load_model(f_name):
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
@@ -30,7 +31,10 @@ class pair(object):
 		return self.word+u"/"+self.flag
 
 	def __repr__(self):
-		return self.__unicode__()
+		return self.__str__()
+
+	def __str__(self):
+		return self.__unicode__().encode(default_encoding)
 
 	def encode(self,arg):
 		return self.__unicode__().encode(arg)

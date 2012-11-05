@@ -18,17 +18,6 @@ prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
 prob_emit = load_model("prob_emit.py")
 char_state_tab = load_model("char_state_tab.py")
-near_char_tab = load_model("near_char_tab.txt")
-
-
-def __raw_seg(sentence):
-	i,j =0,0
-	while j<len(sentence)-1:
-		if not ( sentence[j:j+2] in near_char_tab):
-			yield sentence[i:j+1]
-			i=j+1
-		j+=1
-	yield sentence[i:j+1]
 
 
 def __cut(sentence):
@@ -48,7 +37,7 @@ def __cut(sentence):
 	if next<len(sentence):
 		yield sentence[next:]+"/"+pos_list[next][1]
 
-def cut(sentence,find_new_word=True):
+def cut(sentence):
 	if not ( type(sentence) is unicode):
 		try:
 			sentence = sentence.decode('utf-8')
@@ -56,14 +45,10 @@ def cut(sentence,find_new_word=True):
 			sentence = sentence.decode('gbk','ignore')
 	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n%]")
 	blocks = re_han.split(sentence)
-	if find_new_word: 
-		detail_seg = lambda x: (x,)
-	else:
-		detail_seg = __raw_seg
+
 	for blk in blocks:
 		if re_han.match(blk):
-			for lb in detail_seg(blk):
-				for word in __cut(lb):
+				for word in __cut(blk):
 					yield word
 		else:
 			tmp = re_skip.split(blk)

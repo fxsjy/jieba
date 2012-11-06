@@ -11,9 +11,12 @@ def load_model(f_name):
 	if f_name.endswith(".py"):
 		return eval(open(prob_p_path,"rb").read())
 	else:
-		result = set()
+		result = {}
 		for line in open(prob_p_path,"rb"):
-			result.add(line.strip().decode('utf-8'))
+			line = line.strip()
+			if line=="":continue
+			word, tag = line.split(' ')
+			result[word.decode('utf-8')]=tag
 		return result
 
 
@@ -21,6 +24,7 @@ prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
 prob_emit = load_model("prob_emit.py")
 char_state_tab = load_model("char_state_tab.py")
+word_tag_tab = load_model("tags.txt")
 
 class pair(object):
 	def __init__(self,word,flag):
@@ -39,18 +43,8 @@ class pair(object):
 	def encode(self,arg):
 		return self.__unicode__().encode(arg)
 
-def __cut(sentence,tags_limited=False):
-	limit_tags = None
-	if tags_limited:
-		limit_tags = []
-		if len(sentence)==1:
-			limit_tags = ['S']
-		else:
-			limit_tags.append('B')
-			for i in xrange(len(sentence)-2):
-				limit_tags.append('M')
-			limit_tags.append('E')
-	prob, pos_list =  viterbi.viterbi(sentence,char_state_tab, prob_start, prob_trans, prob_emit,limit_tags)
+def __cut(sentence):
+	prob, pos_list =  viterbi.viterbi(sentence,char_state_tab, prob_start, prob_trans, prob_emit)
 	begin, next = 0,0
 
 	for i,char in enumerate(sentence):
@@ -81,20 +75,19 @@ def __cut_DAG(sentence):
 		else:
 			if len(buf)>0:
 				if len(buf)==1:
-					yield list(__cut(buf))[0]
+					yield pair(buf,word_tag_tab.get(buf,'x'))
 					buf=u''
 				else:
 					regognized = __cut(buf)
 					for t in regognized:
 						yield t
 					buf=u''
-			for w in __cut(l_word,tags_limited=True):
-				yield w
+			yield pair(l_word,word_tag_tab.get(l_word,'x'))
 		x =y
 
 	if len(buf)>0:
 		if len(buf)==1:
-			yield list(__cut(buf))[0]
+			yield pair(buf,word_tag_tab.get(buf,'x'))
 		else:
 			regognized = __cut(buf)
 			for t in regognized:
@@ -108,6 +101,7 @@ def cut(sentence):
 		except:
 			sentence = sentence.decode('gbk','ignore')
 	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n%]")
+	re_eng,re_num = re.compile(ur"[a-zA-Z+#]+"), re.compile(ur"[0-9]+")
 	blocks = re_han.split(sentence)
 
 	for blk in blocks:
@@ -118,9 +112,9 @@ def cut(sentence):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if x!="":
-					if re.match(ur"[0-9]+",x):
+					if re_num.match(x):
 						yield pair(x,'m')
-					elif re.match(ur"[a-zA-Z+#]+",x):
+					elif re_eng.match(x):
 						yield pair(x,'eng')
 					else:
 						yield pair(x,'x')

@@ -5,7 +5,7 @@ def get_top_states(t_state_v,K=4):
 	topK= sorted(items,key=operator.itemgetter(1),reverse=True)[:K]
 	return [x[0] for x in topK]
 
-def viterbi(obs, states, start_p, trans_p, emit_p,limit_tags):
+def viterbi(obs, states, start_p, trans_p, emit_p):
 	V = [{}] #tabular
 	mem_path = [{}]
 	all_states = trans_p.keys()
@@ -17,16 +17,11 @@ def viterbi(obs, states, start_p, trans_p, emit_p,limit_tags):
 		mem_path.append({})
 		prev_states = get_top_states(V[t-1])
 		prev_states =[ x for x in mem_path[t-1].keys() if len(trans_p[x])>0 ]
-		tmp = prev_states
-		if limit_tags:
-			prev_states = [x for x in prev_states if x[0]==limit_tags[t-1]]
-		if len(prev_states)==0:
-			prev_states = tmp
+
 		prev_states_expect_next = set( (y  for x in prev_states for y in trans_p[x].keys() ) )
 		obs_states = states.get(obs[t],all_states)
 		obs_states = set(obs_states) &  set(prev_states_expect_next)
-		if limit_tags:
-			obs_states = [x for x in obs_states if x[0]==limit_tags[t]]
+
 		if len(obs_states)==0: obs_states = all_states
 		for y in obs_states:
 			(prob,state ) = max([(V[t-1][y0] * trans_p[y0].get(y,0) * emit_p[y].get(obs[t],0) ,y0) for y0 in prev_states])

@@ -78,6 +78,22 @@ Output:
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
+功能 4) : 词性标注
+================
+* 标注句子分词后每个词的词性，采用和ictclas兼容的标记法
+* 用法示例
+
+		>>> import jieba.posseg as pseg
+		>>> words =pseg.cut("我爱北京天安门")
+		>>> for w in words:
+		...    print w.word,w.flag
+		...
+		我 r
+		爱 v
+		北京 ns
+		天安门 ns
+
+
 
 分词速度
 =========

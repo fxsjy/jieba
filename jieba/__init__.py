@@ -16,7 +16,7 @@ def gen_trie(f_name):
 	ltotal = 0.0
 	content = open(f_name,'rb').read().decode('utf-8')
 	for line in content.split("\n"):
-		word,freq = line.split(" ")
+		word,freq,_ = line.split(" ")
 		freq = float(freq)
 		lfreq[word] = freq
 		ltotal+=freq

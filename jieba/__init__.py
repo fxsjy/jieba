@@ -165,9 +165,11 @@ def cut(sentence,cut_all=False):
 				if x!="":
 					yield x
 
-def load_userdict(f_name):
+def load_userdict(f):
 	global trie,total,FREQ
-	content = open(f_name,'rb').read().decode('utf-8')
+	if isinstance(f, (str, unicode)):
+		f = open(f, 'rb')
+	content = f.read().decode('utf-8')
 	for line in content.split("\n"):
 		if line.rstrip()=='': continue
 		word,freq = line.split(" ")

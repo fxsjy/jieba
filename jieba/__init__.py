@@ -55,25 +55,17 @@ print >> sys.stderr, "Trie has been built succesfully."
 
 
 def __cut_all(sentence):
-	N = len(sentence)
-	i,j=0,0
-	p = trie
-	while i<N:
-		c = sentence[j]
-		if c in p:
-			p = p[c]
-			if '' in p:
-				yield sentence[i:j+1]
-			j+=1
-			if j>=N:
-				i+=1
-				j=i
-				p=trie
+	dag = get_DAG(sentence)
+	old_j = -1
+	for k,L in dag.iteritems():
+		if len(L)==1 and k>old_j:
+			yield sentence[k:L[0]+1]
+			old_j = L[0] 
 		else:
-			p = trie
-			i+=1
-			j=i
-
+			for j in L:
+				if j>k:
+					yield sentence[k:j+1]
+					old_j = j
 
 def calc(sentence,DAG,idx,route):
 	N = len(sentence)

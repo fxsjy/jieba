@@ -23,7 +23,7 @@ Algorithm
 * 采用了动态规划查找最大概率路径, 找出基于词频的最大切分组合
 * 对于未登录词，采用了基于汉字成词能力的HMM模型，使用了Viterbi算法
 
-功能 1)：分词 
+功能 1)：分词
 ==========
 * jieba.cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
 * 待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
@@ -56,7 +56,7 @@ Output:
 
 * 开发者可以指定自己自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
 * 用法： jieba.load_userdict(file_name) # file_name为自定义词典的路径
-* 词典格式和dict.txt一样，一个词占一行；每一行分为两部分，一部分为词语，另一部分为词频，用空格隔开
+* 词典格式和`analyse/idf.txt`一样，一个词占一行；每一行分为两部分，一部分为词语，另一部分为词频，用空格隔开
 * 范例：
 
 		云计算 5
@@ -116,7 +116,7 @@ Features
 * 1) Default mode, attempt to cut the sentence into the most accurate segmentation, which is suitable for text analysis;
 * 2) Full mode, break the words of the sentence into words scanned, which is suitable for search engines.
 
-Usage 
+Usage
 ========
 * Fully automatic installation: `easy_install jieba` or `pip install jieba`
 * Semi-automatic installation: Download http://pypi.python.org/pypi/jieba/ , after extracting run `python setup.py install`
@@ -163,7 +163,7 @@ Function 2): Add a custom dictionary
 
 * Developers can specify their own custom dictionary to include in the jieba thesaurus. jieba has the ability to identify new words, but adding your own new words can ensure a higher rate of correct segmentation.
 * Usage： `jieba.load_userdict(file_name) # file_name is a custom dictionary path`
-* The dictionary format is the same as that of `dict.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
+* The dictionary format is the same as that of `analyse/idf.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
 * Example：
 
 		云计算 5

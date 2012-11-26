@@ -152,7 +152,7 @@ Code example: segmentation
 
 Output:
 
-	Full Mode: 我/ 来/ 来到/ 到/ 北/ 北京/ 京/ 清/ 清华/ 清华大学/ 华/ 华大/ 大/ 大学/ 学
+	Full Mode: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
 
 	Default Mode: 我/ 来到/ 北京/ 清华大学
 

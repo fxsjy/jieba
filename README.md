@@ -106,6 +106,11 @@ Output:
 =========
 http://209.222.69.242:9000/
 
+常见问题
+=========
+1）模型的数据是如何生成的？https://github.com/fxsjy/jieba/issues/7
+2）这个库的授权是? https://github.com/fxsjy/jieba/issues/2
+
 
 jieba
 ========

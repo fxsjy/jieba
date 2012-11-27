@@ -157,6 +157,21 @@ def cut(sentence,cut_all=False):
 				if x!="":
 					yield x
 
+def cut_for_search(sentence):
+	words = cut(sentence)
+	for w in words:
+		if len(w)>2:
+			for i in xrange(len(w)-1):
+				gram2 = w[i:i+2]
+				if gram2 in FREQ:
+					yield gram2
+		if len(w)>3:
+			for i in xrange(len(w)-2):
+				gram3 = w[i:i+3]
+				if gram3 in FREQ:
+					yield gram3
+		yield w
+
 def load_userdict(f):
 	global trie,total,FREQ
 	if isinstance(f, (str, unicode)):

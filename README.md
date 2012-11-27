@@ -7,8 +7,9 @@ jieba
 Feature
 ========
 * 支持两种分词模式：
-* 1）默认模式，试图将句子最精确地切开，适合文本分析；
-* 2）全模式，把句子中所有的可以成词的词语都扫描出来，适合搜索引擎。
+* 1）精确模式，试图将句子最精确地切开，适合文本分析；
+* 2）全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
+* 3) 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
 
 Usage
 ========
@@ -25,9 +26,10 @@ Algorithm
 
 功能 1)：分词
 ==========
-* jieba.cut方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制分词模式
-* 待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
-* jieba.cut返回的结构是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
+* `jieba.cut`方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制是否采用全模式
+* `jieba.cut_for_search`方法接受一个参数：需要分词的字符串,该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
+* 注意：待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
+* `jieba.cut`以及`jieba.cut_for_search`返回的结构都是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
 
 代码示例( 分词 )
 
@@ -38,18 +40,24 @@ Algorithm
 	print "Full Mode:", "/ ".join(seg_list) #全模式
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print "Default Mode:", "/ ".join(seg_list) #默认模式
+	print "Default Mode:", "/ ".join(seg_list) #精确模式
 
 	seg_list = jieba.cut("他来到了网易杭研大厦")
 	print ", ".join(seg_list)
 
+	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
+	print ", ".join(seg_list)
+
 Output:
 
-	Full Mode: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+	【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
 
-	Default Mode: 我/ 来到/ 北京/ 清华大学
+	【精确模式】: 我/ 来到/ 北京/ 清华大学
 
-	他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
+	【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
+
+	【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在
+, 日本, 京都, 大学, 日本京都大学, 深造
 
 功能 2) ：添加自定义词典
 ================
@@ -67,7 +75,7 @@ Output:
 
 		加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 		
-* 通过用户自定义词典来增强歧义纠错能力： https://github.com/fxsjy/jieba/issues/14
+* 代码示例："通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
 功能 3) ：关键词提取
 ================
@@ -119,9 +127,10 @@ jieba
 
 Features
 ========
-* Support two types of segmentation mode:
-* 1) Default mode, attempt to cut the sentence into the most accurate segmentation, which is suitable for text analysis;
-* 2) Full mode, break the words of the sentence into words scanned, which is suitable for search engines.
+* Support three types of segmentation mode:
+* 1) Accurate Mode, attempt to cut the sentence into the most accurate segmentation, which is suitable for text analysis;
+* 2) Full Mode, break the words of the sentence into words scanned
+* 3) Search Engine Mode, based on the Accurate Mode, with an attempt to cut the long words into several short words, which can enhance the recall rate
 
 Usage
 ========
@@ -134,12 +143,13 @@ Algorithm
 ========
 * Based on the Trie tree structure to achieve efficient word graph scanning; sentences using Chinese characters constitute a directed acyclic graph (DAG)
 * Employs memory search to calculate the maximum probability path, in order to identify the maximum tangential points based on word frequency combination
-* For unknown words, the character position probability-based model is used, using the Viterbi algorithm
+* For unknown words, the character position HMM-based model is used, using the Viterbi algorithm
 
 Function 1): cut
 ==========
 * The `jieba.cut` method accepts to input parameters: 1) the first parameter is the string that requires segmentation, and the 2) second parameter is `cut_all`, a parameter used to control the segmentation pattern.
 * `jieba.cut` returned structure is an iterative generator, where you can use a `for` loop to get the word segmentation (in unicode), or `list(jieba.cut( ... ))` to create a list.
+* `jieba.cut_for_search` accpets only on parameter: the string that requires segmentation, and it will cut the sentence into short words
 
 Code example: segmentation
 ==========
@@ -156,14 +166,20 @@ Code example: segmentation
 	seg_list = jieba.cut("他来到了网易杭研大厦")
 	print ", ".join(seg_list)
 
+	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
+	print ", ".join(seg_list)
 
 Output:
 
-	Full Mode: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+	[Full Mode]: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
 
-	Default Mode: 我/ 来到/ 北京/ 清华大学
+	[Accurate Mode]: 我/ 来到/ 北京/ 清华大学
 
-	他, 来到, 了, 网易, 杭研, 大厦    (In this case, "杭研" is not in the dictionary, but is identified by the Viterbi algorithm)
+	[Unknown Words Recognize] 他, 来到, 了, 网易, 杭研, 大厦    (In this case, "杭研" is not in the dictionary, but is identified by the Viterbi algorithm)
+
+	[Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在
+, 日本, 京都, 大学, 日本京都大学, 深造
+
 
 Function 2): Add a custom dictionary
 ==========

@@ -4,6 +4,10 @@ jieba
 "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
 - _Scroll down for English documentation._
 
+注意！
+========
+这个branch `jieba3k`是专门用于Python3.x的版本
+
 Feature
 ========
 * 支持两种分词模式：
@@ -37,16 +41,16 @@ Algorithm
 	import jieba
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
-	print "Full Mode:", "/ ".join(seg_list) #全模式
+	print("Full Mode:", "/ ".join(seg_list)) #全模式
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print "Default Mode:", "/ ".join(seg_list) #精确模式
+	print("Default Mode:", "/ ".join(seg_list)) #默认模式
 
 	seg_list = jieba.cut("他来到了网易杭研大厦")
-	print ", ".join(seg_list)
+	print(", ".join(seg_list))
 
 	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
-	print ", ".join(seg_list)
+	print(", ".join(seg_list))
 
 Output:
 
@@ -95,7 +99,7 @@ Output:
 		>>> import jieba.posseg as pseg
 		>>> words =pseg.cut("我爱北京天安门")
 		>>> for w in words:
-		...    print w.word,w.flag
+		...    print(w.word,w.flag)
 		...
 		我 r
 		爱 v
@@ -158,16 +162,16 @@ Code example: segmentation
 	import jieba
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
-	print "Full Mode:", "/ ".join(seg_list) #全模式
+	print("Full Mode:", "/ ".join(seg_list)) #全模式
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print "Default Mode:", "/ ".join(seg_list) #默认模式
+	print("Default Mode:", "/ ".join(seg_list)) #默认模式
 
 	seg_list = jieba.cut("他来到了网易杭研大厦")
-	print ", ".join(seg_list)
+	print(", ".join(seg_list))
 
 	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
-	print ", ".join(seg_list)
+	print(", ".join(seg_list))
 
 Output:
 

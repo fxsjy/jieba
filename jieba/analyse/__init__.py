@@ -19,7 +19,7 @@ def extract_tags(sentence,topK=20):
 		if len(w.strip())<2: continue
 		freq[w]=freq.get(w,0.0)+1.0
 	total = sum(freq.values())
-	freq = [(k,v/total) for k,v in freq.iteritems()]
+	freq = [(k,v/total) for k,v in freq.items()]
 
 	tf_idf_list = [(v * idf_freq.get(k,max_idf),k) for k,v in freq]
 	st_list = sorted(tf_idf_list,reverse=True)

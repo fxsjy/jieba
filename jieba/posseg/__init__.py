@@ -1,6 +1,6 @@
 import re
 import os
-import viterbi
+from . import viterbi
 import jieba
 import sys
 default_encoding = sys.getfilesystemencoding()
@@ -15,8 +15,9 @@ def load_model(f_name):
 		for line in open(prob_p_path,"rb"):
 			line = line.strip()
 			if line=="":continue
-			word, _, tag = line.split(' ')
-			result[word.decode('utf-8')]=tag
+			line = line.decode("utf-8")
+			word, _, tag = line.split(" ")
+			result[word]=tag
 		return result
 
 
@@ -95,13 +96,13 @@ def __cut_DAG(sentence):
 
 
 def cut(sentence):
-	if not ( type(sentence) is unicode):
+	if  ( type(sentence) is bytes):
 		try:
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n%]")
-	re_eng,re_num = re.compile(ur"[a-zA-Z+#]+"), re.compile(ur"[0-9]+")
+	re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"[^a-zA-Z0-9+#\n%]")
+	re_eng,re_num = re.compile(r"[a-zA-Z+#]+"), re.compile(r"[0-9]+")
 	blocks = re_han.split(sentence)
 
 	for blk in blocks:

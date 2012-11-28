@@ -5,9 +5,7 @@ import jieba
 
 def cuttest(test_sent):
 	result = jieba.cut(test_sent)
-	for word in result:
-		print word, "/", 
-	print ""
+	print("/ ".join(result))
 
 
 if __name__ == "__main__":

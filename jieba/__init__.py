@@ -2,10 +2,8 @@ import re
 import math
 import os,sys
 import pprint
-import finalseg
+from . import finalseg
 import time
-import tempfile
-import marshal
 
 FREQ = {}
 total =0.0
@@ -31,33 +29,23 @@ def gen_trie(f_name):
 
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
-print >> sys.stderr, "Building Trie..."
+print("Building Trie...",file=sys.stderr)
+
 t1 = time.time()
-cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
-load_from_cache_fail = True
-if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,"dict.txt")):
-	print >> sys.stderr, "loading model from cache"
-	try:
-		trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
-		load_from_cache_fail = False
-	except:
-		load_from_cache_fail = True
 
-if load_from_cache_fail:
-	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
-	FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
-	min_freq = min(FREQ.itervalues())
-	print >> sys.stderr, "dumping model to file cache"
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file,'wb'))
+trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
+FREQ = dict([(k,float(v)/total) for k,v in FREQ.items()]) #normalize
+min_freq = min(FREQ.values())
+print("dumping model to file cache",file=sys.stderr)
 
-print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
-print >> sys.stderr, "Trie has been built succesfully."
+print("loading model cost ", time.time() - t1, "seconds." ,file=sys.stderr)
+print("Trie has been built succesfully.",file=sys.stderr)
 
 
 def __cut_all(sentence):
 	dag = get_DAG(sentence)
 	old_j = -1
-	for k,L in dag.iteritems():
+	for k,L in dag.items():
 		if len(L)==1 and k>old_j:
 			yield sentence[k:L[0]+1]
 			old_j = L[0] 
@@ -70,7 +58,7 @@ def __cut_all(sentence):
 def calc(sentence,DAG,idx,route):
 	N = len(sentence)
 	route[N] = (1.0,'')
-	for idx in xrange(N-1,-1,-1):
+	for idx in range(N-1,-1,-1):
 		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) * route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)
 
@@ -96,7 +84,7 @@ def get_DAG(sentence):
 			p = trie
 			i+=1
 			j=i
-	for i in xrange(len(sentence)):
+	for i in range(len(sentence)):
 		if not i in DAG:
 			DAG[i] =[i]
 	return DAG
@@ -136,12 +124,12 @@ def __cut_DAG(sentence):
 
 
 def cut(sentence,cut_all=False):
-	if not ( type(sentence) is unicode):
+	if( type(sentence) is bytes):
 		try:
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
+	re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"[^a-zA-Z0-9+#\n]")
 	blocks = re_han.split(sentence)
 	cut_block = __cut_DAG
 	if cut_all:
@@ -161,12 +149,12 @@ def cut_for_search(sentence):
 	words = cut(sentence)
 	for w in words:
 		if len(w)>2:
-			for i in xrange(len(w)-1):
+			for i in range(len(w)-1):
 				gram2 = w[i:i+2]
 				if gram2 in FREQ:
 					yield gram2
 		if len(w)>3:
-			for i in xrange(len(w)-2):
+			for i in range(len(w)-2):
 				gram3 = w[i:i+3]
 				if gram3 in FREQ:
 					yield gram3

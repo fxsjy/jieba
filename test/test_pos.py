@@ -6,8 +6,8 @@ import jieba.posseg as pseg
 def cuttest(test_sent):
 	result = pseg.cut(test_sent)
 	for w in result:
-		print w.word, "/", w.flag, ", ",  
-	print ""
+		sys.stdout.write(w.word+ "/"+ w.flag + ", ") 
+	print("")
 
 
 if __name__ == "__main__":

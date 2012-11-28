@@ -11,6 +11,11 @@ Feature
 * 2）全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
 * 3) 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
 
+Python Version
+==============
+* 目前master分支是只支持Python2.x 的
+* Python3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
+
 Usage
 ========
 * 全自动安装：`easy_install jieba` 或者 `pip install jieba`

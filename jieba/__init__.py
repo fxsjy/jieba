@@ -9,6 +9,7 @@ import marshal
 
 FREQ = {}
 total =0.0
+re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile(ur"[^\r\n]")
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -119,7 +120,7 @@ def __cut_DAG(sentence):
 					yield buf
 					buf=u''
 				else:
-					regognized = finalseg.__cut(buf)
+					regognized = finalseg.cut(buf)
 					for t in regognized:
 						yield t
 					buf=u''
@@ -130,7 +131,7 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield buf
 		else:
-			regognized = finalseg.__cut(buf)
+			regognized = finalseg.cut(buf)
 			for t in regognized:
 				yield t
 
@@ -141,7 +142,7 @@ def cut(sentence,cut_all=False):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
+	
 	blocks = re_han.split(sentence)
 	cut_block = __cut_DAG
 	if cut_all:

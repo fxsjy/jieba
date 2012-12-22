@@ -116,7 +116,9 @@ Output:
 
 在线演示
 =========
-(因朋友的VPS到期，暂时不可用了，求提供免费VPS)
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)
 
 常见问题
 =========
@@ -225,4 +227,6 @@ Segmentation speed
 
 Online demo
 =========
-http://209.222.69.242:9000/
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)

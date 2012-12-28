@@ -1,10 +1,14 @@
 import re
 import os
+from math import log
+
+MIN_FLOAT=-3.14e100
 
 def load_model(f_name):
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 	prob_p_path = os.path.join(_curpath,f_name)
-	return eval(open(prob_p_path,"rb").read())
+	tab = eval(open(prob_p_path,"rb").read())
+	return tab
 
 prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
@@ -16,13 +20,13 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 	V = [{}] #tabular
 	path = {}
 	for y in states: #init
-		V[0][y] = start_p[y] * emit_p[y].get(obs[0],0)
+		V[0][y] = start_p[y] + emit_p[y].get(obs[0],MIN_FLOAT)
 		path[y] = [y]
 	for t in range(1,len(obs)):
 		V.append({})
 		newpath = {}
 		for y in states:
-			(prob,state ) = max([(V[t-1][y0] * trans_p[y0].get(y,0) * emit_p[y].get(obs[t],0) ,y0) for y0 in states ])
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in states ])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath

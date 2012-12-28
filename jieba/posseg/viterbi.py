@@ -1,4 +1,5 @@
 import operator
+MIN_FLOAT=-3.14e100
 
 def get_top_states(t_state_v,K=4):
 	items = t_state_v.items()
@@ -10,7 +11,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 	mem_path = [{}]
 	all_states = trans_p.keys()
 	for y in states.get(obs[0],all_states): #init
-		V[0][y] = start_p[y] * emit_p[y].get(obs[0],0)
+		V[0][y] = start_p[y] + emit_p[y].get(obs[0],MIN_FLOAT)
 		mem_path[0][y] = ''
 	for t in range(1,len(obs)):
 		V.append({})
@@ -24,7 +25,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 
 		if len(obs_states)==0: obs_states = all_states
 		for y in obs_states:
-			(prob,state ) = max([(V[t-1][y0] * trans_p[y0].get(y,0) * emit_p[y].get(obs[t],0) ,y0) for y0 in prev_states])
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in prev_states])
 			V[t][y] =prob
 			mem_path[t][y] = state
 

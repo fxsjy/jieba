@@ -6,10 +6,11 @@ import finalseg
 import time
 import tempfile
 import marshal
+from math import log
 
 FREQ = {}
 total =0.0
-re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile(ur"[^\r\n]")
+
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -46,7 +47,7 @@ if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(
 
 if load_from_cache_fail:
 	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
-	FREQ = dict([(k,float(v)/total) for k,v in FREQ.iteritems()]) #normalize
+	FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 	min_freq = min(FREQ.itervalues())
 	print >> sys.stderr, "dumping model to file cache"
 	marshal.dump((trie,FREQ,total,min_freq),open(cache_file,'wb'))
@@ -72,7 +73,7 @@ def calc(sentence,DAG,idx,route):
 	N = len(sentence)
 	route[N] = (1.0,'')
 	for idx in xrange(N-1,-1,-1):
-		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) * route[x+1][0],x ) for x in DAG[idx] ]
+		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)
 
 def get_DAG(sentence):
@@ -142,7 +143,9 @@ def cut(sentence,cut_all=False):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	
+	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile(ur"[^\r\n]")
+	if cut_all:
+		re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
 	blocks = re_han.split(sentence)
 	cut_block = __cut_DAG
 	if cut_all:
@@ -182,7 +185,7 @@ def load_userdict(f):
 		if line.rstrip()=='': continue
 		word,freq = line.split(" ")
 		freq = float(freq)
-		FREQ[word] = freq / total
+		FREQ[word] = log(freq / total)
 		p = trie
 		for c in word:
 			if not c in p:

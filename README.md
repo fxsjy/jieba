@@ -116,14 +116,21 @@ Output:
 
 在线演示
 =========
-http://209.222.69.242:9000/
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)
 
 常见问题
 =========
  1）模型的数据是如何生成的？https://github.com/fxsjy/jieba/issues/7
  
  2）这个库的授权是? https://github.com/fxsjy/jieba/issues/2
-
+ 
+ 更多问题请点击：https://github.com/fxsjy/jieba/issues?sort=updated&state=closed
+ 
+Change Log
+==========
+http://www.oschina.net/p/jieba/news#list
 
 jieba
 ========
@@ -220,4 +227,6 @@ Segmentation speed
 
 Online demo
 =========
-http://209.222.69.242:9000/
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)

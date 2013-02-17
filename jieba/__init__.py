@@ -50,7 +50,8 @@ if load_from_cache_fail:
 	FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 	min_freq = min(FREQ.itervalues())
 	print >> sys.stderr, "dumping model to file cache"
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file,'wb'))
+	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+".tmp",'wb'))
+	os.rename(cache_file+".tmp",cache_file)
 
 print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
 print >> sys.stderr, "Trie has been built succesfully."

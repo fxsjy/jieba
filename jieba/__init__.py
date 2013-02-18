@@ -7,6 +7,7 @@ import time
 import tempfile
 import marshal
 from math import log
+import random
 
 FREQ = {}
 total =0.0
@@ -50,13 +51,14 @@ if load_from_cache_fail:
 	FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 	min_freq = min(FREQ.itervalues())
 	print >> sys.stderr, "dumping model to file cache"
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+".tmp",'wb'))
+	tmp_suffix = "."+str(random.random())
+	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
 	if os.name=='nt':
 		import shutil
 		replace_file = shutil.move
 	else:
 		replace_file = os.rename
-	replace_file(cache_file+".tmp",cache_file)
+	replace_file(cache_file+tmp_suffix,cache_file)
 
 print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
 print >> sys.stderr, "Trie has been built succesfully."

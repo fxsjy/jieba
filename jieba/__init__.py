@@ -51,7 +51,12 @@ if load_from_cache_fail:
 	min_freq = min(FREQ.itervalues())
 	print >> sys.stderr, "dumping model to file cache"
 	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+".tmp",'wb'))
-	os.rename(cache_file+".tmp",cache_file)
+	if os.name=='nt':
+		import shutil
+		replace_file = shutil.move
+	else:
+		replace_file = os.rename
+	replace_file(cache_file+".tmp",cache_file)
 
 print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
 print >> sys.stderr, "Trie has been built succesfully."

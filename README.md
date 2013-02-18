@@ -110,9 +110,13 @@ Output:
 
 其他词典
 ========
-1）占用内存更小的词典
-2）包含繁体词汇的词典
-https://github.com/fxsjy/jieba/wiki/%E5%85%B6%E4%BB%96%E5%AE%9A%E5%88%B6%E8%AF%8D%E5%85%B8%E6%96%87%E4%BB%B6
+1. 占用内存较小的词典文件
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
+
+2. 支持繁体分词更好的词典文件
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
+
+下载你所需要的词典，然后覆盖jieba/dict.txt 即可。
 
 
 分词速度

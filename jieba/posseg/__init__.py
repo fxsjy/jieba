@@ -1,8 +1,14 @@
-import re
+import regex
+import unicodedata
 import os
 import viterbi
 import jieba
 import sys
+
+from jieba.finalseg import WHITE_LIST, LETTERS_AND_NUMBERS, IGNORED, HAN, SEPERATOR
+
+ENG=regex.compile(ur"[a-zA-Z+#]+")
+NUMBER=regex.compile(ur"[0-9.]+")
 
 default_encoding = sys.getfilesystemencoding()
 
@@ -62,17 +68,17 @@ def __cut(sentence):
 		yield pair(sentence[next:], pos_list[next][1] )
 
 def __cut_detail(sentence):
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\r\n]")
-	re_eng,re_num = re.compile(ur"[a-zA-Z+#]+"), re.compile(ur"[0-9]+")
+	re_han, re_skip = HAN, SEPERATOR
+	re_eng,re_num = ENG, NUMBER
 	blocks = re_han.split(sentence)
 	for blk in blocks:
 		if re_han.match(blk):
-				for word in __cut(blk):
-					yield word
+			for word in __cut(blk):
+				yield word
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if x!="":
+				if x:
 					if re_num.match(x):
 						yield pair(x,'m')
 					elif re_eng.match(x):
@@ -120,22 +126,35 @@ def cut(sentence):
 	if not ( type(sentence) is unicode):
 		try:
 			sentence = sentence.decode('utf-8')
-		except:
-			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile(ur"[^\r\n]")
-	re_eng,re_num = re.compile(ur"[a-zA-Z+#]+"), re.compile(ur"[0-9]+")
-	blocks = re_han.split(sentence)
-	for blk in blocks:
-		if re_han.match(blk):
-				for word in __cut_DAG(blk):
-					yield word
+		except UnicodeError:
+			sentence = sentence.decode('gb18030','ignore')
+
+	# Remove accent marks
+	sentence=IGNORED.sub("", unicodedata.normalize("NFKD", sentence))
+
+	re_han, re_skip = LETTERS_AND_NUMBERS, SEPERATOR
+	re_eng,re_num = ENG, NUMBER
+	for s in WHITE_LIST.splititer(sentence):
+		if WHITE_LIST.fullmatch(s):
+			if s!="":
+				if re_num.match(s):
+					yield pair(s,'m')
+				elif re_eng.match(s):
+					yield pair(s,'eng')
+				else:
+					yield pair(s,'x')
 		else:
-			tmp = re_skip.split(blk)
-			for x in tmp:
-				if x!="":
-					if re_num.match(x):
-						yield pair(x,'m')
-					elif re_eng.match(x):
-						yield pair(x,'eng')
-					else:
-						yield pair(x,'x')
+			for blk in re_han.splititer(s):
+				if re_han.match(blk):
+						for word in __cut_DAG(blk):
+							yield word
+				else:
+					for x in re_skip.splititer(blk):
+						if x!="":
+							if re_num.match(x):
+								yield pair(x,'m')
+							elif re_eng.match(x):
+								yield pair(x,'eng')
+							else:
+								yield pair(x,'x')
+

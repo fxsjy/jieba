@@ -1,11 +1,12 @@
-from distutils.core import setup  
+from setuptools import setup
 setup(name='jieba',  
       version='0.25',  
       description='Chinese Words Segementation Utilities',  
       author='Sun, Junyi',  
       author_email='ccnusjy@gmail.com',  
       url='http://github.com/fxsjy',  
-      packages=['jieba'],  
+      install_requires=["regex"],
+      packages=["jieba"],
       package_dir={'jieba':'jieba'},
-      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*']}
+      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*']},
 )  

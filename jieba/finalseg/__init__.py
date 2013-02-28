@@ -1,8 +1,24 @@
-import re
+import regex
 import os
+import unicodedata
 from math import log
 
 MIN_FLOAT=-3.14e100
+
+# Predefined words and patterns, ignore case, grouped
+WHITE_LIST=regex.compile(ur"(?i)(AT&T|C\+\+|C#|[0-9]+\.[0-9]+)")
+
+# All letters and numbers
+LETTERS_AND_NUMBERS=regex.compile(ur"([\p{L}\p{N}]+)")
+
+# Accent marks
+IGNORED=regex.compile(ur"\p{Mn}+")
+
+# Chinese ideograms, grouped
+HAN=regex.compile(ur'(\p{Han}+)')
+
+# Seperators, anything except letter and number
+SEPERATOR=regex.compile(ur"[^\p{L}|\p{N}]+")
 
 def load_model(f_name):
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
@@ -13,8 +29,6 @@ def load_model(f_name):
 prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
 prob_emit = load_model("prob_emit.py")
-
-
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
 	V = [{}] #tabular
@@ -54,19 +68,26 @@ def __cut(sentence):
 		yield sentence[next:]
 
 def cut(sentence):
-	if not ( type(sentence) is unicode):
+	if type(sentence) is not unicode:
 		try:
 			sentence = sentence.decode('utf-8')
-		except:
-			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
-	blocks = re_han.split(sentence)
-	for blk in blocks:
-		if re_han.match(blk):
-			for word in __cut(blk):
-				yield word
+		except UnicodeError:
+			sentence = sentence.decode('gb18030','ignore')
+    
+	# Remove accent marks
+	sentence=IGNORED.sub("", unicodedata.normalize("NFKD", sentence))
+    
+	for s in WHITE_LIST.splititer(sentence):
+		if WHITE_LIST.fullmatch(s):
+			yield s
 		else:
-			tmp = re_skip.split(blk)
-			for x in tmp:
-				if x!="":
-					yield x
+			blocks = HAN.split(s)
+			for blk in blocks:
+				if HAN.match(blk):
+					for word in __cut(blk):
+						yield word
+				else:
+					tmp = SEPERATOR.split(blk)
+					for x in tmp:
+						if x!="":
+							yield x

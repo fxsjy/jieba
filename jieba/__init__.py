@@ -1,4 +1,6 @@
 import re
+import regex
+import unicodedata
 import math
 import os,sys
 import pprint
@@ -9,9 +11,10 @@ import marshal
 from math import log
 import random
 
+from finalseg import WHITE_LIST, LETTERS_AND_NUMBERS, IGNORED, HAN, SEPERATOR
+
 FREQ = {}
 total =0.0
-
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -149,25 +152,31 @@ def cut(sentence,cut_all=False):
 	if not ( type(sentence) is unicode):
 		try:
 			sentence = sentence.decode('utf-8')
-		except:
-			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile(ur"[^\r\n]")
+		except UnicodeError:
+			sentence = sentence.decode('gb18030','ignore')
+
+	# Remove accent marks
+	sentence=IGNORED.sub("", unicodedata.normalize("NFKD", sentence))
+
+	re_han, re_skip = LETTERS_AND_NUMBERS, SEPERATOR
 	if cut_all:
-		re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
-	blocks = re_han.split(sentence)
+		re_han, re_skip = HAN, SEPERATOR
 	cut_block = __cut_DAG
 	if cut_all:
 		cut_block = __cut_all
-	for blk in blocks:
-		if re_han.match(blk):
-				#pprint.pprint(__cut_DAG(blk))
-				for word in cut_block(blk):
-					yield word
+	for s in WHITE_LIST.splititer(sentence):
+		if WHITE_LIST.fullmatch(s):
+			yield s
 		else:
-			tmp = re_skip.split(blk)
-			for x in tmp:
-				if x!="":
-					yield x
+			for blk in re_han.splititer(s):
+				if re_han.match(blk):
+						#pprint.pprint(__cut_DAG(blk))
+						for word in cut_block(blk):
+							yield word
+				else:
+					for x in re_skip.splititer(blk):
+						if x!="":
+							yield x
 
 def cut_for_search(sentence):
 	words = cut(sentence)

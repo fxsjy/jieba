@@ -3,6 +3,7 @@ import os
 from . import viterbi
 import jieba
 import sys
+
 default_encoding = sys.getfilesystemencoding()
 
 def load_model(f_name):
@@ -33,7 +34,7 @@ class pair(object):
 		self.flag = flag
 
 	def __unicode__(self):
-		return self.word+u"/"+self.flag
+		return self.word+"/"+self.flag
 
 	def __repr__(self):
 		return self.__str__()
@@ -61,12 +62,33 @@ def __cut(sentence):
 	if next<len(sentence):
 		yield pair(sentence[next:], pos_list[next][1] )
 
+def __cut_detail(sentence):
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\r\n]")
+	re_eng,re_num = re.compile("[a-zA-Z+#]+"), re.compile("[0-9]+")
+	blocks = re_han.split(sentence)
+	for blk in blocks:
+		if re_han.match(blk):
+				for word in __cut(blk):
+					yield word
+		else:
+			tmp = re_skip.split(blk)
+			for x in tmp:
+				if x!="":
+					if re_num.match(x):
+						yield pair(x,'m')
+					elif re_eng.match(x):
+						yield pair(x,'eng')
+					else:
+						yield pair(x,'x')
+
 def __cut_DAG(sentence):
 	DAG = jieba.get_DAG(sentence)
 	route ={}
+	
 	jieba.calc(sentence,DAG,0,route=route)
+
 	x = 0
-	buf =u''
+	buf =''
 	N = len(sentence)
 	while x<N:
 		y = route[x][1]+1
@@ -77,12 +99,12 @@ def __cut_DAG(sentence):
 			if len(buf)>0:
 				if len(buf)==1:
 					yield pair(buf,word_tag_tab.get(buf,'x'))
-					buf=u''
+					buf=''
 				else:
-					regognized = __cut(buf)
+					regognized = __cut_detail(buf)
 					for t in regognized:
 						yield t
-					buf=u''
+					buf=''
 			yield pair(l_word,word_tag_tab.get(l_word,'x'))
 		x =y
 
@@ -90,7 +112,7 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield pair(buf,word_tag_tab.get(buf,'x'))
 		else:
-			regognized = __cut(buf)
+			regognized = __cut_detail(buf)
 			for t in regognized:
 				yield t
 
@@ -101,10 +123,11 @@ def cut(sentence):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"[^a-zA-Z0-9+#\n%]")
-	re_eng,re_num = re.compile(r"[a-zA-Z+#]+"), re.compile(r"[0-9]+")
-	blocks = re_han.split(sentence)
 
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile("[^\r\n]")
+	re_eng,re_num = re.compile("[a-zA-Z+#]+"), re.compile("[0-9]+")
+
+	blocks = re_han.split(sentence)
 	for blk in blocks:
 		if re_han.match(blk):
 				for word in __cut_DAG(blk):

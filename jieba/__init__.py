@@ -5,8 +5,14 @@ import pprint
 from . import finalseg
 import time
 
+import tempfile
+import marshal
+from math import log
+import random
+
 FREQ = {}
 total =0.0
+
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -33,13 +39,32 @@ print("Building Trie...",file=sys.stderr)
 
 t1 = time.time()
 
-trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
-FREQ = dict([(k,float(v)/total) for k,v in FREQ.items()]) #normalize
-min_freq = min(FREQ.values())
-print("dumping model to file cache",file=sys.stderr)
+cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
+load_from_cache_fail = True
+if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,"dict.txt")):
+	print("loading model from cache", file=sys.stderr)
+	try:
+		trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+		load_from_cache_fail = False
+	except:
+		load_from_cache_fail = True
 
-print("loading model cost ", time.time() - t1, "seconds." ,file=sys.stderr)
-print("Trie has been built succesfully.",file=sys.stderr)
+if load_from_cache_fail:
+	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
+	FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.items()]) #normalize
+	min_freq = min(FREQ.values())
+	print("dumping model to file cache", file=sys.stderr)
+	tmp_suffix = "."+str(random.random())
+	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+	if os.name=='nt':
+		import shutil
+		replace_file = shutil.move
+	else:
+		replace_file = os.rename
+	replace_file(cache_file+tmp_suffix,cache_file)
+
+print("loading model cost ", time.time() - t1, "seconds.", file= sys.stderr)
+print("Trie has been built succesfully.", file= sys.stderr)
 
 
 def __cut_all(sentence):
@@ -59,7 +84,7 @@ def calc(sentence,DAG,idx,route):
 	N = len(sentence)
 	route[N] = (1.0,'')
 	for idx in range(N-1,-1,-1):
-		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) * route[x+1][0],x ) for x in DAG[idx] ]
+		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)
 
 def get_DAG(sentence):
@@ -94,7 +119,7 @@ def __cut_DAG(sentence):
 	route ={}
 	calc(sentence,DAG,0,route=route)
 	x = 0
-	buf =u''
+	buf =''
 	N = len(sentence)
 	while x<N:
 		y = route[x][1]+1
@@ -105,12 +130,12 @@ def __cut_DAG(sentence):
 			if len(buf)>0:
 				if len(buf)==1:
 					yield buf
-					buf=u''
+					buf=''
 				else:
-					regognized = finalseg.__cut(buf)
+					regognized = finalseg.cut(buf)
 					for t in regognized:
 						yield t
-					buf=u''
+					buf=''
 			yield l_word		
 		x =y
 
@@ -118,7 +143,7 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield buf
 		else:
-			regognized = finalseg.__cut(buf)
+			regognized = finalseg.cut(buf)
 			for t in regognized:
 				yield t
 
@@ -129,7 +154,11 @@ def cut(sentence,cut_all=False):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"[^a-zA-Z0-9+#\n]")
+
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile("[^\r\n]")
+	if cut_all:
+		re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")
+
 	blocks = re_han.split(sentence)
 	cut_block = __cut_DAG
 	if cut_all:
@@ -169,7 +198,7 @@ def load_userdict(f):
 		if line.rstrip()=='': continue
 		word,freq = line.split(" ")
 		freq = float(freq)
-		FREQ[word] = freq / total
+		FREQ[word] = log(freq / total)
 		p = trie
 		for c in word:
 			if not c in p:

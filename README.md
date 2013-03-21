@@ -10,10 +10,15 @@ jieba
 
 Feature
 ========
-* 支持两种分词模式：
+* 支持三种分词模式：
 * 1）精确模式，试图将句子最精确地切开，适合文本分析；
 * 2）全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
 * 3) 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+
+Python Version
+==============
+* 目前master分支是只支持Python2.x 的
+* Python3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
 
 Usage
 ========
@@ -60,8 +65,7 @@ Output:
 
 	【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
 
-	【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在
-, 日本, 京都, 大学, 日本京都大学, 深造
+	【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
 功能 2) ：添加自定义词典
 ================
@@ -105,7 +109,18 @@ Output:
 		爱 v
 		北京 ns
 		天安门 ns
+		
+		
 
+其他词典
+========
+1. 占用内存较小的词典文件
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
+
+2. 支持繁体分词更好的词典文件
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
+
+下载你所需要的词典，然后覆盖jieba/dict.txt 即可。
 
 
 分词速度
@@ -116,14 +131,21 @@ Output:
 
 在线演示
 =========
-http://209.222.69.242:9000/
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)
 
 常见问题
 =========
  1）模型的数据是如何生成的？https://github.com/fxsjy/jieba/issues/7
  
  2）这个库的授权是? https://github.com/fxsjy/jieba/issues/2
-
+ 
+ 更多问题请点击：https://github.com/fxsjy/jieba/issues?sort=updated&state=closed
+ 
+Change Log
+==========
+http://www.oschina.net/p/jieba/news#list
 
 jieba
 ========
@@ -220,4 +242,6 @@ Segmentation speed
 
 Online demo
 =========
-http://209.222.69.242:9000/
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)

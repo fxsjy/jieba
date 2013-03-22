@@ -52,7 +52,9 @@ if load_from_cache_fail:
 	min_freq = min(FREQ.itervalues())
 	print >> sys.stderr, "dumping model to file cache"
 	tmp_suffix = "."+str(random.random())
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+	tmp_f = open(cache_file+tmp_suffix,'wb')
+	marshal.dump((trie,FREQ,total,min_freq),tmp_f)
+	tmp_f.close()
 	if os.name=='nt':
 		import shutil
 		replace_file = shutil.move

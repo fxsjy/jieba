@@ -27,6 +27,9 @@ prob_emit = load_model("prob_emit.py")
 char_state_tab = load_model("char_state_tab.py")
 word_tag_tab = load_model("../dict.txt")
 
+if jieba.user_word_tag_tab:
+	word_tag_tab.update(jieba.user_word_tag_tab)
+
 class pair(object):
 	def __init__(self,word,flag):
 		self.word = word

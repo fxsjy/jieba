@@ -11,7 +11,7 @@ import random
 
 FREQ = {}
 total =0.0
-
+user_word_tag_tab={}
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -191,9 +191,16 @@ def load_userdict(f):
 	if isinstance(f, (str, unicode)):
 		f = open(f, 'rb')
 	content = f.read().decode('utf-8')
+	line_no = 0
 	for line in content.split("\n"):
+		line_no+=1
 		if line.rstrip()=='': continue
-		word,freq = line.split(" ")
+		tup =line.split(" ")
+		word,freq = tup[0],tup[1]
+		if line_no==1:
+			word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
+		if len(tup)==3:
+			user_word_tag_tab[word]=tup[2].strip()
 		freq = float(freq)
 		FREQ[word] = log(freq / total)
 		p = trie

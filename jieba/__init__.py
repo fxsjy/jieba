@@ -153,7 +153,7 @@ def cut(sentence,cut_all=False):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&]+)"), re.compile(ur"[ ]")
+	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&]+)"), re.compile(ur"(\s+)")
 	if cut_all:
 		re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
 	blocks = re_han.split(sentence)
@@ -168,8 +168,11 @@ def cut(sentence,cut_all=False):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if x!="":
+				if re_skip.match(x):
 					yield x
+				else:
+					for xx in x:
+						yield xx
 
 def cut_for_search(sentence):
 	words = cut(sentence)

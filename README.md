@@ -47,7 +47,7 @@ Algorithm
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
 	print "Default Mode:", "/ ".join(seg_list) #精确模式
 
-	seg_list = jieba.cut("他来到了网易杭研大厦")
+	seg_list = jieba.cut("他来到了网易杭研大厦") #默认是精确模式
 	print ", ".join(seg_list)
 
 	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
@@ -68,12 +68,11 @@ Output:
 
 * 开发者可以指定自己自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
 * 用法： jieba.load_userdict(file_name) # file_name为自定义词典的路径
-* 词典格式和`analyse/idf.txt`一样，一个词占一行；每一行分为两部分，一部分为词语，另一部分为词频，用空格隔开
+* 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频，最后为词性（可省略），用空格隔开
 * 范例：
 
-		云计算 5
-		李小福 2
-		创新办 3
+	自定义词典：https://github.com/fxsjy/jieba/blob/master/test/userdict.txt
+	用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py
 
 		之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 

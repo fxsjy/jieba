@@ -14,6 +14,13 @@ Feature
 * 支持繁体分词
 * 支持自定义词典
 
+
+在线演示
+=========
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)
+
 Python Version
 ==============
 * 目前master分支是只支持Python2.x 的
@@ -130,11 +137,6 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 * 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
-在线演示
-=========
-http://jiebademo.ap01.aws.af.cm/
-
-(Powered by Appfog)
 
 常见问题
 =========

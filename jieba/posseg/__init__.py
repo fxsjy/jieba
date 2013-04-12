@@ -28,6 +28,9 @@ prob_emit = load_model("prob_emit.py")
 char_state_tab = load_model("char_state_tab.py")
 word_tag_tab = load_model("../dict.txt")
 
+if jieba.user_word_tag_tab:
+	word_tag_tab.update(jieba.user_word_tag_tab)
+
 class pair(object):
 	def __init__(self,word,flag):
 		self.word = word
@@ -63,8 +66,10 @@ def __cut(sentence):
 		yield pair(sentence[next:], pos_list[next][1] )
 
 def __cut_detail(sentence):
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\r\n]")
-	re_eng,re_num = re.compile("[a-zA-Z+#]+"), re.compile("[0-9]+")
+
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
+	re_eng,re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
+
 	blocks = re_han.split(sentence)
 	for blk in blocks:
 		if re_han.match(blk):
@@ -124,8 +129,8 @@ def cut(sentence):
 		except:
 			sentence = sentence.decode('gbk','ignore')
 
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile("[^\r\n]")
-	re_eng,re_num = re.compile("[a-zA-Z+#]+"), re.compile("[0-9]+")
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\.]+)"), re.compile("(\s+)")
+	re_eng,re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
 
 	blocks = re_han.split(sentence)
 	for blk in blocks:
@@ -135,10 +140,13 @@ def cut(sentence):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if x!="":
-					if re_num.match(x):
-						yield pair(x,'m')
-					elif re_eng.match(x):
-						yield pair(x,'eng')
-					else:
-						yield pair(x,'x')
+				if re_skip.match(x):
+					yield pair(x,'')
+				else:
+					for xx in x:
+						if re_num.match(xx):
+							yield pair(xx,'m')
+						elif re_eng.match(x):
+							yield pair(xx,'eng')
+						else:
+							yield pair(xx,'x')

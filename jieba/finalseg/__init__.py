@@ -59,7 +59,9 @@ def cut(sentence):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")
+
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
+
 	blocks = re_han.split(sentence)
 	for blk in blocks:
 		if re_han.match(blk):

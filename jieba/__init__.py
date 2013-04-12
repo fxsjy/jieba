@@ -12,7 +12,7 @@ import random
 
 FREQ = {}
 total =0.0
-
+user_word_tag_tab={}
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -55,7 +55,9 @@ if load_from_cache_fail:
 	min_freq = min(FREQ.values())
 	print("dumping model to file cache", file=sys.stderr)
 	tmp_suffix = "."+str(random.random())
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+	tmp_f = open(cache_file+tmp_suffix,'wb')
+	marshal.dump((trie,FREQ,total,min_freq),tmp_f)
+	tmp_f.close()
 	if os.name=='nt':
 		import shutil
 		replace_file = shutil.move
@@ -155,7 +157,8 @@ def cut(sentence,cut_all=False):
 		except:
 			sentence = sentence.decode('gbk','ignore')
 
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#]+)"), re.compile("[^\r\n]")
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\.]+)"), re.compile("(\s+)")
+
 	if cut_all:
 		re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")
 
@@ -171,8 +174,11 @@ def cut(sentence,cut_all=False):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if x!="":
+				if re_skip.match(x):
 					yield x
+				else:
+					for xx in x:
+						yield xx
 
 def cut_for_search(sentence):
 	words = cut(sentence)
@@ -191,12 +197,19 @@ def cut_for_search(sentence):
 
 def load_userdict(f):
 	global trie,total,FREQ
-	if isinstance(f, (str, unicode)):
+	if isinstance(f, (str, )):
 		f = open(f, 'rb')
 	content = f.read().decode('utf-8')
+	line_no = 0
 	for line in content.split("\n"):
+		line_no+=1
 		if line.rstrip()=='': continue
-		word,freq = line.split(" ")
+		tup =line.split(" ")
+		word,freq = tup[0],tup[1]
+		if line_no==1:
+			word = word.replace('\ufeff',"") #remove bom flag if it exists
+		if len(tup)==3:
+			user_word_tag_tab[word]=tup[2].strip()
 		freq = float(freq)
 		FREQ[word] = log(freq / total)
 		p = trie

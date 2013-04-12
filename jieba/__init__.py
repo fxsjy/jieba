@@ -169,7 +169,7 @@ def cut(sentence,cut_all=False):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					if x!=' ':
+					if x.strip(' ')!='':
 						yield x
 				else:
 					for xx in x:

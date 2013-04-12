@@ -136,7 +136,8 @@ def cut(sentence):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					yield pair(x,'')
+					if x.strip(' ')!='':
+						yield pair(x,'')
 				else:
 					for xx in x:
 						if re_num.match(xx):

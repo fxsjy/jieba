@@ -14,3 +14,13 @@ result = pseg.cut(test_sent)
 
 for w in result:
 	print w.word, "/", w.flag, ", ",  
+
+print "\n========"
+
+terms = jieba.cut('easy_install is great')
+for t in terms:
+    print t
+print '-------------------------'
+terms = jieba.cut('python 的正则表达式是好用的')
+for t in terms:
+    print t

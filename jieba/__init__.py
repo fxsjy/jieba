@@ -157,7 +157,7 @@ def cut(sentence,cut_all=False):
 		except:
 			sentence = sentence.decode('gbk','ignore')
 
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\.]+)"), re.compile("(\s+)")
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\s+)")
 
 	if cut_all:
 		re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")
@@ -175,7 +175,8 @@ def cut(sentence,cut_all=False):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					yield x
+					if x.strip(' ')!='':
+						yield x
 				else:
 					for xx in x:
 						yield xx

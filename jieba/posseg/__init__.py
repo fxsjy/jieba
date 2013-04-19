@@ -129,7 +129,7 @@ def cut(sentence):
 		except:
 			sentence = sentence.decode('gbk','ignore')
 
-	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\.]+)"), re.compile("(\s+)")
+	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\s+)")
 	re_eng,re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
 
 	blocks = re_han.split(sentence)
@@ -141,7 +141,8 @@ def cut(sentence):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					yield pair(x,'')
+					if x.strip(' ')!='':
+						yield pair(x,'')
 				else:
 					for xx in x:
 						if re_num.match(xx):

@@ -233,7 +233,7 @@ def enable_parallel(processnum):
 	pool = Pool(processnum)
 
 	def pcut(sentence,cut_all=False):
-		parts = re.compile('(\s+)').split(sentence)
+		parts = re.compile('([\r\n]+)').split(sentence)
 		if cut_all:
 			result = pool.map(__lcut_all,parts) 
 		else:
@@ -243,7 +243,7 @@ def enable_parallel(processnum):
 				yield w
 
 	def pcut_for_search(sentence):
-		parts = re.compile('(\s+)').split(sentence)
+		parts = re.compile('([\r\n]+)').split(sentence)
 		result = pool.map(__lcut_for_search,parts)
 		for r in result:
 			for w in r:

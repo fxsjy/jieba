@@ -155,7 +155,7 @@ def cut(sentence):
 		for w in __cut_internal(sentence):
 			yield w
 	else:
-		parts = re.compile('(\s+)').split(sentence)
+		parts = re.compile('([\r\n]+)').split(sentence)
 		result = jieba.pool.map(__lcut_internal,parts)	
 		for r in result:
 			for w in r:

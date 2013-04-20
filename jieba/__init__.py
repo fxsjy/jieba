@@ -213,3 +213,42 @@ def load_userdict(f):
 				p[c] ={}
 			p = p[c]
 		p['']='' #ending flag
+
+__ref_cut = cut
+__ref_cut_for_search = cut_for_search
+
+def __lcut(sentence):
+	return list(__ref_cut(sentence,False))
+def __lcut_all(sentence):
+	return list(__ref_cut(sentence,True))
+def __lcut_for_search(sentence):
+	return list(__ref_cut_for_search(sentence))
+
+def enable_parallel(processnum):
+	global pool,cut,cut_for_search
+	if os.name=='nt':
+		raise Exception("parallel mode only supports posix system")
+
+	from multiprocessing import Pool
+	pool = Pool(processnum)
+
+	def pcut(sentence,cut_all=False):
+		parts = re.compile('(\s+)').split(sentence)
+		if cut_all:
+			result = pool.map(__lcut_all,parts) 
+		else:
+			result = pool.map(__lcut,parts)
+		for r in result:
+			for w in r:
+				yield w
+
+	def pcut_for_search(sentence):
+		parts = re.compile('(\s+)').split(sentence)
+		result = pool.map(__lcut_for_search,parts)
+		for r in result:
+			for w in r:
+				yield w
+
+	cut = pcut
+	cut_for_search = pcut_for_search
+

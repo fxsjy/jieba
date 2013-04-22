@@ -123,8 +123,8 @@ Output:
 * 将目标文本按行分隔后，把各行文本分配到多个python进程并行分词，然后归并结果，从而获得分词速度的可观提升
 * 基于python自带的multiprocessing模块，目前暂不支持windows
 * 用法：
-		* jieba.enable_parallel(4) # 开启并行分词模式，参数为并行进程数
-		* jieba.disable_parallel() # 关闭并行分词模式
+** jieba.enable_parallel(4) # 开启并行分词模式，参数为并行进程数
+** jieba.disable_parallel() # 关闭并行分词模式
 
 * 例子：
 		https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py

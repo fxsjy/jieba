@@ -252,3 +252,10 @@ def enable_parallel(processnum):
 	cut = pcut
 	cut_for_search = pcut_for_search
 
+def disable_parallel():
+	global pool,cut,cut_for_search
+	if pool != None:
+		pool.close()
+		pool = None
+	cut = __ref_cut
+	cut_for_search = __ref_cut_for_search

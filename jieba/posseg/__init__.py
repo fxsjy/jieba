@@ -151,7 +151,7 @@ def __lcut_internal(sentence):
 	return list(__cut_internal(sentence))
 
 def cut(sentence):
-	if not hasattr(jieba,'pool'):
+	if (not hasattr(jieba,'pool')) or (jieba.pool==None):
 		for w in __cut_internal(sentence):
 			yield w
 	else:

@@ -129,7 +129,7 @@ Output:
 * 例子：
 		https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
 
-* 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行分词，获得了1MB/s的速度，是单进程版的3.3倍。
+* 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
 
 其他词典
 ========

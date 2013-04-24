@@ -17,20 +17,25 @@ def gen_trie(f_name):
 	lfreq = {}
 	trie = {}
 	ltotal = 0.0
-	content = open(f_name,'rb').read().decode('utf-8')
-	for line in content.split("\n"):
-		word,freq,_ = line.split(" ")
-		freq = float(freq)
-		lfreq[word] = freq
-		ltotal+=freq
-		p = trie
-		for c in word:
-			if not c in p:
-				p[c] ={}
-			p = p[c]
-		p['']='' #ending flag
+	with open(f_name, 'rb') as f:
+		lineno = 1
+		for line in f.readlines():
+			lineno += 1
+			try:
+				word,freq,_ = line.decode('utf-8').split(' ')
+				freq = float(freq)
+				lfreq[word] = freq
+				ltotal+=freq
+				p = trie
+				for c in word:
+					if not c in p:
+						p[c] ={}
+					p = p[c]
+				p['']='' #ending flag
+			except ValueError, e:
+				print >> sys.stderr, ' at line', lineno, line
+				raise e
 	return trie, lfreq,ltotal
-
 
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 

@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import re
 import math
 import os,sys
@@ -19,10 +20,10 @@ def gen_trie(f_name):
 	ltotal = 0.0
 	with open(f_name, 'rb') as f:
 		lineno = 1
-		for line in f.readlines():
+		for line in f.read().rstrip().decode('utf-8').split('\n'):
 			lineno += 1
 			try:
-				word,freq,_ = line.decode('utf-8').split(' ')
+				word,freq,_ = line.split(' ')
 				freq = float(freq)
 				lfreq[word] = freq
 				ltotal+=freq

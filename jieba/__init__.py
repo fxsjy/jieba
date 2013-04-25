@@ -19,7 +19,7 @@ def gen_trie(f_name):
 	trie = {}
 	ltotal = 0.0
 	with open(f_name, 'rb') as f:
-		lineno = 1
+		lineno = 0 
 		for line in f.read().rstrip().decode('utf-8').split('\n'):
 			lineno += 1
 			try:
@@ -34,7 +34,7 @@ def gen_trie(f_name):
 					p = p[c]
 				p['']='' #ending flag
 			except ValueError, e:
-				print >> sys.stderr, ' at line', lineno, line
+				print >> sys.stderr, f_name, ' at line', lineno, line
 				raise e
 	return trie, lfreq,ltotal
 

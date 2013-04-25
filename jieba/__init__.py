@@ -9,9 +9,13 @@ import marshal
 from math import log
 import random
 
-FREQ = {}
-total =0.0
+DICTIONARY = "dict.txt"
 
+trie = None # to be initialized
+FREQ = {}
+min_freq = 0.0
+total =0.0
+initialized = False
 
 def gen_trie(f_name):
 	lfreq = {}
@@ -31,37 +35,52 @@ def gen_trie(f_name):
 		p['']='' #ending flag
 	return trie, lfreq,ltotal
 
+def initialize(dictionary=DICTIONARY):
+	global trie, FREQ, total, min_freq, initialized
+	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
-_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+	print >> sys.stderr, "Building Trie..."
+	t1 = time.time()
+	cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
+	load_from_cache_fail = True
+	if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,"dict.txt")):
+		print >> sys.stderr, "loading model from cache"
+		try:
+			trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+			load_from_cache_fail = False
+		except:
+			load_from_cache_fail = True
 
-print >> sys.stderr, "Building Trie..."
-t1 = time.time()
-cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
-load_from_cache_fail = True
-if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,"dict.txt")):
-	print >> sys.stderr, "loading model from cache"
-	try:
-		trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
-		load_from_cache_fail = False
-	except:
-		load_from_cache_fail = True
+	if load_from_cache_fail:
+		trie,FREQ,total = gen_trie(os.path.join(_curpath, dictionary))
+		FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
+		min_freq = min(FREQ.itervalues())
+		print >> sys.stderr, "dumping model to file cache"
+		tmp_suffix = "."+str(random.random())
+		marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+		if os.name=='nt':
+			import shutil
+			replace_file = shutil.move
+		else:
+			replace_file = os.rename
+		replace_file(cache_file+tmp_suffix,cache_file)
 
-if load_from_cache_fail:
-	trie,FREQ,total = gen_trie(os.path.join(_curpath,"dict.txt"))
-	FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
-	min_freq = min(FREQ.itervalues())
-	print >> sys.stderr, "dumping model to file cache"
-	tmp_suffix = "."+str(random.random())
-	marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
-	if os.name=='nt':
-		import shutil
-		replace_file = shutil.move
-	else:
-		replace_file = os.rename
-	replace_file(cache_file+tmp_suffix,cache_file)
+	initialized = True
 
-print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
-print >> sys.stderr, "Trie has been built succesfully."
+	print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
+	print >> sys.stderr, "Trie has been built succesfully."
+
+
+def require_initialized(fn):
+		global initialized
+
+		def wrapped(*args, **kwargs):
+			if initialized:
+				return fn(*args, **kwargs)
+			else:
+				initialize()
+				return fn(*args, **kwargs)
+		return wrapped
 
 
 def __cut_all(sentence):
@@ -77,6 +96,7 @@ def __cut_all(sentence):
 					yield sentence[k:j+1]
 					old_j = j
 
+
 def calc(sentence,DAG,idx,route):
 	N = len(sentence)
 	route[N] = (1.0,'')
@@ -84,6 +104,8 @@ def calc(sentence,DAG,idx,route):
 		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)
 
+
+@require_initialized
 def get_DAG(sentence):
 	N = len(sentence)
 	i,j=0,0
@@ -110,6 +132,7 @@ def get_DAG(sentence):
 		if not i in DAG:
 			DAG[i] =[i]
 	return DAG
+
 
 def __cut_DAG(sentence):
 	DAG = get_DAG(sentence)
@@ -143,7 +166,6 @@ def __cut_DAG(sentence):
 			regognized = finalseg.cut(buf)
 			for t in regognized:
 				yield t
-
 
 def cut(sentence,cut_all=False):
 	if not ( type(sentence) is unicode):
@@ -184,6 +206,7 @@ def cut_for_search(sentence):
 					yield gram3
 		yield w
 
+@require_initialized
 def load_userdict(f):
 	global trie,total,FREQ
 	if isinstance(f, (str, unicode)):
@@ -200,3 +223,10 @@ def load_userdict(f):
 				p[c] ={}
 			p = p[c]
 		p['']='' #ending flag
+
+
+def set_dictionary(dictionary_path):
+	global initialized, DICTIONARY
+	DICTIONARY = dictionary_path
+	if initialized:
+		initialize()

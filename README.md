@@ -229,6 +229,17 @@ Code sample (keyword extraction)
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
+Using Other Dictionaries
+========
+It is possible to supply Jieba with your own custom dictionary, and there are also two dictionaries readily available for download:
+
+1. You can employ a smaller dictionary to use less memory:
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
+
+2. There is also a bigger file that has better support for traditional characters (繁體):
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
+
+In either case, download the file you want first, and then call `jieba.load_userdict('dict.txt.small')` or just replace the existing `dict.txt`.
 
 Segmentation speed
 =========

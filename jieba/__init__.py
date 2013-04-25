@@ -87,7 +87,7 @@ def __cut_all(sentence):
 
 def calc(sentence,DAG,idx,route):
 	N = len(sentence)
-	route[N] = (1.0,'')
+	route[N] = (0.0,'')
 	for idx in xrange(N-1,-1,-1):
 		candidates = [ ( FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0],x ) for x in DAG[idx] ]
 		route[idx] = max(candidates)

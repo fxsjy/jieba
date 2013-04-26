@@ -59,7 +59,7 @@ def initialize(dictionary=DICTIONARY):
 		cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
 		load_from_cache_fail = True
 		if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,dictionary)):
-			print >> sys.stderr, "loading model from cache"
+			print >> sys.stderr, "loading model from cache " + cache_file
 			try:
 				trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
 				load_from_cache_fail = False
@@ -70,7 +70,7 @@ def initialize(dictionary=DICTIONARY):
 			trie,FREQ,total = gen_trie(os.path.join(_curpath, dictionary))
 			FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 			min_freq = min(FREQ.itervalues())
-			print >> sys.stderr, "dumping model to file cache"
+			print >> sys.stderr, "dumping model to file cache " + cache_file
 			tmp_suffix = "."+str(random.random())
 			marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
 			if os.name=='nt':

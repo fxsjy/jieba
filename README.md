@@ -139,8 +139,18 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
 2. 支持繁体分词更好的词典文件
 https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
-下载你所需要的词典，然后覆盖jieba/dict.txt 即可。
+下载你所需要的词典，然后覆盖jieba/dict.txt 即可或者用`jieba.set_dictionary('data/dict.txt.big')`
 
+初始化
+=====
+默认情况下，jieba采用延迟加载，一旦有必要建立trie。这需要1-3秒一次而以，之后还没有重新初始化。如果你想手工初始jieba，您可以用：
+
+    import jieba
+    jieba.initialize()
+
+在这一步还可以指定要使用的词典（可选）:
+
+    jieba.initialize('data/dict.txt.big')
 
 分词速度
 =========
@@ -247,6 +257,30 @@ Code sample (keyword extraction)
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
+Using Other Dictionaries
+========
+It is possible to supply Jieba with your own custom dictionary, and there are also two dictionaries readily available for download:
+
+1. You can employ a smaller dictionary for a smaller memory footprint:
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
+
+2. There is also a bigger file that has better support for traditional characters (繁體):
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
+
+By default, an in-between dictionary is used, called `dict.txt` and included in the distribution.
+
+In either case, download the file you want first, and then call `jieba.set_dictionary('data/dict.txt.big')` or just replace the existing `dict.txt`.
+
+Initialization
+========
+By default, Jieba employs lazy loading to only build the trie once it is necessary. This takes 1-3 seconds once, after which it is not initialized again. If you want to initialize Jieba manually, you can call:
+
+    import jieba
+    jieba.initialize()
+
+You can also specify the dictionary to use in this step (optional):
+    
+    jieba.initialize('data/dict.txt.big')
 
 Segmentation speed
 =========

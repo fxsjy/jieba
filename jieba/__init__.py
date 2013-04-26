@@ -54,7 +54,7 @@ def initialize(dictionary=DICTIONARY):
 			trie = None
 		_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
-		print >> sys.stderr, "Building Trie..."
+		print >> sys.stderr, "Building Trie..., from " + dictionary
 		t1 = time.time()
 		cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
 		load_from_cache_fail = True
@@ -87,13 +87,13 @@ def initialize(dictionary=DICTIONARY):
 
 
 def require_initialized(fn):
-		global initialized
+		global initialized,DICTIONARY
 
 		def wrapped(*args, **kwargs):
 			if initialized:
 				return fn(*args, **kwargs)
 			else:
-				initialize()
+				initialize(DICTIONARY)
 				return fn(*args, **kwargs)
 		return wrapped
 

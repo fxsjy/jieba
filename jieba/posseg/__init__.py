@@ -122,8 +122,8 @@ def __cut_DAG(sentence):
 				yield t
 
 
-def cut(sentence):
-	if  ( type(sentence) is bytes):
+def __cut_internal(sentence):
+	if not ( type(sentence) is str):
 		try:
 			sentence = sentence.decode('utf-8')
 		except:
@@ -151,3 +151,18 @@ def cut(sentence):
 							yield pair(xx,'eng')
 						else:
 							yield pair(xx,'x')
+
+def __lcut_internal(sentence):
+	return list(__cut_internal(sentence))
+
+def cut(sentence):
+	if (not hasattr(jieba,'pool')) or (jieba.pool==None):
+		for w in __cut_internal(sentence):
+			yield w
+	else:
+		parts = re.compile('([\r\n]+)').split(sentence)
+		result = jieba.pool.map(__lcut_internal,parts)	
+		for r in result:
+			for w in r:
+				yield w
+

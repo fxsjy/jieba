@@ -2,6 +2,7 @@ import sys,time
 import sys
 sys.path.append("../")
 import jieba
+jieba.initialize()
 
 url = sys.argv[1]
 content = open(url,"rb").read()
@@ -15,5 +16,6 @@ log_f = open("1.log","wb")
 
 log_f.write(bytes("/ ".join(words),'utf-8'))
 
+print('cost',tm_cost)
 print('speed' , len(content)/tm_cost, " bytes/second")
 

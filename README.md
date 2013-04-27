@@ -124,7 +124,18 @@ Output:
 		北京 ns
 		天安门 ns
 		
-		
+功能 5) : 并行分词
+==================
+* 原理：将目标文本按行分隔后，把各行文本分配到多个python进程并行分词，然后归并结果，从而获得分词速度的可观提升
+* 基于python自带的multiprocessing模块，目前暂不支持windows
+* 用法：
+	* `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
+	* `jieba.disable_parallel()` # 关闭并行分词模式
+
+* 例子：
+		https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
+
+* 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
 
 其他词典
 ========
@@ -134,7 +145,26 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
 2. 支持繁体分词更好的词典文件
 https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
-下载你所需要的词典，然后覆盖jieba/dict.txt 即可。
+下载你所需要的词典，然后覆盖jieba/dict.txt 即可或者用`jieba.set_dictionary('data/dict.txt.big')`
+
+
+模块初始化机制的改变:lazy load （从0.28版本开始）
+================================================
+
+jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始jieba，也可以手动初始化。
+
+    import jieba
+    jieba.initialize() #手动初始化（可选）
+
+
+在0.28之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
+
+
+    jieba.set_dictionary('data/dict.txt.big')
+
+
+例子： https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py
+
 
 
 分词速度
@@ -242,6 +272,30 @@ Code sample (keyword extraction)
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
+Using Other Dictionaries
+========
+It is possible to supply Jieba with your own custom dictionary, and there are also two dictionaries readily available for download:
+
+1. You can employ a smaller dictionary for a smaller memory footprint:
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
+
+2. There is also a bigger file that has better support for traditional characters (繁體):
+https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
+
+By default, an in-between dictionary is used, called `dict.txt` and included in the distribution.
+
+In either case, download the file you want first, and then call `jieba.set_dictionary('data/dict.txt.big')` or just replace the existing `dict.txt`.
+
+Initialization
+========
+By default, Jieba employs lazy loading to only build the trie once it is necessary. This takes 1-3 seconds once, after which it is not initialized again. If you want to initialize Jieba manually, you can call:
+
+    import jieba
+    jieba.initialize() #(optional)
+
+You can also specify the dictionary (not supported before version 0.28) :
+    
+    jieba.set_dictionary('data/dict.txt.big')
 
 Segmentation speed
 =========

@@ -141,18 +141,24 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
 下载你所需要的词典，然后覆盖jieba/dict.txt 即可或者用`jieba.set_dictionary('data/dict.txt.big')`
 
-初始化
-=====
-默认情况下，jieba采用延迟加载，一旦有必要建立trie。这需要1-3秒一次而以，之后还没有重新初始化。如果你想手工初始jieba，您可以用：
+
+模块初始化机制的改变:lazy load （从0.28版本开始）
+================================================
+
+jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始jieba，也可以手动初始化。
 
     import jieba
     jieba.initialize() #手动初始化（可选）
 
+
 在0.28之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
+
 
     jieba.set_dictionary('data/dict.txt.big')
 
+
 例子： https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py
+
 
 
 分词速度

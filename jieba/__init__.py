@@ -54,11 +54,16 @@ def initialize(dictionary=DICTIONARY):
 			trie = None
 		_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
-		print >> sys.stderr, "Building Trie..., from " + dictionary
+		abs_path = os.path.join(_curpath,dictionary)
+		print >> sys.stderr, "Building Trie..., from " + abs_path
 		t1 = time.time()
-		cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
+		if abs_path == os.path.join(_curpath,"dict.txt"): #defautl dictionary
+			cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
+		else: #customer dictionary
+			cache_file = os.path.join(tempfile.gettempdir(),"jieba.user."+str(hash(abs_path))+".cache")
+
 		load_from_cache_fail = True
-		if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(os.path.join(_curpath,dictionary)):
+		if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(abs_path):
 			print >> sys.stderr, "loading model from cache " + cache_file
 			try:
 				trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
@@ -67,7 +72,7 @@ def initialize(dictionary=DICTIONARY):
 				load_from_cache_fail = True
 
 		if load_from_cache_fail:
-			trie,FREQ,total = gen_trie(os.path.join(_curpath, dictionary))
+			trie,FREQ,total = gen_trie(abs_path)
 			FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 			min_freq = min(FREQ.itervalues())
 			print >> sys.stderr, "dumping model to file cache " + cache_file
@@ -296,5 +301,8 @@ def disable_parallel():
 def set_dictionary(dictionary_path):
 	global initialized, DICTIONARY
 	with DICT_LOCK:
-		DICTIONARY = dictionary_path
+		abs_path = os.path.normpath( os.path.join( os.getcwd(), dictionary_path )  )
+		if not os.path.exists(abs_path):
+			raise Exception("path does not exists:" + abs_path)
+		DICTIONARY = abs_path
 		initialized = False

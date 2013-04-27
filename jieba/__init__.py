@@ -209,8 +209,12 @@ def cut(sentence,cut_all=False):
 					if x.strip(' ')!='':
 						yield x
 				else:
-					for xx in x:
-						yield xx
+					if not cut_all:
+						for xx in x:
+							yield xx
+					else:
+						yield x
+
 def cut_for_search(sentence):
 	words = cut(sentence)
 	for w in words:

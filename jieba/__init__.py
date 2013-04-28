@@ -44,8 +44,12 @@ def gen_trie(f_name):
 				raise e
 	return trie, lfreq,ltotal
 
-def initialize(dictionary=DICTIONARY):
+def initialize(*args):
 	global trie, FREQ, total, min_freq, initialized
+	if len(args)==0:
+		dictionary = DICTIONARY
+	else:
+		dictionary = args[0]
 	with DICT_LOCK:
 		if initialized:
 			return

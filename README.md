@@ -21,17 +21,24 @@ http://jiebademo.ap01.aws.af.cm/
 
 (Powered by Appfog)
 
-Python Version
-==============
-* 目前master分支是只支持Python2.x 的
-* Python3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
 
-Usage
-========
+Python 2.x 下的安装
+===================
 * 全自动安装：`easy_install jieba` 或者 `pip install jieba`
 * 半自动安装：先下载http://pypi.python.org/pypi/jieba/ ，解压后运行python setup.py install
 * 手动安装：将jieba目录放置于当前目录或者site-packages目录
 * 通过import jieba 来引用 （第一次import时需要构建Trie树，需要几秒时间）
+
+
+Python 3.x 下的安装
+====================
+* 目前master分支是只支持Python2.x 的
+* Python3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
+
+        git clone https://github.com/fxsjy/jieba.git
+        git checkout jieba3k
+        python setup.py install
+
 
 Algorithm
 ========

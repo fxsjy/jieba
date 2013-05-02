@@ -82,7 +82,8 @@ def initialize(*args):
 			min_freq = min(FREQ.values())
 			print("dumping model to file cache " + cache_file, file=sys.stderr)
 			tmp_suffix = "."+str(random.random())
-			marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+			with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
+				marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
 			if os.name=='nt':
 				import shutil
 				replace_file = shutil.move

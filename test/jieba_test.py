@@ -129,6 +129,14 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
 
+    def testPosseg(self):
+        import jieba.posseg as pseg
+        for content in test_contents:
+            result = pseg.cut(content)
+            result = list(result)
+            assert isinstance(result, list), "Test Posseg error on content: %s" % content
+            print >> sys.stderr, " , ".join([w.word + " / " + w.flag for w in result])
+        
 
 if __name__ == "__main__":
     unittest.main()

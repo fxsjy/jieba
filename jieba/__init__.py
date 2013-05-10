@@ -193,7 +193,7 @@ def cut(sentence,cut_all=False):
 	if not isinstance(sentence, unicode):
 		try:
 			sentence = sentence.decode('utf-8')
-		except:
+		except UnicodeDecodeError:
 			sentence = sentence.decode('gbk','ignore')
 	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(ur"(\s+)")
 	if cut_all:

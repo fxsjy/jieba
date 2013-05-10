@@ -190,7 +190,7 @@ def __cut_DAG(sentence):
 			for t in regognized:
 				yield t
 def cut(sentence,cut_all=False):
-	if not ( type(sentence) is unicode):
+	if not isinstance(sentence, unicode):
 		try:
 			sentence = sentence.decode('utf-8')
 		except:

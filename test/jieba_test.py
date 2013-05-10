@@ -100,28 +100,35 @@ class JiebaTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testCut(self):
+    def testDefaultCut(self):
         for content in test_contents:
             result = jieba.cut(content)
             result = list(result)
-            assert isinstance(result, list), "test0 error"
+            assert isinstance(result, list), "Test DefaultCut error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
 
-    def testSet_dictionary(self):
+    def testCutAll(self):
+        for content in test_contents:
+            result = jieba.cut(content, cut_all=True)
+            result = list(result)
+            assert isinstance(result, list), "Test CutAll error on content: %s" % content
+            print >> sys.stderr, " , ".join(result)
+
+    def testSetDictionary(self):
         jieba.set_dictionary("foobar.txt")
         for content in test_contents:
             result = jieba.cut(content)
             result = list(result)
-            assert isinstance(result, list), "test0 error"
+            assert isinstance(result, list), "Test SetDictionary error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
 
-    def testCut_for_search(self):
+    def testCutForSearch(self):
         for content in test_contents:
             result = jieba.cut_for_search(content)
             result = list(result)
-            assert isinstance(result, list), "test0 error"
+            assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
-        
+
 
 if __name__ == "__main__":
     unittest.main()

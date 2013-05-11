@@ -1,8 +1,9 @@
 #-*-coding: utf-8 -*-
 import sys
 sys.path.append("../")
-import jieba
 import unittest
+import types
+import jieba
 jieba.initialize()
 
 
@@ -103,6 +104,7 @@ class JiebaTestCase(unittest.TestCase):
     def testDefaultCut(self):
         for content in test_contents:
             result = jieba.cut(content)
+            assert isinstance(result, types.GeneratorType), "Test DefaultCut Generator error"
             result = list(result)
             assert isinstance(result, list), "Test DefaultCut error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
@@ -110,6 +112,7 @@ class JiebaTestCase(unittest.TestCase):
     def testCutAll(self):
         for content in test_contents:
             result = jieba.cut(content, cut_all=True)
+            assert isinstance(result, types.GeneratorType), "Test CutAll Generator error"
             result = list(result)
             assert isinstance(result, list), "Test CutAll error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
@@ -118,6 +121,7 @@ class JiebaTestCase(unittest.TestCase):
         jieba.set_dictionary("foobar.txt")
         for content in test_contents:
             result = jieba.cut(content)
+            assert isinstance(result, types.GeneratorType), "Test SetDictionary Generator error"
             result = list(result)
             assert isinstance(result, list), "Test SetDictionary error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
@@ -125,6 +129,7 @@ class JiebaTestCase(unittest.TestCase):
     def testCutForSearch(self):
         for content in test_contents:
             result = jieba.cut_for_search(content)
+            assert isinstance(result, types.GeneratorType), "Test CutForSearch Generator error"
             result = list(result)
             assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
@@ -133,6 +138,7 @@ class JiebaTestCase(unittest.TestCase):
         import jieba.posseg as pseg
         for content in test_contents:
             result = pseg.cut(content)
+            assert isinstance(result, types.GeneratorType), "Test Posseg Generator error"
             result = list(result)
             assert isinstance(result, list), "Test Posseg error on content: %s" % content
             print >> sys.stderr, " , ".join([w.word + " / " + w.flag for w in result])

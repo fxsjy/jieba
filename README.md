@@ -58,16 +58,16 @@ Algorithm
 	#encoding=utf-8
 	import jieba
 
-	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
-	print "Full Mode:", "/ ".join(seg_list) #全模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+	print "Full Mode:", "/ ".join(seg_list)  # 全模式
 
-	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print "Default Mode:", "/ ".join(seg_list) #精确模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+	print "Default Mode:", "/ ".join(seg_list)  # 精确模式
 
-	seg_list = jieba.cut("他来到了网易杭研大厦") #默认是精确模式
+	seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
 	print ", ".join(seg_list)
 
-	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
+	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
 	print ", ".join(seg_list)
 
 Output:
@@ -116,9 +116,9 @@ Output:
 * 用法示例
 
 		>>> import jieba.posseg as pseg
-		>>> words =pseg.cut("我爱北京天安门")
+		>>> words = pseg.cut("我爱北京天安门")
 		>>> for w in words:
-		...    print w.word,w.flag
+		...    print w.word, w.flag
 		...
 		我 r
 		爱 v
@@ -155,7 +155,7 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始jieba，也可以手动初始化。
 
     import jieba
-    jieba.initialize() #手动初始化（可选）
+    jieba.initialize()  # 手动初始化（可选）
 
 
 在0.28之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
@@ -223,16 +223,16 @@ Code example: segmentation
 	#encoding=utf-8
 	import jieba
 
-	seg_list = jieba.cut("我来到北京清华大学",cut_all=True)
-	print "Full Mode:", "/ ".join(seg_list) #全模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+	print "Full Mode:", "/ ".join(seg_list)  # 全模式
 
-	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print "Default Mode:", "/ ".join(seg_list) #默认模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+	print "Default Mode:", "/ ".join(seg_list)  # 默认模式
 
 	seg_list = jieba.cut("他来到了网易杭研大厦")
 	print ", ".join(seg_list)
 
-	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
+	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
 	print ", ".join(seg_list)
 
 Output:
@@ -292,7 +292,7 @@ Initialization
 By default, Jieba employs lazy loading to only build the trie once it is necessary. This takes 1-3 seconds once, after which it is not initialized again. If you want to initialize Jieba manually, you can call:
 
     import jieba
-    jieba.initialize() #(optional)
+    jieba.initialize()  # (optional)
 
 You can also specify the dictionary (not supported before version 0.28) :
     

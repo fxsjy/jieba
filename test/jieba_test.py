@@ -91,7 +91,8 @@ test_contents = [
     '张晓梅去人民医院做了个B超然后去买了件T恤',
     'AT&T是一件不错的公司，给你发offer了吗？',
     'C++和c#是什么关系？11+122=133，是吗？PI=3.14159',
-    '你认识那个和主席握手的的哥吗？他开一辆黑色的士。']
+    '你认识那个和主席握手的的哥吗？他开一辆黑色的士。',
+    '枪杆子中出政权']
 
 
 class JiebaTestCase(unittest.TestCase):
@@ -108,6 +109,7 @@ class JiebaTestCase(unittest.TestCase):
             result = list(result)
             assert isinstance(result, list), "Test DefaultCut error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testDefaultCut"
 
     def testCutAll(self):
         for content in test_contents:
@@ -116,6 +118,7 @@ class JiebaTestCase(unittest.TestCase):
             result = list(result)
             assert isinstance(result, list), "Test CutAll error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testCutAll"
 
     def testSetDictionary(self):
         jieba.set_dictionary("foobar.txt")
@@ -125,6 +128,7 @@ class JiebaTestCase(unittest.TestCase):
             result = list(result)
             assert isinstance(result, list), "Test SetDictionary error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testSetDictionary"
 
     def testCutForSearch(self):
         for content in test_contents:
@@ -133,6 +137,7 @@ class JiebaTestCase(unittest.TestCase):
             result = list(result)
             assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
             print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testCutForSearch"
 
     def testPosseg(self):
         import jieba.posseg as pseg
@@ -142,7 +147,7 @@ class JiebaTestCase(unittest.TestCase):
             result = list(result)
             assert isinstance(result, list), "Test Posseg error on content: %s" % content
             print >> sys.stderr, " , ".join([w.word + " / " + w.flag for w in result])
-        
+        print  >> sys.stderr, "testPosseg"
 
 if __name__ == "__main__":
     unittest.main()

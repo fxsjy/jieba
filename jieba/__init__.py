@@ -175,9 +175,13 @@ def __cut_DAG(sentence):
 					yield buf
 					buf=u''
 				else:
-					regognized = finalseg.cut(buf)
-					for t in regognized:
-						yield t
+					if not (buf in FREQ):
+						regognized = finalseg.cut(buf)
+						for t in regognized:
+							yield t
+					else:
+						for elem in buf:
+							yield elem
 					buf=u''
 			yield l_word		
 		x =y
@@ -186,9 +190,14 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield buf
 		else:
-			regognized = finalseg.cut(buf)
-			for t in regognized:
-				yield t
+			if not (buf in FREQ):
+				regognized = finalseg.cut(buf)
+				for t in regognized:
+					yield t
+			else:
+				for elem in buf:
+					yield elem
+
 def cut(sentence,cut_all=False):
 	if not isinstance(sentence, unicode):
 		try:

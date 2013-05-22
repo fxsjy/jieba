@@ -10,6 +10,7 @@ import marshal
 from math import log
 import random
 import threading
+from functools import wraps
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -98,7 +99,8 @@ def initialize(*args):
 
 def require_initialized(fn):
 		global initialized,DICTIONARY
-
+		
+		@wraps(fn)
 		def wrapped(*args, **kwargs):
 			if initialized:
 				return fn(*args, **kwargs)

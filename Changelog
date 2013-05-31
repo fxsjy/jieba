@@ -1,3 +1,9 @@
+2013-05-02: version 0.28.4
+==========================
+1) 修正了一些badcase
+2) add wraps decorator, by @cloudaice
+3) unittest, by @cloudaice
+
 2013-05-02: version 0.28.3
 ==========================
 1) 修正了临时cache文件生成在pypy解析器下出错的问题

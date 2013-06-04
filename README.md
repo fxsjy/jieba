@@ -185,7 +185,7 @@ jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一�
  
 Change Log
 ==========
-http://www.oschina.net/p/jieba/news#list
+https://github.com/fxsjy/jieba/blob/master/Changelog
 
 jieba
 ========

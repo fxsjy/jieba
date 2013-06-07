@@ -1,4 +1,9 @@
-2013-05-02: version 0.28.4
+2013-06-07: version 0.29
+==========================
+1) 提升了finalseg子模块命名体识别的准确度
+2) 修正了一些badcase
+
+2013-06-01: version 0.28.4
 ==========================
 1) 修正了一些badcase
 2) add wraps decorator, by @cloudaice

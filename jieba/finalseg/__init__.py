@@ -13,7 +13,7 @@ def load_model(f_name):
 prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
 prob_emit = load_model("prob_emit.py")
-
+char_states = load_model("char_states.py")
 
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
@@ -25,13 +25,15 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 	for t in range(1,len(obs)):
 		V.append({})
 		newpath = {}
-		for y in states:
-			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in states ])
+		cur_states = char_states.get(obs[t],states)
+		prev_states = V[t-1].keys()
+		for y in cur_states:
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in prev_states ])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath
 	
-	(prob, state) = max([(V[len(obs) - 1][y], y) for y in ('E','S')])
+	(prob, state) = max([(V[len(obs) - 1].get(y,MIN_FLOAT), y) for y in ('E','S')])
 	
 	return (prob, path[state])
 

@@ -11,6 +11,7 @@ import marshal
 from math import log
 import random
 import threading
+from functools import wraps
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -45,8 +46,12 @@ def gen_trie(f_name):
 				raise e
 	return trie, lfreq,ltotal
 
-def initialize(dictionary=DICTIONARY):
+def initialize(*args):
 	global trie, FREQ, total, min_freq, initialized
+	if len(args)==0:
+		dictionary = DICTIONARY
+	else:
+		dictionary = args[0]
 	with DICT_LOCK:
 		if initialized:
 			return
@@ -78,7 +83,8 @@ def initialize(dictionary=DICTIONARY):
 			min_freq = min(FREQ.values())
 			print("dumping model to file cache " + cache_file, file=sys.stderr)
 			tmp_suffix = "."+str(random.random())
-			marshal.dump((trie,FREQ,total,min_freq),open(cache_file+tmp_suffix,'wb'))
+			with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
+				marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
 			if os.name=='nt':
 				import shutil
 				replace_file = shutil.move
@@ -94,7 +100,8 @@ def initialize(dictionary=DICTIONARY):
 
 def require_initialized(fn):
 		global initialized,DICTIONARY
-
+		
+		@wraps(fn)
 		def wrapped(*args, **kwargs):
 			if initialized:
 				return fn(*args, **kwargs)
@@ -171,9 +178,13 @@ def __cut_DAG(sentence):
 					yield buf
 					buf=''
 				else:
-					regognized = finalseg.cut(buf)
-					for t in regognized:
-						yield t
+					if not (buf in FREQ):
+						regognized = finalseg.cut(buf)
+						for t in regognized:
+							yield t
+					else:
+						for elem in buf:
+							yield elem
 					buf=''
 			yield l_word		
 		x =y
@@ -182,14 +193,19 @@ def __cut_DAG(sentence):
 		if len(buf)==1:
 			yield buf
 		else:
-			regognized = finalseg.cut(buf)
-			for t in regognized:
-				yield t
+			if not (buf in FREQ):
+				regognized = finalseg.cut(buf)
+				for t in regognized:
+					yield t
+			else:
+				for elem in buf:
+					yield elem
+
 def cut(sentence,cut_all=False):
 	if( type(sentence) is bytes):
 		try:
 			sentence = sentence.decode('utf-8')
-		except:
+		except UnicodeDecodeError:
 			sentence = sentence.decode('gbk','ignore')
 
 	re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\s+)")

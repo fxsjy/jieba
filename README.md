@@ -21,6 +21,9 @@ http://jiebademo.ap01.aws.af.cm/
 
 (Powered by Appfog)
 
+网站代码：https://github.com/fxsjy/jiebademo
+
+
 
 Python 2.x 下的安装
 ===================

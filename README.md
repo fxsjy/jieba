@@ -4,6 +4,12 @@ jieba
 "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
 - _Scroll down for English documentation._
 
+
+News
+========
+支持国产开源软件，为结巴分词投一票，谢谢:-), 投票地址： https://code.csdn.net/2013ossurvey
+
+
 Feature
 ========
 * 支持三种分词模式：
@@ -13,6 +19,7 @@ Feature
 
 * 支持繁体分词
 * 支持自定义词典
+
 
 
 在线演示

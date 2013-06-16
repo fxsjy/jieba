@@ -15,6 +15,12 @@ prob_trans = load_model("prob_trans.py")
 prob_emit = load_model("prob_emit.py")
 
 
+PrevStatus = {
+	'B':('E','S'),
+	'M':('M','B'),
+	'S':('S','E'),
+	'E':('B','M')
+}
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
 	V = [{}] #tabular
@@ -26,7 +32,8 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 		V.append({})
 		newpath = {}
 		for y in states:
-			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in states ])
+			em_p = emit_p[y].get(obs[t],MIN_FLOAT)
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + em_p ,y0) for y0 in PrevStatus[y] ])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath

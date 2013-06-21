@@ -312,7 +312,7 @@ def enable_parallel(processnum):
 
 def disable_parallel():
 	global pool,cut,cut_for_search
-	if pool != None:
+	if 'pool' in globals():
 		pool.close()
 		pool = None
 	cut = __ref_cut

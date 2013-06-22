@@ -221,15 +221,11 @@ def cut(sentence,cut_all=False):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if re_skip.match(x):
-					if x.strip(' ')!='':
-						yield x
+				if not cut_all:
+					for xx in x:
+						yield xx
 				else:
-					if not cut_all:
-						for xx in x:
-							yield xx
-					else:
-						yield x
+					yield x
 
 def cut_for_search(sentence):
 	words = cut(sentence)

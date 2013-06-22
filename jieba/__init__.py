@@ -221,7 +221,9 @@ def cut(sentence,cut_all=False):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				if not cut_all:
+				if re_skip.match(x):
+					yield x
+				elif not cut_all:
 					for xx in x:
 						yield xx
 				else:

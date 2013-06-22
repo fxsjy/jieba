@@ -141,13 +141,16 @@ def __cut_internal(sentence):
 		else:
 			tmp = re_skip.split(blk)
 			for x in tmp:
-				for xx in x:
-					if re_num.match(xx):
-						yield pair(xx,'m')
-					elif re_eng.match(x):
-						yield pair(xx,'eng')
-					else:
-						yield pair(xx,'x')
+				if re_skip.match(x):
+					yield pair(x,'')
+				else:
+					for xx in x:
+						if re_num.match(xx):
+							yield pair(xx,'m')
+						elif re_eng.match(x):
+							yield pair(xx,'eng')
+						else:
+							yield pair(xx,'x')
 
 def __lcut_internal(sentence):
 	return list(__cut_internal(sentence))

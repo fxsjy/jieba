@@ -226,14 +226,12 @@ def cut(sentence,cut_all=False):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					if x.strip(' ')!='':
-						yield x
+					yield x
+				elif not cut_all:
+					for xx in x:
+						yield xx
 				else:
-					if not cut_all:
-						for xx in x:
-							yield xx
-					else:
-						yield x
+					yield x
 
 def cut_for_search(sentence):
 	words = cut(sentence)
@@ -316,7 +314,7 @@ def enable_parallel(processnum):
 
 def disable_parallel():
 	global pool,cut,cut_for_search
-	if pool != None:
+	if 'pool' in globals():
 		pool.close()
 		pool = None
 	cut = __ref_cut
@@ -330,3 +328,8 @@ def set_dictionary(dictionary_path):
 			raise Exception("path does not exists:" + abs_path)
 		DICTIONARY = abs_path
 		initialized = False
+
+def get_abs_path_dict():
+	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+	abs_path = os.path.join(_curpath,DICTIONARY)
+	return abs_path

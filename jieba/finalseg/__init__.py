@@ -1,20 +1,18 @@
 import re
 import os
 from math import log
+from . import prob_start
+from . import prob_trans
+from . import prob_emit
 
 MIN_FLOAT=-3.14e100
 
-def load_model(f_name):
-	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
-	prob_p_path = os.path.join(_curpath,f_name)
-	tab = eval(open(prob_p_path,"rb").read())
-	return tab
-
-prob_start = load_model("prob_start.py")
-prob_trans = load_model("prob_trans.py")
-prob_emit = load_model("prob_emit.py")
-
-
+PrevStatus = {
+	'B':('E','S'),
+	'M':('M','B'),
+	'S':('S','E'),
+	'E':('B','M')
+}
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
 	V = [{}] #tabular
@@ -26,7 +24,8 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 		V.append({})
 		newpath = {}
 		for y in states:
-			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in states ])
+			em_p = emit_p[y].get(obs[t],MIN_FLOAT)
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + em_p ,y0) for y0 in PrevStatus[y] ])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath
@@ -37,7 +36,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 
 
 def __cut(sentence):
-	prob, pos_list =  viterbi(sentence,('B','M','E','S'), prob_start, prob_trans, prob_emit)
+	prob, pos_list =  viterbi(sentence,('B','M','E','S'), prob_start.P, prob_trans.P, prob_emit.P)
 	begin, next = 0,0
 	#print pos_list, sentence
 	for i,char in enumerate(sentence):

@@ -1,6 +1,7 @@
 #-*-coding: utf-8 -*-
 import sys
 sys.path.append("../")
+from imp import reload
 import unittest
 import types
 import jieba
@@ -108,8 +109,8 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, types.GeneratorType), "Test DefaultCut Generator error"
             result = list(result)
             assert isinstance(result, list), "Test DefaultCut error on content: %s" % content
-            print >> sys.stderr, " , ".join(result)
-        print  >> sys.stderr, "testDefaultCut"
+            print(" , ".join(result),file=sys.stderr)
+        print("testDefaultCut",file=sys.stderr)
 
     def testCutAll(self):
         for content in test_contents:
@@ -117,8 +118,8 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, types.GeneratorType), "Test CutAll Generator error"
             result = list(result)
             assert isinstance(result, list), "Test CutAll error on content: %s" % content
-            print >> sys.stderr, " , ".join(result)
-        print  >> sys.stderr, "testCutAll"
+            print(" , ".join(result), file=sys.stderr)
+        print("testCutAll",file=sys.stderr)
 
     def testSetDictionary(self):
         jieba.set_dictionary("foobar.txt")
@@ -127,8 +128,8 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, types.GeneratorType), "Test SetDictionary Generator error"
             result = list(result)
             assert isinstance(result, list), "Test SetDictionary error on content: %s" % content
-            print >> sys.stderr, " , ".join(result)
-        print  >> sys.stderr, "testSetDictionary"
+            print(" , ".join(result), file=sys.stderr)
+        print("testSetDictionary",file=sys.stderr)
 
     def testCutForSearch(self):
         for content in test_contents:
@@ -136,8 +137,8 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, types.GeneratorType), "Test CutForSearch Generator error"
             result = list(result)
             assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
-            print >> sys.stderr, " , ".join(result)
-        print  >> sys.stderr, "testCutForSearch"
+            print(" , ".join(result), file=sys.stderr)
+        print("testCutForSearch",file=sys.stderr)
 
     def testPosseg(self):
         import jieba.posseg as pseg
@@ -146,8 +147,8 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, types.GeneratorType), "Test Posseg Generator error"
             result = list(result)
             assert isinstance(result, list), "Test Posseg error on content: %s" % content
-            print >> sys.stderr, " , ".join([w.word + " / " + w.flag for w in result])
-        print  >> sys.stderr, "testPosseg"
+            print(" , ".join([w.word + " / " + w.flag for w in result]),file=sys.stderr)
+        print("testPosseg",file=sys.stderr)
 
 if __name__ == "__main__":
     unittest.main()

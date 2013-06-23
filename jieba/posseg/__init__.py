@@ -17,14 +17,14 @@ def load_model(f_name):
 		return eval(open(prob_p_path,"rb").read())
 	else:
 		result = {}
-		for line in open(prob_p_path,"rb"):
+		for line in open(f_name,"rb"):
 			line = line.strip()
 			if line=="":continue
 			word, _, tag = line.split(' ')
 			result[word.decode('utf-8')]=tag
 		return result
 
-word_tag_tab = load_model("../dict.txt")
+word_tag_tab = load_model(jieba.get_abs_path_dict())
 
 if jieba.user_word_tag_tab:
 	word_tag_tab.update(jieba.user_word_tag_tab)
@@ -142,7 +142,7 @@ def __cut_internal(sentence):
 			tmp = re_skip.split(blk)
 			for x in tmp:
 				if re_skip.match(x):
-					yield pair(x,'')
+					yield pair(x,'x')
 				else:
 					for xx in x:
 						if re_num.match(xx):

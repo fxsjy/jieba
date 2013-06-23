@@ -324,3 +324,8 @@ def set_dictionary(dictionary_path):
 			raise Exception("path does not exists:" + abs_path)
 		DICTIONARY = abs_path
 		initialized = False
+
+def get_abs_path_dict():
+	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+	abs_path = os.path.join(_curpath,DICTIONARY)
+	return abs_path

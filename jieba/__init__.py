@@ -82,16 +82,20 @@ def initialize(*args):
             FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.items()]) #normalize
             min_freq = min(FREQ.values())
             print("dumping model to file cache " + cache_file, file=sys.stderr)
-            tmp_suffix = "."+str(random.random())
-            with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
-                marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
-            if os.name=='nt':
-                import shutil
-                replace_file = shutil.move
-            else:
-                replace_file = os.rename
-            replace_file(cache_file+tmp_suffix,cache_file)
-
+            try:
+                tmp_suffix = "."+str(random.random())
+                with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
+                    marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
+                if os.name=='nt':
+                    import shutil
+                    replace_file = shutil.move
+                else:
+                    replace_file = os.rename
+                replace_file(cache_file+tmp_suffix,cache_file)
+            except:
+                import traceback
+                print("dump cache file failed.",file=sys.stderr)
+                print(traceback.format_exc(),file=sys.stderr)
         initialized = True
 
         print("loading model cost ", time.time() - t1, "seconds.",file=sys.stderr)
@@ -263,15 +267,22 @@ def load_userdict(f):
         if line_no==1:
             word = word.replace('\ufeff',"") #remove bom flag if it exists
         if len(tup)==3:
-            user_word_tag_tab[word]=tup[2].strip()
-        freq = float(freq)
-        FREQ[word] = log(freq / total)
-        p = trie
-        for c in word:
-            if not c in p:
-                p[c] ={}
-            p = p[c]
-        p['']='' #ending flag
+            add_word(word, freq, tup[2])
+        else:
+            add_word(word, freq)
+
+def add_word(word, freq, tag=None):
+    global FREQ, trie, total, user_word_tag_tab
+    freq = float(freq)
+    FREQ[word] = log(freq / total)
+    if tag is not None:
+        user_word_tag_tab[word] = tag.strip()
+    p = trie
+    for c in word:
+        if not c in p:
+            p[c] = {}
+        p = p[c]
+    p[''] = ''                  # ending flag
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
@@ -333,3 +344,29 @@ def get_abs_path_dict():
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
     abs_path = os.path.join(_curpath,DICTIONARY)
     return abs_path
+
+def tokenize(unicode_sentence,mode="default"):
+    #mode ("default" or "search")
+    if not isinstance(unicode_sentence, str):
+        raise Exception("jieba: the input parameter should  string.")
+    start = 0 
+    if mode=='default':
+        for w in cut(unicode_sentence):
+            width = len(w)
+            yield (w,start,start+width)
+            start+=width
+    else:
+        for w in cut(unicode_sentence):
+            width = len(w)
+            if len(w)>2:
+                for i in range(len(w)-1):
+                    gram2 = w[i:i+2]
+                    if gram2 in FREQ:
+                        yield (gram2,start+i,start+i+2)
+            if len(w)>3:
+                for i in range(len(w)-2):
+                    gram3 = w[i:i+3]
+                    if gram3 in FREQ:
+                        yield (gram3,start+i,start+i+3)
+            yield (w,start,start+width)
+            start+=width

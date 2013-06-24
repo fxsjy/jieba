@@ -15,40 +15,40 @@ ix = create_in("tmp", schema) # for create new index
 writer = ix.writer()
 
 writer.add_document(
-    title=u"document1", 
-    path=u"/a",
-    content=u"This is the first document we’ve added!"
+    title="document1", 
+    path="/a",
+    content="This is the first document we’ve added!"
 )
 
 writer.add_document(
-    title=u"document2", 
-    path=u"/b",
-    content=u"The second one 你 中文测试中文 is even more interesting! 吃水果"
+    title="document2", 
+    path="/b",
+    content="The second one 你 中文测试中文 is even more interesting! 吃水果"
 )
 
 writer.add_document(
-    title=u"document3", 
-    path=u"/c",
-    content=u"买水果然后来世博园。"
+    title="document3", 
+    path="/c",
+    content="买水果然后来世博园。"
 )
 
 writer.add_document(
-    title=u"document4", 
-    path=u"/c",
-    content=u"工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作"
+    title="document4", 
+    path="/c",
+    content="工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作"
 )
 
 writer.add_document(
-    title=u"document4", 
-    path=u"/c",
-    content=u"咱俩交换一下吧。"
+    title="document4", 
+    path="/c",
+    content="咱俩交换一下吧。"
 )
 
 writer.commit()
 searcher = ix.searcher()
 parser = QueryParser("content", schema=ix.schema)
 
-for keyword in (u"水果世博园",u"你",u"first",u"中文",u"交换机",u"交换"):
+for keyword in ("水果世博园","你","first","中文","交换机","交换"):
     print "result of ",keyword
     q = parser.parse(keyword)
     results = searcher.search(q)
@@ -56,5 +56,5 @@ for keyword in (u"水果世博园",u"你",u"first",u"中文",u"交换机",u"交�
         print hit.highlights("content")
     print "="*10
 
-for t in analyzer(u"我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream."):
+for t in analyzer("我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream."):
     print t.text

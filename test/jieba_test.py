@@ -150,5 +150,15 @@ class JiebaTestCase(unittest.TestCase):
             print(" , ".join([w.word + " / " + w.flag for w in result]),file=sys.stderr)
         print("testPosseg",file=sys.stderr)
 
+    def testTokenize(self):
+        for content in test_contents:
+            result = jieba.tokenize(content)
+            assert isinstance(result, types.GeneratorType), "Test Tokenize Generator error"
+            result = list(result)
+            assert isinstance(result, list), "Test Tokenize error on content: %s" % content
+            for tk in result:
+                print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]), file=sys.stderr)
+        print("testTokenize",file=sys.stderr)
+
 if __name__ == "__main__":
     unittest.main()

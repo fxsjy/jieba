@@ -5,11 +5,6 @@ jieba
 - _Scroll down for English documentation._
 
 
-News
-========
-支持国产开源软件，为结巴分词投一票，谢谢:-), 投票地址： https://code.csdn.net/2013ossurvey
-
-
 Feature
 ========
 * 支持三种分词模式：

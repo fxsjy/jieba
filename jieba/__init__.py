@@ -288,7 +288,7 @@ def __lcut_for_search(sentence):
 def enable_parallel(processnum):
 	global pool,cut,cut_for_search
 	if os.name=='nt':
-		raise Exception("parallel mode only supports posix system")
+		raise Exception("jieba: parallel mode only supports posix system")
 
 	from multiprocessing import Pool
 	pool = Pool(processnum)
@@ -326,7 +326,7 @@ def set_dictionary(dictionary_path):
 	with DICT_LOCK:
 		abs_path = os.path.normpath( os.path.join( os.getcwd(), dictionary_path )  )
 		if not os.path.exists(abs_path):
-			raise Exception("path does not exists:" + abs_path)
+			raise Exception("jieba: path does not exists:" + abs_path)
 		DICTIONARY = abs_path
 		initialized = False
 
@@ -334,3 +334,12 @@ def get_abs_path_dict():
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 	abs_path = os.path.join(_curpath,DICTIONARY)
 	return abs_path
+
+def tokenize(unicode_sentence):
+	if not isinstance(unicode_sentence, unicode):
+		raise Exception("jieba: the input parameter should  unicode.")
+	start = 0 
+	for w in cut(unicode_sentence):
+		width = len(w)
+		yield (w,start,start+width)
+		start+=width

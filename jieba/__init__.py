@@ -81,15 +81,20 @@ def initialize(*args):
 			FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
 			min_freq = min(FREQ.itervalues())
 			print >> sys.stderr, "dumping model to file cache " + cache_file
-			tmp_suffix = "."+str(random.random())
-			with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
-				marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
-			if os.name=='nt':
-				import shutil
-				replace_file = shutil.move
-			else:
-				replace_file = os.rename
-			replace_file(cache_file+tmp_suffix,cache_file)
+			try:
+				tmp_suffix = "."+str(random.random())
+				with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
+					marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
+				if os.name=='nt':
+					import shutil
+					replace_file = shutil.move
+				else:
+					replace_file = os.rename
+				replace_file(cache_file+tmp_suffix,cache_file)
+			except:
+				print >> sys.stderr, "dump cache file failed."
+				import traceback
+				print >> sys.stderr, traceback.format_exc()
 
 		initialized = True
 

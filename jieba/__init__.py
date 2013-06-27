@@ -119,12 +119,12 @@ def __cut_all(sentence):
     old_j = -1
     for k,L in dag.iteritems():
         if len(L)==1 and k>old_j:
-            yield sentence[k:L[0]+1]
+            yield (sentence[k:L[0]+1], k, L[0] + 1)
             old_j = L[0] 
         else:
             for j in L:
                 if j>k:
-                    yield sentence[k:j+1]
+                    yield (sentence[k:j+1], k, j+1)
                     old_j = j
 
 
@@ -213,41 +213,57 @@ def cut(sentence,cut_all=False):
             sentence = sentence.decode('gbk','ignore')
     re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(ur"(\s+)")
     if cut_all:
-        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
+        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"([^a-zA-Z0-9+#\n]+)")
     blocks = re_han.split(sentence)
     cut_block = __cut_DAG
+    offset = 0
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
         if re_han.match(blk):
-            #pprint.pprint(__cut_DAG(blk))
-            for word in cut_block(blk):
-                yield word
+            if cut_all:
+                for (word, s, e) in cut_block(blk):
+                    yield (word, offset+s, offset+e)
+                offset += len(blk)
+            else:
+                for word in cut_block(blk):
+                    width = len(word)
+                    yield (word, offset, offset+width)
+                    offset += width
         else:
             tmp = re_skip.split(blk)
             for x in tmp:
+                if len(x) < 1:
+                    continue
                 if re_skip.match(x):
-                    yield x
+                    width = len(x)
+                    yield (x, offset, offset+width)
+                    offset += width
                 elif not cut_all:
                     for xx in x:
-                        yield xx
+                        width = len(xx)
+                        yield (xx, offset, offset+width)
+                        offset += width
                 else:
-                    yield x
+                    width = len(x)
+                    yield (x, offset, offset+width)
+                    offset += width
+
 
 def cut_for_search(sentence):
     words = cut(sentence)
-    for w in words:
+    for (w, start, end) in words:
         if len(w)>2:
             for i in xrange(len(w)-1):
                 gram2 = w[i:i+2]
                 if gram2 in FREQ:
-                    yield gram2
+                    yield (gram2, start+i, start+i+2)
         if len(w)>3:
             for i in xrange(len(w)-2):
                 gram3 = w[i:i+3]
                 if gram3 in FREQ:
-                    yield gram3
-        yield w
+                    yield (gram3, start+i, start+i+3)
+        yield (w, start, end)
 
 @require_initialized
 def load_userdict(f):
@@ -335,11 +351,11 @@ def get_abs_path_dict():
     abs_path = os.path.join(_curpath,DICTIONARY)
     return abs_path
 
-def tokenize(unicode_sentence):
-    if not isinstance(unicode_sentence, unicode):
-        raise Exception("jieba: the input parameter should  unicode.")
-    start = 0 
-    for w in cut(unicode_sentence):
-        width = len(w)
-        yield (w,start,start+width)
-        start+=width
+# def tokenize(unicode_sentence):
+#     if not isinstance(unicode_sentence, unicode):
+#         raise Exception("jieba: the input parameter should  unicode.")
+#     start = 0 
+#     for w in cut(unicode_sentence):
+#         width = len(w)
+#         yield (w,start,start+width)
+#         start+=width

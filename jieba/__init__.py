@@ -335,11 +335,29 @@ def get_abs_path_dict():
 	abs_path = os.path.join(_curpath,DICTIONARY)
 	return abs_path
 
-def tokenize(unicode_sentence):
+def tokenize(unicode_sentence,mode="default"):
+	#mode ("default" or "search")
 	if not isinstance(unicode_sentence, unicode):
 		raise Exception("jieba: the input parameter should  unicode.")
 	start = 0 
-	for w in cut(unicode_sentence):
-		width = len(w)
-		yield (w,start,start+width)
-		start+=width
+	if mode=='default':
+		for w in cut(unicode_sentence):
+			width = len(w)
+			yield (w,start,start+width)
+			start+=width
+	else:
+		for w in cut(unicode_sentence):
+			width = len(w)
+			if len(w)>2:
+				for i in xrange(len(w)-1):
+					gram2 = w[i:i+2]
+					if gram2 in FREQ:
+						yield (gram2,start+i,start+i+2)
+			if len(w)>3:
+				for i in xrange(len(w)-2):
+					gram3 = w[i:i+3]
+					if gram3 in FREQ:
+						yield (gram3,start+i,start+i+3)
+			yield (w,start,start+width)
+			start+=width
+

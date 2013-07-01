@@ -146,10 +146,11 @@ Output:
 
 功能 5) : Tokenize：返回词语在原文的起始位置
 ============================================
+* 注意，输入参数只接受unicode
 * 默认模式
 
 ```python
-result = jieba.tokenize('永和服装饰品有限公司')
+result = jieba.tokenize(u'永和服装饰品有限公司')
 for tk in result:
     print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
 ```
@@ -165,7 +166,7 @@ word 有限公司            start: 6                end:10
 * 搜索模式
 
 ```python
-result = jieba.tokenize('永和服装饰品有限公司',mode='search')
+result = jieba.tokenize(u'永和服装饰品有限公司',mode='search')
 for tk in result:
     print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
 ```

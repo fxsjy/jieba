@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 import sys
 sys.path.append("../")
-from whoosh.index import create_in
+from whoosh.index import create_in,open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 
@@ -10,7 +10,8 @@ from jieba.analyse import ChineseAnalyzer
 analyzer = ChineseAnalyzer()
 
 schema = Schema(title=TEXT(stored=True), path=ID(stored=True), content=TEXT(stored=True, analyzer=analyzer))
-ix = create_in("tmp", schema)
+ix = create_in("tmp", schema) # for create new index
+#ix = open_dir("tmp") # for read only
 writer = ix.writer()
 
 writer.add_document(

@@ -143,6 +143,49 @@ Output:
 
 * 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
 
+
+功能 5) : Tokenize：返回词语在原文的起始位置
+============================================
+* 默认模式
+
+```python
+result = jieba.tokenize('永和服装饰品有限公司')
+for tk in result:
+    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
+```
+
+```
+word 永和                start: 0                end:2
+word 服装                start: 2                end:4
+word 饰品                start: 4                end:6
+word 有限公司            start: 6                end:10
+
+```
+
+* 搜索模式
+
+```python
+result = jieba.tokenize('永和服装饰品有限公司',mode='search')
+for tk in result:
+    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
+```
+
+```
+word 永和                start: 0                end:2
+word 服装                start: 2                end:4
+word 饰品                start: 4                end:6
+word 有限                start: 6                end:8
+word 公司                start: 8                end:10
+word 有限公司            start: 6                end:10
+```
+  
+  
+功能 6) : ChineseAnalyzer for Whoosh搜索引擎
+============================================
+* 引用： `from jieba.analyse import ChineseAnalyzer `
+* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
+
+
 其他词典
 ========
 1. 占用内存较小的词典文件

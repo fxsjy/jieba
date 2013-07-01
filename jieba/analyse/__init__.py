@@ -1,5 +1,6 @@
 import jieba
 import os
+from analyzer import ChineseAnalyzer
 
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 f_name = os.path.join(_curpath,"idf.txt")

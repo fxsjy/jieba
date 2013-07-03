@@ -264,15 +264,22 @@ def load_userdict(f):
         if line_no==1:
             word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
         if len(tup)==3:
-            user_word_tag_tab[word]=tup[2].strip()
-        freq = float(freq)
-        FREQ[word] = log(freq / total)
-        p = trie
-        for c in word:
-            if not c in p:
-                p[c] ={}
-            p = p[c]
-        p['']='' #ending flag
+            add_word(word, freq, tup[2])
+        else:
+            add_word(word, freq)
+
+def add_word(word, freq, tag=None):
+    global FREQ, trie, total, user_word_tag_tab
+    freq = float(freq)
+    FREQ[word] = log(freq / total)
+    if tag is not None:
+        user_word_tag_tab[word] = tag.strip()
+    p = trie
+    for c in word:
+        if not c in p:
+            p[c] = {}
+        p = p[c]
+    p[''] = ''                  # ending flag
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search

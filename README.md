@@ -144,7 +144,7 @@ Output:
 * 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
 
 
-功能 5) : Tokenize：返回词语在原文的起始位置
+功能 6) : Tokenize：返回词语在原文的起始位置
 ============================================
 * 注意，输入参数只接受unicode
 * 默认模式
@@ -181,7 +181,7 @@ word 有限公司            start: 6                end:10
 ```
   
   
-功能 6) : ChineseAnalyzer for Whoosh搜索引擎
+功能 7) : ChineseAnalyzer for Whoosh搜索引擎
 ============================================
 * 引用： `from jieba.analyse import ChineseAnalyzer `
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py

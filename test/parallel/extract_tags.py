@@ -14,15 +14,15 @@ opt, args = parser.parse_args()
 
 
 if len(args) <1:
-	print USAGE
-	sys.exit(1)
+    print USAGE
+    sys.exit(1)
 
 file_name = args[0]
 
 if opt.topK==None:
-	topK=10
+    topK=10
 else:
-	topK = int(opt.topK)
+    topK = int(opt.topK)
 
 
 content = open(file_name,'rb').read()

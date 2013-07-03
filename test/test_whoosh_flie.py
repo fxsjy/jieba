@@ -16,23 +16,23 @@ writer = ix.writer()
 file_name = sys.argv[1]
 
 with open(file_name,"rb") as inf:
-	i=0
-	for line in inf:
-		i+=1
-		writer.add_document(
-			title=u"line"+str(i), 
-			path=u"/a",
-			content=line.decode('gbk','ignore')
-		)
+    i=0
+    for line in inf:
+        i+=1
+        writer.add_document(
+            title=u"line"+str(i), 
+            path=u"/a",
+            content=line.decode('gbk','ignore')
+        )
 writer.commit()
 
 searcher = ix.searcher()
 parser = QueryParser("content", schema=ix.schema)
 
 for keyword in (u"水果小姐",u"你",u"first",u"中文",u"交换机",u"交换"):
-	print "result of ",keyword
-	q = parser.parse(keyword)
-	results = searcher.search(q)
-	for hit in results:  
-	    print hit.highlights("content")
-	print "="*10
+    print "result of ",keyword
+    q = parser.parse(keyword)
+    results = searcher.search(q)
+    for hit in results:  
+        print hit.highlights("content")
+    print "="*10

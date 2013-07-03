@@ -13,8 +13,8 @@ opt, args = parser.parse_args()
 
 
 if len(args) <1:
-	print(USAGE)
-	sys.exit(1)
+    print(USAGE)
+    sys.exit(1)
 
 file_name = args[0]
 

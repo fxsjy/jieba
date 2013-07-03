@@ -14,6 +14,6 @@ tm_cost = t2-t1
 
 log_f = open("1.log","wb")
 for w in words:
-	log_f.write(w.encode("utf-8"))
+    log_f.write(w.encode("utf-8"))
 print('speed' , len(content)/tm_cost, " bytes/second")
 

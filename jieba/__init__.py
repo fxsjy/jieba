@@ -1,8 +1,7 @@
 from __future__ import with_statement
 import re
-import math
-import os,sys
-import pprint
+import os
+import sys
 import finalseg
 import time
 import tempfile

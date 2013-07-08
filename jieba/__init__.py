@@ -102,16 +102,18 @@ def initialize(*args):
 
 
 def require_initialized(fn):
-        global initialized,DICTIONARY
-        
-        @wraps(fn)
-        def wrapped(*args, **kwargs):
-            if initialized:
-                return fn(*args, **kwargs)
-            else:
-                initialize(DICTIONARY)
-                return fn(*args, **kwargs)
-        return wrapped
+    global initialized,DICTIONARY
+
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        if initialized:
+            return fn(*args, **kwargs)
+        else:
+            initialize(DICTIONARY)
+            return fn(*args, **kwargs)
+
+    return wrapped
+
 
 def __cut_all(sentence):
     dag = get_DAG(sentence)

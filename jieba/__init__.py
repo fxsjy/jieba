@@ -1,8 +1,7 @@
 from __future__ import with_statement
 import re
-import math
-import os,sys
-import pprint
+import os
+import sys
 import finalseg
 import time
 import tempfile
@@ -103,16 +102,18 @@ def initialize(*args):
 
 
 def require_initialized(fn):
-        global initialized,DICTIONARY
-        
-        @wraps(fn)
-        def wrapped(*args, **kwargs):
-            if initialized:
-                return fn(*args, **kwargs)
-            else:
-                initialize(DICTIONARY)
-                return fn(*args, **kwargs)
-        return wrapped
+    global initialized,DICTIONARY
+
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        if initialized:
+            return fn(*args, **kwargs)
+        else:
+            initialize(DICTIONARY)
+            return fn(*args, **kwargs)
+
+    return wrapped
+
 
 def __cut_all(sentence):
     dag = get_DAG(sentence)
@@ -211,18 +212,18 @@ def cut(sentence,cut_all=False):
             sentence = sentence.decode('utf-8')
         except UnicodeDecodeError:
             sentence = sentence.decode('gbk','ignore')
-    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(ur"(\s+)")
+    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\s+)", re.U)
     if cut_all:
-        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"[^a-zA-Z0-9+#\n]")
+        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
     blocks = re_han.split(sentence)
     cut_block = __cut_DAG
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
         if re_han.match(blk):
-                #pprint.pprint(__cut_DAG(blk))
-                for word in cut_block(blk):
-                    yield word
+            #pprint.pprint(__cut_DAG(blk))
+            for word in cut_block(blk):
+                yield word
         else:
             tmp = re_skip.split(blk)
             for x in tmp:

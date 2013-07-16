@@ -162,4 +162,5 @@ pip-log.txt
 # Mac crap
 .DS_Store
 *.log
+test/tmp/*
 

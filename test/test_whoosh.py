@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import sys
+import sys,os
 sys.path.append("../")
 from whoosh.index import create_in,open_dir
 from whoosh.fields import *
@@ -10,6 +10,9 @@ from jieba.analyse.analyzer import ChineseAnalyzer
 analyzer = ChineseAnalyzer()
 
 schema = Schema(title=TEXT(stored=True), path=ID(stored=True), content=TEXT(stored=True, analyzer=analyzer))
+if not os.path.exists("tmp"):
+    os.mkdir("tmp")
+
 ix = create_in("tmp", schema) # for create new index
 #ix = open_dir("tmp", schema=schema) # for read only
 writer = ix.writer()

@@ -135,7 +135,7 @@ def __cut_internal(sentence):
         except:
             sentence = sentence.decode('gbk','ignore')
 
-    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\s+)")
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\r\n|\s)")
     re_eng,re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
 
     blocks = re_han.split(sentence)

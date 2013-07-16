@@ -2,7 +2,7 @@
 import sys
 import os
 sys.path.append("../")
-from whoosh.index import create_in
+from whoosh.index import create_in,open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 
@@ -13,26 +13,12 @@ analyzer = ChineseAnalyzer()
 schema = Schema(title=TEXT(stored=True), path=ID(stored=True), content=TEXT(stored=True, analyzer=analyzer))
 if not os.path.exists("tmp"):
     os.mkdir("tmp")
-ix = create_in("tmp", schema)
-writer = ix.writer()
-
-file_name = sys.argv[1]
-
-with open(file_name,"rb") as inf:
-    i=0
-    for line in inf:
-        i+=1
-        writer.add_document(
-            title=u"line"+str(i), 
-            path=u"/a",
-            content=line.decode('gbk','ignore')
-        )
-writer.commit()
+ix = open_dir("tmp")
 
 searcher = ix.searcher()
 parser = QueryParser("content", schema=ix.schema)
 
-for keyword in (u"水果小姐",u"你",u"first",u"中文",u"交换机",u"交换"):
+for keyword in (u"水果小姐",u"你",u"first",u"中文",u"交换机",u"交换",u"少林",u"乔峰"):
     print "result of ",keyword
     q = parser.parse(keyword)
     results = searcher.search(q)

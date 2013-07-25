@@ -12,7 +12,7 @@ PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
 
-def load_model(f_name):
+def load_model(f_name,isJython=True):
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
     result = {}
@@ -23,6 +23,8 @@ def load_model(f_name):
             word, _, tag = line.split(' ')
             result[word.decode('utf-8')]=tag
     f.closed
+    if not isJython:
+        return result
     
     start_p = {}
     abs_path = os.path.join(_curpath, PROB_START_P)
@@ -50,7 +52,12 @@ def load_model(f_name):
 
     return state, start_p, trans_p, emit_p, result
 
-char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
+if sys.platform.startswith("java"):
+    char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
+else:
+    import char_state_tab, prob_start, prob_trans, prob_emit
+    char_state_tab_P, start_P, trans_P, emit_P = char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P
+    word_tag_tab = load_model(jieba.get_abs_path_dict(),isJython=False)
 
 if jieba.user_word_tag_tab:
     word_tag_tab.update(jieba.user_word_tag_tab)

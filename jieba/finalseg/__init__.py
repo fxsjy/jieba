@@ -1,6 +1,7 @@
 import re
 import os
 import marshal
+import sys
 
 MIN_FLOAT=-3.14e100
 
@@ -39,7 +40,11 @@ def load_model():
 
     return start_p, trans_p, emit_p
 
-start_P, trans_P, emit_P = load_model()    
+if sys.platform.startswith("java"):
+    start_P, trans_P, emit_P = load_model()    
+else:
+    import prob_start,prob_trans,prob_emit
+    start_P, trans_P, emit_P = prob_start.P, prob_trans.P, prob_emit.P
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular

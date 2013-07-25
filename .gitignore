@@ -164,3 +164,5 @@ pip-log.txt
 *.log
 test/tmp/*
 
+#jython
+*.class

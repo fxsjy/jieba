@@ -3,28 +3,54 @@ import os
 import viterbi
 import jieba
 import sys
-import prob_start
-import prob_trans
-import prob_emit
-import char_state_tab
+import marshal
 
 default_encoding = sys.getfilesystemencoding()
 
+PROB_START_P = "prob_start.p"
+PROB_TRANS_P = "prob_trans.p"
+PROB_EMIT_P = "prob_emit.p"
+CHAR_STATE_TAB_P = "char_state_tab.p"
+
 def load_model(f_name):
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
-    prob_p_path = os.path.join(_curpath,f_name)
-    if f_name.endswith(".py"):
-        return eval(open(prob_p_path,"rb").read())
-    else:
-        result = {}
+
+    result = {}
+    with file(f_name, "rb") as f:
         for line in open(f_name,"rb"):
             line = line.strip()
             if line=="":continue
             word, _, tag = line.split(' ')
             result[word.decode('utf-8')]=tag
-        return result
+    f.closed
+    
+    start_p = {}
+    abs_path = os.path.join(_curpath, PROB_START_P)
+    with open(abs_path, mode='rb') as f:
+        start_p = marshal.load(f)
+    f.closed
+    
+    trans_p = {}
+    abs_path = os.path.join(_curpath, PROB_TRANS_P)
+    with open(abs_path, 'rb') as f:
+        trans_p = marshal.load(f)
+    f.closed
+    
+    emit_p = {}
+    abs_path = os.path.join(_curpath, PROB_EMIT_P)
+    with file(abs_path, 'rb') as f:
+        emit_p = marshal.load(f)
+    f.closed
 
-word_tag_tab = load_model(jieba.get_abs_path_dict())
+    state = {}
+    abs_path = os.path.join(_curpath, CHAR_STATE_TAB_P)
+    with file(abs_path, 'rb') as f:
+        state = marshal.load(f)
+    f.closed
+
+    return state, start_p, trans_p, emit_p, result
+
+char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
 
 if jieba.user_word_tag_tab:
     word_tag_tab.update(jieba.user_word_tag_tab)
@@ -47,7 +73,7 @@ class pair(object):
         return self.__unicode__().encode(arg)
 
 def __cut(sentence):
-    prob, pos_list =  viterbi.viterbi(sentence,char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P)
+    prob, pos_list =  viterbi.viterbi(sentence,char_state_tab_P, start_P, trans_P, emit_P)
     begin, next = 0,0
 
     for i,char in enumerate(sentence):

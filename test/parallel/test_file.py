@@ -3,8 +3,8 @@ import sys,time
 import sys
 sys.path.append("../../")
 import jieba
-import multiprocessing
-jieba.enable_parallel(multiprocessing.cpu_count())
+
+jieba.enable_parallel()
 
 url = sys.argv[1]
 content = open(url,"rb").read()

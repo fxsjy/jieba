@@ -3,7 +3,8 @@ import sys,time
 import sys
 sys.path.append("../../")
 import jieba
-jieba.enable_parallel(4)
+
+jieba.enable_parallel()
 
 url = sys.argv[1]
 content = open(url,"rb").read()

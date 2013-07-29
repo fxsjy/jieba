@@ -295,8 +295,10 @@ def __lcut_all(sentence):
 def __lcut_for_search(sentence):
     return list(__ref_cut_for_search(sentence))
 
+import multiprocessing
+
 @require_initialized
-def enable_parallel(processnum):
+def enable_parallel(processnum=multiprocessing.cpu_count()):
     global pool,cut,cut_for_search
     if os.name=='nt':
         raise Exception("jieba: parallel mode only supports posix system")

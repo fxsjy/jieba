@@ -166,3 +166,5 @@ test/tmp/*
 
 #jython
 *.class
+
+MANIFEST

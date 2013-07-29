@@ -297,7 +297,7 @@ def __lcut_for_search(sentence):
 
 
 @require_initialized
-def enable_parallel(processnum):
+def enable_parallel(processnum=None):
     global pool,cut,cut_for_search
     if os.name=='nt':
         raise Exception("jieba: parallel mode only supports posix system")

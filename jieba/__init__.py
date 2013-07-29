@@ -301,7 +301,7 @@ def enable_parallel(processnum):
     global pool,cut,cut_for_search
     if os.name=='nt':
         raise Exception("jieba: parallel mode only supports posix system")
-    if sys.version_info.major==2 and sys.version_info.minor<6:
+    if sys.version_info[0]==2 and sys.version_info[1]<6:
         raise Exception("jieba: the parallel feature needs Python version>2.5 ")
     from multiprocessing import Pool,cpu_count
     if processnum==None:

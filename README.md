@@ -47,7 +47,7 @@ Python 3.x 下的安装
 结巴分词Java版本
 ================
 作者：piaolingxue
-地址：https://github.com/piaolingxue/jieba-analysis
+地址：https://github.com/huaban/jieba-analysis
 
 Algorithm
 ========

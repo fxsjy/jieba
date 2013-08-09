@@ -223,8 +223,9 @@ def cut(sentence,cut_all=False):
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
+        if len(blk)==0:
+            continue
         if re_han.match(blk):
-            #pprint.pprint(__cut_DAG(blk))
             for word in cut_block(blk):
                 yield word
         else:

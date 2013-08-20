@@ -38,7 +38,7 @@ def gen_trie(f_name):
                 ltotal+=freq
                 p = trie
                 for c in word:
-                    if not c in p:
+                    if c not in p:
                         p[c] ={}
                     p = p[c]
                 p['']='' #ending flag
@@ -150,7 +150,7 @@ def get_DAG(sentence):
         if c in p:
             p = p[c]
             if '' in p:
-                if not i in DAG:
+                if i not in DAG:
                     DAG[i]=[]
                 DAG[i].append(j)
             j+=1
@@ -163,7 +163,7 @@ def get_DAG(sentence):
             i+=1
             j=i
     for i in xrange(len(sentence)):
-        if not i in DAG:
+        if i not in DAG:
             DAG[i] =[i]
     return DAG
 
@@ -186,7 +186,7 @@ def __cut_DAG(sentence):
                     yield buf
                     buf=u''
                 else:
-                    if not (buf in FREQ):
+                    if (buf not in FREQ):
                         regognized = finalseg.cut(buf)
                         for t in regognized:
                             yield t
@@ -201,7 +201,7 @@ def __cut_DAG(sentence):
         if len(buf)==1:
             yield buf
         else:
-            if not (buf in FREQ):
+            if (buf not in FREQ):
                 regognized = finalseg.cut(buf)
                 for t in regognized:
                     yield t
@@ -281,7 +281,7 @@ def add_word(word, freq, tag=None):
         user_word_tag_tab[word] = tag.strip()
     p = trie
     for c in word:
-        if not c in p:
+        if c not in p:
             p[c] = {}
         p = p[c]
     p[''] = ''                  # ending flag

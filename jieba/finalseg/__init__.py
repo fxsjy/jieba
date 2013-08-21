@@ -25,13 +25,13 @@ def load_model():
     with open(abs_path, mode='rb') as f:
         start_p = marshal.load(f)
     f.closed
-    
+
     trans_p = {}
     abs_path = os.path.join(_curpath, PROB_TRANS_P)
     with open(abs_path, 'rb') as f:
         trans_p = marshal.load(f)
     f.closed
-    
+
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
     with file(abs_path, 'rb') as f:
@@ -41,7 +41,7 @@ def load_model():
     return start_p, trans_p, emit_p
 
 if sys.platform.startswith("java"):
-    start_P, trans_P, emit_P = load_model()    
+    start_P, trans_P, emit_P = load_model()
 else:
     import prob_start,prob_trans,prob_emit
     start_P, trans_P, emit_P = prob_start.P, prob_trans.P, prob_emit.P
@@ -61,9 +61,9 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
             V[t][y] =prob
             newpath[y] = path[state] + [y]
         path = newpath
-    
+
     (prob, state) = max([(V[len(obs) - 1][y], y) for y in ('E','S')])
-    
+
     return (prob, path[state])
 
 

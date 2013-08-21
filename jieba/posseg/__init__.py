@@ -26,19 +26,19 @@ def load_model(f_name,isJython=True):
     f.closed
     if not isJython:
         return result
-    
+
     start_p = {}
     abs_path = os.path.join(_curpath, PROB_START_P)
     with open(abs_path, mode='rb') as f:
         start_p = marshal.load(f)
     f.closed
-    
+
     trans_p = {}
     abs_path = os.path.join(_curpath, PROB_TRANS_P)
     with open(abs_path, 'rb') as f:
         trans_p = marshal.load(f)
     f.closed
-    
+
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
     with file(abs_path, 'rb') as f:
@@ -121,7 +121,7 @@ def __cut_detail(sentence):
 def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
     route ={}
-    
+
     jieba.calc(sentence,DAG,0,route=route)
 
     x = 0
@@ -138,7 +138,7 @@ def __cut_DAG(sentence):
                     yield pair(buf,word_tag_tab.get(buf,'x'))
                     buf=''
                 else:
-                    if not (buf in jieba.FREQ):
+                    if (buf not in jieba.FREQ):
                         regognized = __cut_detail(buf)
                         for t in regognized:
                             yield t
@@ -153,7 +153,7 @@ def __cut_DAG(sentence):
         if len(buf)==1:
             yield pair(buf,word_tag_tab.get(buf,'x'))
         else:
-            if not (buf in jieba.FREQ):
+            if (buf not in jieba.FREQ):
                 regognized = __cut_detail(buf)
                 for t in regognized:
                     yield t
@@ -162,7 +162,7 @@ def __cut_DAG(sentence):
                     yield pair(elem,word_tag_tab.get(elem,'x'))
 
 def __cut_internal(sentence):
-    if not ( type(sentence) is str):
+    if not isinstance(sentence, str):
         try:
             sentence = sentence.decode('utf-8')
         except:
@@ -199,7 +199,7 @@ def cut(sentence):
             yield w
     else:
         parts = re.compile('([\r\n]+)').split(sentence)
-        result = jieba.pool.map(__lcut_internal,parts)    
+        result = jieba.pool.map(__lcut_internal,parts)
         for r in result:
             for w in r:
                 yield w

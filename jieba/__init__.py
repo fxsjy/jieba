@@ -1,13 +1,9 @@
-from __future__ import with_statement
 __version__ = '0.31'
 __license__ = 'MIT'
 
 import re
-
-import math
 import os
 import sys
-import pprint
 from . import finalseg
 import time
 
@@ -32,7 +28,7 @@ def gen_trie(f_name):
     trie = {}
     ltotal = 0.0
     with open(f_name, 'rb') as f:
-        lineno = 0 
+        lineno = 0
         for line in f.read().rstrip().decode('utf-8').split('\n'):
             lineno += 1
             try:
@@ -42,7 +38,7 @@ def gen_trie(f_name):
                 ltotal+=freq
                 p = trie
                 for c in word:
-                    if not c in p:
+                    if c not in p:
                         p[c] ={}
                     p = p[c]
                 p['']='' #ending flag
@@ -127,7 +123,7 @@ def __cut_all(sentence):
     for k,L in dag.items():
         if len(L)==1 and k>old_j:
             yield sentence[k:L[0]+1]
-            old_j = L[0] 
+            old_j = L[0]
         else:
             for j in L:
                 if j>k:
@@ -153,7 +149,7 @@ def get_DAG(sentence):
         if c in p:
             p = p[c]
             if '' in p:
-                if not i in DAG:
+                if i not in DAG:
                     DAG[i]=[]
                 DAG[i].append(j)
             j+=1
@@ -166,7 +162,7 @@ def get_DAG(sentence):
             i+=1
             j=i
     for i in range(len(sentence)):
-        if not i in DAG:
+        if i not in DAG:
             DAG[i] =[i]
     return DAG
 
@@ -189,7 +185,7 @@ def __cut_DAG(sentence):
                     yield buf
                     buf=''
                 else:
-                    if not (buf in FREQ):
+                    if (buf not in FREQ):
                         regognized = finalseg.cut(buf)
                         for t in regognized:
                             yield t
@@ -197,14 +193,14 @@ def __cut_DAG(sentence):
                         for elem in buf:
                             yield elem
                     buf=''
-            yield l_word        
+            yield l_word
         x =y
 
     if len(buf)>0:
         if len(buf)==1:
             yield buf
         else:
-            if not (buf in FREQ):
+            if (buf not in FREQ):
                 regognized = finalseg.cut(buf)
                 for t in regognized:
                     yield t
@@ -213,7 +209,7 @@ def __cut_DAG(sentence):
                     yield elem
 
 def cut(sentence,cut_all=False):
-    if( type(sentence) is bytes):
+    if isinstance(sentence, bytes):
         try:
             sentence = sentence.decode('utf-8')
         except UnicodeDecodeError:
@@ -230,8 +226,9 @@ def cut(sentence,cut_all=False):
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
+        if len(blk)==0:
+            continue
         if re_han.match(blk):
-            #pprint.pprint(__cut_DAG(blk))
             for word in cut_block(blk):
                 yield word
         else:
@@ -287,7 +284,7 @@ def add_word(word, freq, tag=None):
         user_word_tag_tab[word] = tag.strip()
     p = trie
     for c in word:
-        if not c in p:
+        if c not in p:
             p[c] = {}
         p = p[c]
     p[''] = ''                  # ending flag
@@ -307,7 +304,7 @@ def __lcut_for_search(sentence):
 def enable_parallel(processnum=None):
     global pool,cut,cut_for_search
     if os.name=='nt':
-        raise Exception("parallel mode only supports posix system")
+        raise Exception("jieba: parallel mode only supports posix system")
     if sys.version_info[0]==2 and sys.version_info[1]<6:
         raise Exception("jieba: the parallel feature needs Python version>2.5 ")
     from multiprocessing import Pool,cpu_count
@@ -318,7 +315,7 @@ def enable_parallel(processnum=None):
     def pcut(sentence,cut_all=False):
         parts = re.compile(b'([\r\n]+)').split(sentence)
         if cut_all:
-            result = pool.map(__lcut_all,parts) 
+            result = pool.map(__lcut_all,parts)
         else:
             result = pool.map(__lcut,parts)
         for r in result:
@@ -348,7 +345,7 @@ def set_dictionary(dictionary_path):
     with DICT_LOCK:
         abs_path = os.path.normpath( os.path.join( os.getcwd(), dictionary_path )  )
         if not os.path.exists(abs_path):
-            raise Exception("path does not exists:" + abs_path)
+            raise Exception("jieba: path does not exists:" + abs_path)
         DICTIONARY = abs_path
         initialized = False
 
@@ -360,8 +357,8 @@ def get_abs_path_dict():
 def tokenize(unicode_sentence,mode="default"):
     #mode ("default" or "search")
     if not isinstance(unicode_sentence, str):
-        raise Exception("jieba: the input parameter should  string.")
-    start = 0 
+        raise Exception("jieba: the input parameter should  unicode.")
+    start = 0
     if mode=='default':
         for w in cut(unicode_sentence):
             width = len(w)

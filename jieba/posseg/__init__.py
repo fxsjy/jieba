@@ -136,7 +136,7 @@ def __cut_DAG(sentence):
                     yield pair(buf,word_tag_tab.get(buf,'x'))
                     buf=u''
                 else:
-                    if not (buf in jieba.FREQ):
+                    if (buf not in jieba.FREQ):
                         regognized = __cut_detail(buf)
                         for t in regognized:
                             yield t
@@ -151,7 +151,7 @@ def __cut_DAG(sentence):
         if len(buf)==1:
             yield pair(buf,word_tag_tab.get(buf,'x'))
         else:
-            if not (buf in jieba.FREQ):
+            if (buf not in jieba.FREQ):
                 regognized = __cut_detail(buf)
                 for t in regognized:
                     yield t

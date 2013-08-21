@@ -1,11 +1,14 @@
 import re
 import os
-from math import log
-from . import prob_start
-from . import prob_trans
-from . import prob_emit
+import marshal
+import sys
 
 MIN_FLOAT=-3.14e100
+
+PROB_START_P = "prob_start.p"
+PROB_TRANS_P = "prob_trans.p"
+PROB_EMIT_P = "prob_emit.p"
+
 
 PrevStatus = {
     'B':('E','S'),
@@ -13,6 +16,35 @@ PrevStatus = {
     'S':('S','E'),
     'E':('B','M')
 }
+
+def load_model():
+    _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+
+    start_p = {}
+    abs_path = os.path.join(_curpath, PROB_START_P)
+    with open(abs_path, mode='rb') as f:
+        start_p = marshal.load(f)
+    f.closed
+
+    trans_p = {}
+    abs_path = os.path.join(_curpath, PROB_TRANS_P)
+    with open(abs_path, 'rb') as f:
+        trans_p = marshal.load(f)
+    f.closed
+
+    emit_p = {}
+    abs_path = os.path.join(_curpath, PROB_EMIT_P)
+    with file(abs_path, 'rb') as f:
+        emit_p = marshal.load(f)
+    f.closed
+
+    return start_p, trans_p, emit_p
+
+if sys.platform.startswith("java"):
+    start_P, trans_P, emit_P = load_model()
+else:
+    import prob_start,prob_trans,prob_emit
+    start_P, trans_P, emit_P = prob_start.P, prob_trans.P, prob_emit.P
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular
@@ -29,14 +61,15 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
             V[t][y] =prob
             newpath[y] = path[state] + [y]
         path = newpath
-    
+
     (prob, state) = max([(V[len(obs) - 1][y], y) for y in ('E','S')])
-    
+
     return (prob, path[state])
 
 
 def __cut(sentence):
-    prob, pos_list =  viterbi(sentence,('B','M','E','S'), prob_start.P, prob_trans.P, prob_emit.P)
+    global emit_P
+    prob, pos_list =  viterbi(sentence,('B','M','E','S'), start_P, trans_P, emit_P)
     begin, next = 0,0
     #print pos_list, sentence
     for i,char in enumerate(sentence):

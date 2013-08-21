@@ -16,7 +16,7 @@ def load_model(f_name,isJython=True):
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
     result = {}
-    with file(f_name, "rb") as f:
+    with open(f_name, "rb") as f:
         for line in open(f_name,"rb"):
             line = line.strip()
             if line=="":continue
@@ -56,7 +56,7 @@ def load_model(f_name,isJython=True):
 if sys.platform.startswith("java"):
     char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
 else:
-    import char_state_tab, prob_start, prob_trans, prob_emit
+    from . import char_state_tab, prob_start, prob_trans, prob_emit
     char_state_tab_P, start_P, trans_P, emit_P = char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P
     word_tag_tab = load_model(jieba.get_abs_path_dict(),isJython=False)
 

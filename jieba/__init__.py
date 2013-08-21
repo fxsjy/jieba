@@ -1,4 +1,7 @@
 from __future__ import with_statement
+__version__ = '0.31'
+__license__ = 'MIT'
+
 import re
 
 import math
@@ -299,13 +302,17 @@ def __lcut_all(sentence):
 def __lcut_for_search(sentence):
     return list(__ref_cut_for_search(sentence))
 
+
 @require_initialized
-def enable_parallel(processnum):
+def enable_parallel(processnum=None):
     global pool,cut,cut_for_search
     if os.name=='nt':
         raise Exception("parallel mode only supports posix system")
-
-    from multiprocessing import Pool
+    if sys.version_info[0]==2 and sys.version_info[1]<6:
+        raise Exception("jieba: the parallel feature needs Python version>2.5 ")
+    from multiprocessing import Pool,cpu_count
+    if processnum==None:
+        processnum = cpu_count()
     pool = Pool(processnum)
 
     def pcut(sentence,cut_all=False):

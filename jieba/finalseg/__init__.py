@@ -34,7 +34,7 @@ def load_model():
 
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
-    with file(abs_path, 'rb') as f:
+    with open(abs_path, 'rb') as f:
         emit_p = marshal.load(f)
     f.closed
 

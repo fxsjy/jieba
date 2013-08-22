@@ -2,7 +2,7 @@ import jieba
 import os
 
 try:
-    from analyzer import ChineseAnalyzer
+    from .analyzer import ChineseAnalyzer
 except ImportError:
     pass
 

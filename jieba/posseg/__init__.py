@@ -41,13 +41,13 @@ def load_model(f_name,isJython=True):
 
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
-    with file(abs_path, 'rb') as f:
+    with open(abs_path, 'rb') as f:
         emit_p = marshal.load(f)
     f.closed
 
     state = {}
     abs_path = os.path.join(_curpath, CHAR_STATE_TAB_P)
-    with file(abs_path, 'rb') as f:
+    with open(abs_path, 'rb') as f:
         state = marshal.load(f)
     f.closed
 

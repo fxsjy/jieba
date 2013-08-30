@@ -63,17 +63,17 @@ else:
     word_tag_tab = load_model(jieba.get_abs_path_dict(),isJython=False)
 
 def makesure_userdict_loaded(fn):
-
+    
     @wraps(fn)
     def wrapped(*args,**kwargs):
-	global userdict_loaded
+        global userdict_loaded
         if userdict_loaded:
             return fn(*args,**kwargs)
-	else:
+        else:
             word_tag_tab.update(jieba.user_word_tag_tab)
-	    userdict_loaded = True
-	    return fn(*args,**kwargs)
-
+        userdict_loaded = True
+        return fn(*args,**kwargs)
+    
     return wrapped
 
 class pair(object):

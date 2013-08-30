@@ -105,10 +105,10 @@ def initialize(*args):
 
 
 def require_initialized(fn):
-    global initialized,DICTIONARY
 
     @wraps(fn)
     def wrapped(*args, **kwargs):
+	global initialized
         if initialized:
             return fn(*args, **kwargs)
         else:

@@ -5,6 +5,7 @@ import viterbi
 import jieba
 import sys
 import marshal
+from functools import wraps
 
 default_encoding = sys.getfilesystemencoding()
 
@@ -12,6 +13,7 @@ PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
+userdict_loaded = False
 
 def load_model(f_name,isJython=True):
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
@@ -60,8 +62,19 @@ else:
     char_state_tab_P, start_P, trans_P, emit_P = char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P
     word_tag_tab = load_model(jieba.get_abs_path_dict(),isJython=False)
 
-if jieba.user_word_tag_tab:
-    word_tag_tab.update(jieba.user_word_tag_tab)
+def makesure_userdict_loaded(fn):
+
+    @wraps(fn)
+    def wrapped(*args,**kwargs):
+	global userdict_loaded
+        if userdict_loaded:
+            return fn(*args,**kwargs)
+	else:
+            word_tag_tab.update(jieba.user_word_tag_tab)
+	    userdict_loaded = True
+	    return fn(*args,**kwargs)
+
+    return wrapped
 
 class pair(object):
     def __init__(self,word,flag):
@@ -189,6 +202,7 @@ def __cut_internal(sentence):
 def __lcut_internal(sentence):
     return list(__cut_internal(sentence))
 
+@makesure_userdict_loaded
 def cut(sentence):
     if (not hasattr(jieba,'pool')) or (jieba.pool==None):
         for w in __cut_internal(sentence):

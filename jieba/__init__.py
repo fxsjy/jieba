@@ -167,6 +167,29 @@ def get_DAG(sentence):
             DAG[i] =[i]
     return DAG
 
+def __cut_DAG_NO_HMM(sentence):
+    re_eng = re.compile(ur'[a-zA-Z0-9]',re.U)
+    DAG = get_DAG(sentence)
+    route ={}
+    calc(sentence,DAG,0,route=route)
+    x = 0
+    N = len(sentence)
+    buf = u''
+    while x<N:
+        y = route[x][1]+1
+        l_word = sentence[x:y]
+        if re_eng.match(l_word) and len(l_word)==1:
+            buf += l_word
+            x =y
+        else:
+            if len(buf)>0:
+                yield buf
+                buf = u''
+            yield l_word        
+            x =y
+    if len(buf)>0:
+        yield buf
+        buf = u''
 
 def __cut_DAG(sentence):
     DAG = get_DAG(sentence)
@@ -209,7 +232,7 @@ def __cut_DAG(sentence):
                 for elem in buf:
                     yield elem
 
-def cut(sentence,cut_all=False):
+def cut(sentence,cut_all=False,HMM=True):
     if not isinstance(sentence, unicode):
         try:
             sentence = sentence.decode('utf-8')
@@ -219,7 +242,10 @@ def cut(sentence,cut_all=False):
     if cut_all:
         re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
     blocks = re_han.split(sentence)
-    cut_block = __cut_DAG
+    if HMM:
+        cut_block = __cut_DAG
+    else:
+        cut_block = __cut_DAG_NO_HMM
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
@@ -239,8 +265,8 @@ def cut(sentence,cut_all=False):
                 else:
                     yield x
 
-def cut_for_search(sentence):
-    words = cut(sentence)
+def cut_for_search(sentence,HMM=True):
+    words = cut(sentence,HMM=HMM)
     for w in words:
         if len(w)>2:
             for i in xrange(len(w)-1):
@@ -291,6 +317,8 @@ __ref_cut_for_search = cut_for_search
 
 def __lcut(sentence):
     return list(__ref_cut(sentence,False))
+def __lcut_no_hmm(sentence):
+    return list(__ref_cut(sentence,False,False))
 def __lcut_all(sentence):
     return list(__ref_cut(sentence,True))
 def __lcut_for_search(sentence):
@@ -309,12 +337,15 @@ def enable_parallel(processnum=None):
         processnum = cpu_count()
     pool = Pool(processnum)
 
-    def pcut(sentence,cut_all=False):
+    def pcut(sentence,cut_all=False,HMM=True):
         parts = re.compile('([\r\n]+)').split(sentence)
         if cut_all:
             result = pool.map(__lcut_all,parts) 
         else:
-            result = pool.map(__lcut,parts)
+            if HMM:
+                result = pool.map(__lcut,parts)
+            else:
+                result = pool.map(__lcut_no_hmm,parts)
         for r in result:
             for w in r:
                 yield w
@@ -351,18 +382,18 @@ def get_abs_path_dict():
     abs_path = os.path.join(_curpath,DICTIONARY)
     return abs_path
 
-def tokenize(unicode_sentence,mode="default"):
+def tokenize(unicode_sentence,mode="default",HMM=True):
     #mode ("default" or "search")
     if not isinstance(unicode_sentence, unicode):
         raise Exception("jieba: the input parameter should  unicode.")
     start = 0 
     if mode=='default':
-        for w in cut(unicode_sentence):
+        for w in cut(unicode_sentence,HMM=HMM):
             width = len(w)
             yield (w,start,start+width)
             start+=width
     else:
-        for w in cut(unicode_sentence):
+        for w in cut(unicode_sentence,HMM=HMM):
             width = len(w)
             if len(w)>2:
                 for i in xrange(len(w)-1):

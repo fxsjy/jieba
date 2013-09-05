@@ -129,6 +129,30 @@ def __cut_detail(sentence):
                     else:
                         yield pair(x,'x')
 
+def __cut_DAG_NO_HMM(sentence):
+    DAG = jieba.get_DAG(sentence)
+    route ={}
+    jieba.calc(sentence,DAG,0,route=route)
+    x = 0
+    N = len(sentence)
+    buf =u''
+    re_eng = re.compile(ur'[a-zA-Z0-9]',re.U)
+    while x<N:
+        y = route[x][1]+1
+        l_word = sentence[x:y]
+        if re_eng.match(l_word) and len(l_word)==1:
+            buf += l_word
+            x = y
+        else:
+            if len(buf)>0:
+                yield pair(buf,'eng')
+                buf = u''
+            yield pair(l_word,word_tag_tab.get(l_word,'x'))
+            x =y
+    if len(buf)>0:
+        yield pair(buf,'eng')
+        buf = u''
+
 def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
     route ={}
@@ -172,7 +196,7 @@ def __cut_DAG(sentence):
                 for elem in buf:
                     yield pair(elem,word_tag_tab.get(elem,'x'))
 
-def __cut_internal(sentence):
+def __cut_internal(sentence,HMM=True):
     if not ( type(sentence) is unicode):
         try:
             sentence = sentence.decode('utf-8')
@@ -181,9 +205,14 @@ def __cut_internal(sentence):
     re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(ur"(\r\n|\s)")
     re_eng,re_num = re.compile(ur"[a-zA-Z0-9]+"), re.compile(ur"[\.0-9]+")
     blocks = re_han.split(sentence)
+    if HMM:
+        __cut_blk = __cut_DAG
+    else:
+        __cut_blk = __cut_DAG_NO_HMM
+
     for blk in blocks:
         if re_han.match(blk):
-                for word in __cut_DAG(blk):
+                for word in __cut_blk(blk):
                     yield word
         else:
             tmp = re_skip.split(blk)
@@ -201,15 +230,21 @@ def __cut_internal(sentence):
 
 def __lcut_internal(sentence):
     return list(__cut_internal(sentence))
+def __lcut_internal_no_hmm(sentence):
+    return list(__cut_internal(sentence,False))
+
 
 @makesure_userdict_loaded
-def cut(sentence):
+def cut(sentence,HMM=True):
     if (not hasattr(jieba,'pool')) or (jieba.pool==None):
-        for w in __cut_internal(sentence):
+        for w in __cut_internal(sentence,HMM=HMM):
             yield w
     else:
         parts = re.compile('([\r\n]+)').split(sentence)
-        result = jieba.pool.map(__lcut_internal,parts)    
+        if HMM:
+            result = jieba.pool.map(__lcut_internal,parts)
+        else:
+            result = jieba.pool.map(__lcut_internal_no_hmm,parts)
         for r in result:
             for w in r:
                 yield w

@@ -159,5 +159,43 @@ class JiebaTestCase(unittest.TestCase):
                 print >>sys.stderr, "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
         print  >> sys.stderr, "testTokenize"
 
+    def testDefaultCut_NOHMM(self):
+        for content in test_contents:
+            result = jieba.cut(content,HMM=False)
+            assert isinstance(result, types.GeneratorType), "Test DefaultCut Generator error"
+            result = list(result)
+            assert isinstance(result, list), "Test DefaultCut error on content: %s" % content
+            print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testDefaultCut_NOHMM"
+
+    def testPosseg_NOHMM(self):
+        import jieba.posseg as pseg
+        for content in test_contents:
+            result = pseg.cut(content,HMM=False)
+            assert isinstance(result, types.GeneratorType), "Test Posseg Generator error"
+            result = list(result)
+            assert isinstance(result, list), "Test Posseg error on content: %s" % content
+            print >> sys.stderr, " , ".join([w.word + " / " + w.flag for w in result])
+        print  >> sys.stderr, "testPosseg_NOHMM"
+
+    def testTokenize_NOHMM(self):
+        for content in test_contents:
+            result = jieba.tokenize(content.decode('utf-8'),HMM=False)
+            assert isinstance(result, types.GeneratorType), "Test Tokenize Generator error"
+            result = list(result)
+            assert isinstance(result, list), "Test Tokenize error on content: %s" % content
+            for tk in result:
+                print >>sys.stderr, "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
+        print  >> sys.stderr, "testTokenize_NOHMM"
+
+    def testCutForSearch_NOHMM(self):
+        for content in test_contents:
+            result = jieba.cut_for_search(content,HMM=False)
+            assert isinstance(result, types.GeneratorType), "Test CutForSearch Generator error"
+            result = list(result)
+            assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
+            print >> sys.stderr, " , ".join(result)
+        print  >> sys.stderr, "testCutForSearch_NOHMM"
+
 if __name__ == "__main__":
     unittest.main()

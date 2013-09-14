@@ -49,7 +49,8 @@ Python 3.x 下的安装
 作者：piaolingxue
 地址：https://github.com/huaban/jieba-analysis
 
-结巴分词C++版本；
+结巴分词C++版本
+================
 作者：Aszxqw
 地址：https://github.com/aszxqw/cppjieba
 

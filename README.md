@@ -49,6 +49,10 @@ Python 3.x 下的安装
 作者：piaolingxue
 地址：https://github.com/huaban/jieba-analysis
 
+结巴分词C++版本；
+作者：Aszxqw
+地址：https://github.com/aszxqw/cppjieba
+
 Algorithm
 ========
 * 基于Trie树结构实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图（DAG)

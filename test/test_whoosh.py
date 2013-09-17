@@ -59,5 +59,5 @@ for keyword in (u"水果世博园",u"你",u"first",u"中文",u"交换机",u"交�
         print hit.highlights("content")
     print "="*10
 
-for t in analyzer(u"我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream."):
+for t in analyzer(u"我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream. this is intetesting and interested me a lot"):
     print t.text

@@ -13,6 +13,7 @@ from math import log
 import random
 import threading
 from functools import wraps
+import logging
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -22,6 +23,7 @@ min_freq = 0.0
 total =0.0
 user_word_tag_tab={}
 initialized = False
+logger = logging.getLogger(__name__)
 
 def gen_trie(f_name):
     lfreq = {}
@@ -43,8 +45,8 @@ def gen_trie(f_name):
                     p = p[c]
                 p['']='' #ending flag
             except ValueError, e:
-                print >> sys.stderr, f_name, ' at line', lineno, line
-                raise e
+                logger.debug('%s at line %s %s' % (f_name,  lineno, line))
+                raise ValueError, e
     return trie, lfreq,ltotal
 
 def initialize(*args):
@@ -62,7 +64,7 @@ def initialize(*args):
         _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 
         abs_path = os.path.join(_curpath,dictionary)
-        print >> sys.stderr, "Building Trie..., from " + abs_path
+        logger.debug("Building Trie..., from %s" % abs_path)
         t1 = time.time()
         if abs_path == os.path.join(_curpath,"dict.txt"): #defautl dictionary
             cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
@@ -71,7 +73,7 @@ def initialize(*args):
 
         load_from_cache_fail = True
         if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(abs_path):
-            print >> sys.stderr, "loading model from cache " + cache_file
+            logger.debug("loading model from cache %s" % cache_file)
             try:
                 trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
                 load_from_cache_fail = False
@@ -82,7 +84,7 @@ def initialize(*args):
             trie,FREQ,total = gen_trie(abs_path)
             FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
             min_freq = min(FREQ.itervalues())
-            print >> sys.stderr, "dumping model to file cache " + cache_file
+            logger.debug("dumping model to file cache %s" % cache_file)
             try:
                 tmp_suffix = "."+str(random.random())
                 with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
@@ -94,21 +96,20 @@ def initialize(*args):
                     replace_file = os.rename
                 replace_file(cache_file+tmp_suffix,cache_file)
             except:
-                print >> sys.stderr, "dump cache file failed."
-                import traceback
-                print >> sys.stderr, traceback.format_exc()
+                logger.error("dump cache file failed.")
+                logger.exception("")
 
         initialized = True
 
-        print >> sys.stderr, "loading model cost ", time.time() - t1, "seconds."
-        print >> sys.stderr, "Trie has been built succesfully."
+        logger.debug("loading model cost %s seconds." % (time.time() - t1))
+        logger.debug("Trie has been built succesfully.")
 
 
 def require_initialized(fn):
 
     @wraps(fn)
     def wrapped(*args, **kwargs):
-	global initialized
+        global initialized
         if initialized:
             return fn(*args, **kwargs)
         else:

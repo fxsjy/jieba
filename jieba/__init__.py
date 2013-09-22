@@ -23,7 +23,16 @@ min_freq = 0.0
 total =0.0
 user_word_tag_tab={}
 initialized = False
+
+
+log_console = logging.StreamHandler(sys.stderr)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(log_console)
+
+def setLogLevel(log_level):
+    global logger
+    logger.setLevel(log_level)
 
 def gen_trie(f_name):
     lfreq = {}

@@ -383,7 +383,7 @@ def set_dictionary(dictionary_path):
     with DICT_LOCK:
         abs_path = os.path.normpath( os.path.join( os.getcwd(), dictionary_path )  )
         if not os.path.exists(abs_path):
-            raise Exception("jieba: path does not exists:" + abs_path)
+            raise Exception("jieba: path does not exist:" + abs_path)
         DICTIONARY = abs_path
         initialized = False
 

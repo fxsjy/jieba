@@ -309,6 +309,7 @@ def load_userdict(f):
         else:
             add_word(word, freq)
 
+@require_initialized
 def add_word(word, freq, tag=None):
     global FREQ, trie, total, user_word_tag_tab
     freq = float(freq)

@@ -295,19 +295,22 @@ def load_userdict(f):
     global trie,total,FREQ
     if isinstance(f, (str, unicode)):
         f = open(f, 'rb')
-    content = f.read().decode('utf-8')
     line_no = 0
-    for line in content.split("\n"):
-        line_no+=1
-        if line.rstrip()=='': continue
-        tup =line.split(" ")
-        word,freq = tup[0],tup[1]
-        if line_no==1:
-            word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
-        if len(tup)==3:
-            add_word(word, freq, tup[2])
-        else:
-            add_word(word, freq)
+    for line in f:
+        try:
+            line_no+=1
+            line = line.decode('utf8').strip()
+            if line:
+                tup =line.split(" ")
+                word,freq = tup[0],tup[1]
+                if line_no==1:
+                    word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
+                if len(tup)==3:
+                    add_word(word, freq, tup[2])
+                else:
+                    add_word(word, freq)
+        except Exception:
+            print 'Error at line',line_no
 
 @require_initialized
 def add_word(word, freq, tag=None):

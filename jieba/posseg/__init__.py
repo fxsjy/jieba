@@ -116,8 +116,8 @@ def __cut_detail(sentence):
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):
-                for word in __cut(blk):
-                    yield word
+            for word in __cut(blk):
+                yield word
         else:
             tmp = re_skip.split(blk)
             for x in tmp:
@@ -212,8 +212,8 @@ def __cut_internal(sentence,HMM=True):
 
     for blk in blocks:
         if re_han.match(blk):
-                for word in __cut_blk(blk):
-                    yield word
+            for word in __cut_blk(blk):
+                yield word
         else:
             tmp = re_skip.split(blk)
             for x in tmp:

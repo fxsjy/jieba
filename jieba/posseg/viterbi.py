@@ -23,7 +23,9 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
         obs_states = states.get(obs[t],all_states)
         obs_states = set(obs_states) &  set(prev_states_expect_next)
 
+        if len(obs_states)==0: obs_states = prev_states_expect_next
         if len(obs_states)==0: obs_states = all_states
+
         for y in obs_states:
             (prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_FLOAT) + emit_p[y].get(obs[t],MIN_FLOAT) ,y0) for y0 in prev_states])
             V[t][y] =prob

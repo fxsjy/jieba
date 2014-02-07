@@ -1,6 +1,6 @@
 from distutils.core import setup  
 setup(name='jieba',  
-      version='0.31',  
+      version='0.32',  
       description='Chinese Words Segementation Utilities',  
       author='Sun, Junyi',  
       author_email='ccnusjy@gmail.com',  

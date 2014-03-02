@@ -1,9 +1,9 @@
 import jieba
 import os
 try:
-	from analyzer import ChineseAnalyzer
+    from analyzer import ChineseAnalyzer
 except ImportError:
-	pass
+    pass
 
 _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 f_name = os.path.join(_curpath,"idf.txt")

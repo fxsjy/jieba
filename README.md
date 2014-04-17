@@ -59,6 +59,11 @@ Python 3.x 下的安装
 作者：Aszxqw
 地址：https://github.com/aszxqw/nodejieba
 
+结巴分词Erlang版本
+================
+作者：falood
+https://github.com/falood/exjieba
+
 Algorithm
 ========
 * 基于Trie树结构实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图（DAG)

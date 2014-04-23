@@ -84,7 +84,8 @@ def initialize(*args):
         if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(abs_path):
             logger.debug("loading model from cache %s" % cache_file)
             try:
-                trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+                with open(cache_file, 'rb') as cf:
+                    trie,FREQ,total,min_freq = marshal.load(cf)
                 load_from_cache_fail = False
             except:
                 load_from_cache_fail = True

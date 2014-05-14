@@ -10,7 +10,9 @@ PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 
-
+'''
+B: Begin   M: Middle   E: End   S: Seperate
+'''
 PrevStatus = {
     'B':('E','S'),
     'M':('M','B'),
@@ -87,11 +89,18 @@ def __cut(sentence):
         yield sentence[next:]
 
 def cut(sentence):
+    
     if not ( type(sentence) is unicode):
         try:
             sentence = sentence.decode('utf-8')
         except:
             sentence = sentence.decode('gbk','ignore')
+            
+   ''' \u4E00-\u9FA5: All Chinese characters
+        \d+\.\d+|[a-zA-Z0-9]+ : all numbers including both float and interger and English letters.
+        Digit strings will be seen as a segmented word directly. (re_skip)
+        Chinese characters will be segmented with __cut function. (re_han)
+    '''
     re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"(\d+\.\d+|[a-zA-Z0-9]+)")
     blocks = re_han.split(sentence)
     for blk in blocks:

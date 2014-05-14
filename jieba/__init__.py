@@ -322,7 +322,7 @@ def load_userdict(f):
         if line.rstrip()=='': continue
         tup =line.split(" ")
         word,freq = tup[0],tup[1]
-        if freq.isdigit() is False: continue
+        if freq.isdigit() is False: continue #Word freq should always be digit
         if line_no==1:
             word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
         if len(tup)==3:

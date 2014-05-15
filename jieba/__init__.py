@@ -243,11 +243,22 @@ def __cut_DAG(sentence):
                     yield elem
 
 def cut(sentence,cut_all=False,HMM=True):
+    '''The main function that segments an entire sentence that contains 
+    Chinese characters into seperated words. 
+    Parameter:
+        - sentence: The String to be segmented
+        - cut_all: Model. True means full pattern, false means accurate pattern.
+        - HMM: Whether use Hidden Markov Model.
+    '''
     if not isinstance(sentence, unicode):
         try:
             sentence = sentence.decode('utf-8')
         except UnicodeDecodeError:
             sentence = sentence.decode('gbk','ignore')
+    '''
+        \u4E00-\u9FA5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
+        \r\n|\s : whitespace characters. Will not be Handled. 
+    ''' 
     re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\r\n|\s)", re.U)
     if cut_all:
         re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
@@ -292,6 +303,15 @@ def cut_for_search(sentence,HMM=True):
 
 @require_initialized
 def load_userdict(f):
+    ''' Load personalized dict to improve detect rate.
+    Parameter:
+        - f : A plain text file contains words and their ocurrences.
+    Structure of dict file: 
+    word1 freq1 word_type1
+    word2 freq2 word_type2
+    ...
+    Word type may be ignored
+    '''
     global trie,total,FREQ
     if isinstance(f, (str, unicode)):
         f = open(f, 'rb')
@@ -302,6 +322,7 @@ def load_userdict(f):
         if line.rstrip()=='': continue
         tup =line.split(" ")
         word,freq = tup[0],tup[1]
+        if freq.isdigit() is False: continue
         if line_no==1:
             word = word.replace(u'\ufeff',u"") #remove bom flag if it exists
         if len(tup)==3:

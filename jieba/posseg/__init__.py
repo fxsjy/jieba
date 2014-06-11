@@ -13,7 +13,6 @@ PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
-userdict_loaded = False
 
 def load_model(f_name,isJython=True):
     _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
@@ -66,12 +65,9 @@ def makesure_userdict_loaded(fn):
     
     @wraps(fn)
     def wrapped(*args,**kwargs):
-        global userdict_loaded
-        if userdict_loaded:
-            return fn(*args,**kwargs)
-        else:
+        if len(jieba.user_word_tag_tab)>0:
             word_tag_tab.update(jieba.user_word_tag_tab)
-        userdict_loaded = True
+            jieba.user_word_tag_tab = {}
         return fn(*args,**kwargs)
     
     return wrapped

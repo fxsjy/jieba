@@ -327,7 +327,7 @@ def enable_parallel(processnum=None):
     pool = Pool(processnum)
 
     def pcut(sentence,cut_all=False):
-        parts = re.compile(b'([\r\n]+)').split(sentence)
+        parts = re.compile('([\r\n]+)').split(sentence)
         if cut_all:
             result = pool.map(__lcut_all,parts)
         else:
@@ -337,7 +337,7 @@ def enable_parallel(processnum=None):
                 yield w
 
     def pcut_for_search(sentence):
-        parts = re.compile(b'([\r\n]+)').split(sentence)
+        parts = re.compile('([\r\n]+)').split(sentence)
         result = pool.map(__lcut_for_search,parts)
         for r in result:
             for w in r:
@@ -371,7 +371,7 @@ def get_abs_path_dict():
 def tokenize(unicode_sentence,mode="default"):
     #mode ("default" or "search")
     if not isinstance(unicode_sentence, str):
-        raise Exception("jieba: the input parameter should  unicode.")
+        raise Exception("jieba: the input parameter should be str.")
     start = 0
     if mode=='default':
         for w in cut(unicode_sentence):

@@ -14,9 +14,9 @@ jieba
 Feature
 ========
 * 支持三种分词模式：
-    * 精确模式，试图将句子最精确地切开，适合文本分析；
-    * 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
-    * 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+	* 精确模式，试图将句子最精确地切开，适合文本分析；
+	* 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
+	* 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
 
 * 支持繁体分词
 * 支持自定义词典
@@ -30,6 +30,7 @@ http://jiebademo.ap01.aws.af.cm/
 (Powered by Appfog)
 
 网站代码：https://github.com/fxsjy/jiebademo
+
 
 
 Python 2.x 下的安装
@@ -54,6 +55,21 @@ Python 3.x 下的安装
 作者：piaolingxue
 地址：https://github.com/huaban/jieba-analysis
 
+结巴分词C++版本
+================
+作者：Aszxqw
+地址：https://github.com/aszxqw/cppjieba
+
+结巴分词Node.js版本
+================
+作者：Aszxqw
+地址：https://github.com/aszxqw/nodejieba
+
+结巴分词Erlang版本
+================
+作者：falood
+https://github.com/falood/exjieba
+
 Algorithm
 ========
 * 基于Trie树结构实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图（DAG)
@@ -76,11 +92,11 @@ Algorithm
 	print("Full Mode:", "/ ".join(seg_list)) #全模式
 
 	seg_list = jieba.cut("我来到北京清华大学",cut_all=False)
-	print("Default Mode:", "/ ".join(seg_list)) #默认模式
+	print("Default Mode:", "/ ".join(seg_list)) #精确模式
 
 
 	seg_list = jieba.cut("他来到了网易杭研大厦") #默认是精确模式
-	print ", ".join(seg_list)
+	print(", ".join(seg_list))
 
 
 	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造") #搜索引擎模式
@@ -88,13 +104,13 @@ Algorithm
 
 Output:
 
-    【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+	【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
 
-    【精确模式】: 我/ 来到/ 北京/ 清华大学
+	【精确模式】: 我/ 来到/ 北京/ 清华大学
 
-    【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
+	【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
 
-    【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
+	【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
 功能 2) ：添加自定义词典
 ================
@@ -104,16 +120,16 @@ Output:
 * 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频，最后为词性（可省略），用空格隔开
 * 范例：
 
-    * 自定义词典：https://github.com/fxsjy/jieba/blob/master/test/userdict.txt
+	* 自定义词典：https://github.com/fxsjy/jieba/blob/master/test/userdict.txt
+	
+	* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py
+	
 
-    * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py
+		* 之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 
+		* 加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 
-        * 之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
-
-        * 加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
-
-
+		
 * "通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
 功能 3) ：关键词提取
@@ -124,33 +140,33 @@ Output:
 
 代码示例 （关键词提取）
 
-    https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
 功能 4) : 词性标注
 ================
 * 标注句子分词后每个词的词性，采用和ictclas兼容的标记法
 * 用法示例
 
-        >>> import jieba.posseg as pseg
-        >>> words = pseg.cut("我爱北京天安门")
-        >>> for w in words:
-        ...    print w.word, w.flag
-        ...
-        我 r
-        爱 v
-        北京 ns
-        天安门 ns
-
+		>>> import jieba.posseg as pseg
+		>>> words = pseg.cut("我爱北京天安门")
+		>>> for w in words:
+		...    print w.word, w.flag
+		...
+		我 r
+		爱 v
+		北京 ns
+		天安门 ns
+		
 功能 5) : 并行分词
 ==================
 * 原理：将目标文本按行分隔后，把各行文本分配到多个python进程并行分词，然后归并结果，从而获得分词速度的可观提升
 * 基于python自带的multiprocessing模块，目前暂不支持windows
 * 用法：
-    * `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
-    * `jieba.disable_parallel()` # 关闭并行分词模式
+	* `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
+	* `jieba.disable_parallel()` # 关闭并行分词模式
 
 * 例子：
-        https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
+		https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
 
 * 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
 
@@ -190,8 +206,8 @@ word 有限                start: 6                end:8
 word 公司                start: 8                end:10
 word 有限公司            start: 6                end:10
 ```
-
-
+  
+  
 功能 7) : ChineseAnalyzer for Whoosh搜索引擎
 ============================================
 * 引用： `from jieba.analyse import ChineseAnalyzer `
@@ -215,7 +231,7 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始jieba，也可以手动初始化。
 
     import jieba
-    jieba.initialize() #手动初始化（可选）
+    jieba.initialize()  # 手动初始化（可选）
 
 
 在0.28之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
@@ -280,30 +296,30 @@ Function 1): cut
 Code example: segmentation
 ==========
 
-    #encoding=utf-8
-    import jieba
+	#encoding=utf-8
+	import jieba
 
-    seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
-    print("Full Mode:", "/ ".join(seg_list))  # 全模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+	print("Full Mode:", "/ ".join(seg_list))  # 全模式
 
-    seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
-    print("Default Mode:", "/ ".join(seg_list))  # 默认模式
+	seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+	print("Default Mode:", "/ ".join(seg_list))  # 默认模式
 
-    seg_list = jieba.cut("他来到了网易杭研大厦")
-    print(", ".join(seg_list))
+	seg_list = jieba.cut("他来到了网易杭研大厦")
+	print(", ".join(seg_list))
 
-    seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
-    print(", ".join(seg_list))
+	seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+	print(", ".join(seg_list))
 
 Output:
 
-    [Full Mode]: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+	[Full Mode]: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
 
-    [Accurate Mode]: 我/ 来到/ 北京/ 清华大学
+	[Accurate Mode]: 我/ 来到/ 北京/ 清华大学
 
-    [Unknown Words Recognize] 他, 来到, 了, 网易, 杭研, 大厦    (In this case, "杭研" is not in the dictionary, but is identified by the Viterbi algorithm)
+	[Unknown Words Recognize] 他, 来到, 了, 网易, 杭研, 大厦    (In this case, "杭研" is not in the dictionary, but is identified by the Viterbi algorithm)
 
-    [Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在
+	[Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在
 , 日本, 京都, 大学, 日本京都大学, 深造
 
 
@@ -315,13 +331,13 @@ Function 2): Add a custom dictionary
 * The dictionary format is the same as that of `analyse/idf.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
 * Example：
 
-        云计算 5
-        李小福 2
-        创新办 3
+		云计算 5
+		李小福 2
+		创新办 3
 
-        之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
+		之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 
-        加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
+		加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 
 Function 3): Keyword Extraction
 ================
@@ -331,7 +347,7 @@ Function 3): Keyword Extraction
 
 Code sample (keyword extraction)
 
-    https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
 Using Other Dictionaries
 ========

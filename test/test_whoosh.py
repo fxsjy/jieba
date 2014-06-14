@@ -14,7 +14,7 @@ if not os.path.exists("tmp"):
     os.mkdir("tmp")
 
 ix = create_in("tmp", schema) # for create new index
-#ix = open_dir("tmp", schema=schema) # for read only
+#ix = open_dir("tmp") # for read only
 writer = ix.writer()
 
 writer.add_document(

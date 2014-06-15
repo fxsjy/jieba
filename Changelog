@@ -1,3 +1,10 @@
+2014-02-07: version 0.32
+1. 新增分词选项：可以关闭新词发现功能；详见：https://github.com/fxsjy/jieba/blob/master/test/test_no_hmm.py#L8
+2. 修复posseg子模块的Bug；详见: https://github.com/fxsjy/jieba/issues/111 https://github.com/fxsjy/jieba/issues/132
+3. ChineseAnalyzer提供了更好的英文支持(感谢@jannson)，例如单词Stemming； 详见：https://github.com/fxsjy/jieba/pull/106
+
+
+
 2013-07-01: version 0.31
 1. 修改了代码缩进格式，遵循PEP8标准
 2. 支持Jython解析器，感谢 @piaolingxue

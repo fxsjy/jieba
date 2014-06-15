@@ -25,13 +25,13 @@ def load_model():
     with open(abs_path, mode='rb') as f:
         start_p = marshal.load(f)
     f.closed
-
+    
     trans_p = {}
     abs_path = os.path.join(_curpath, PROB_TRANS_P)
     with open(abs_path, 'rb') as f:
         trans_p = marshal.load(f)
     f.closed
-
+    
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
     with open(abs_path, 'rb') as f:
@@ -61,9 +61,9 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
             V[t][y] =prob
             newpath[y] = path[state] + [y]
         path = newpath
-
+    
     (prob, state) = max([(V[len(obs) - 1][y], y) for y in ('E','S')])
-
+    
     return (prob, path[state])
 
 
@@ -91,9 +91,7 @@ def cut(sentence):
             sentence = sentence.decode('utf-8')
         except:
             sentence = sentence.decode('gbk','ignore')
-
-    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("(\d+\.\d+|[a-zA-Z0-9]+)")
-
+    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"(\d+\.\d+|[a-zA-Z0-9]+)")
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):

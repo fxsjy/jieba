@@ -1,6 +1,7 @@
 #encoding=utf-8
-from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter
-from whoosh.analysis import Tokenizer,Token
+from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter,StemFilter
+from whoosh.analysis import Tokenizer,Token 
+from whoosh.lang.porter import stem
 
 import jieba
 import re
@@ -12,7 +13,6 @@ STOP_WORDS = frozenset(('a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'can',
                         'you', 'your', '的', '了', '和'))
 
 accepted_chars = re.compile(r"[\u4E00-\u9FA5]+")
-
 
 class ChineseTokenizer(Tokenizer):
     def __call__(self,text,**kargs):
@@ -30,5 +30,6 @@ class ChineseTokenizer(Tokenizer):
             token.endchar = stop_pos
             yield token
 
-def ChineseAnalyzer(stoplist=STOP_WORDS,minsize=1):
-    return ChineseTokenizer() | LowercaseFilter() | StopFilter(stoplist=stoplist,minsize=minsize)
+def ChineseAnalyzer(stoplist=STOP_WORDS,minsize=1,stemfn=stem,cachesize=50000):
+    return ChineseTokenizer() | LowercaseFilter() | StopFilter(stoplist=stoplist,minsize=minsize)\
+                                        |StemFilter(stemfn=stemfn, ignore=None,cachesize=cachesize)

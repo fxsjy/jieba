@@ -1,4 +1,4 @@
-__version__ = '0.31'
+__version__ = '0.32'
 __license__ = 'MIT'
 
 import re
@@ -6,7 +6,6 @@ import os
 import sys
 from . import finalseg
 import time
-
 import tempfile
 import marshal
 from math import log
@@ -24,11 +23,11 @@ total =0.0
 user_word_tag_tab={}
 initialized = False
 
+
 log_console = logging.StreamHandler(sys.stderr)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(log_console)
-
 
 def setLogLevel(log_level):
     global logger
@@ -106,10 +105,9 @@ def initialize(*args):
                     replace_file = os.rename
                 replace_file(cache_file+tmp_suffix,cache_file)
             except:
-                import traceback
                 logger.error("dump cache file failed.")
                 logger.exception("")
-                #print(traceback.format_exc(),file=sys.stderr)
+
         initialized = True
 
         logger.debug("loading model cost %s seconds." % (time.time() - t1))
@@ -117,10 +115,10 @@ def initialize(*args):
 
 
 def require_initialized(fn):
-    global initialized,DICTIONARY
 
     @wraps(fn)
     def wrapped(*args, **kwargs):
+        global initialized
         if initialized:
             return fn(*args, **kwargs)
         else:
@@ -179,6 +177,29 @@ def get_DAG(sentence):
             DAG[i] =[i]
     return DAG
 
+def __cut_DAG_NO_HMM(sentence):
+    re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
+    DAG = get_DAG(sentence)
+    route ={}
+    calc(sentence,DAG,0,route=route)
+    x = 0
+    N = len(sentence)
+    buf = ''
+    while x<N:
+        y = route[x][1]+1
+        l_word = sentence[x:y]
+        if re_eng.match(l_word) and len(l_word)==1:
+            buf += l_word
+            x =y
+        else:
+            if len(buf)>0:
+                yield buf
+                buf = ''
+            yield l_word        
+            x =y
+    if len(buf)>0:
+        yield buf
+        buf = ''
 
 def __cut_DAG(sentence):
     DAG = get_DAG(sentence)
@@ -221,21 +242,31 @@ def __cut_DAG(sentence):
                 for elem in buf:
                     yield elem
 
-def cut(sentence,cut_all=False):
+def cut(sentence,cut_all=False,HMM=True):
+    '''The main function that segments an entire sentence that contains 
+    Chinese characters into seperated words. 
+    Parameter:
+        - sentence: The String to be segmented
+        - cut_all: Model. True means full pattern, false means accurate pattern.
+        - HMM: Whether use Hidden Markov Model.
+    '''
     if isinstance(sentence, bytes):
         try:
             sentence = sentence.decode('utf-8')
         except UnicodeDecodeError:
             sentence = sentence.decode('gbk','ignore')
-
-
-    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\r\n|\s)")
-
+    '''
+        \\u4E00-\\u9FA5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
+        \r\n|\s : whitespace characters. Will not be Handled. 
+    ''' 
+    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(r"(\r\n|\s)")
     if cut_all:
-        re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")
-
+        re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)", re.U), re.compile(r"[^a-zA-Z0-9+#\n]")
     blocks = re_han.split(sentence)
-    cut_block = __cut_DAG
+    if HMM:
+        cut_block = __cut_DAG
+    else:
+        cut_block = __cut_DAG_NO_HMM
     if cut_all:
         cut_block = __cut_all
     for blk in blocks:
@@ -255,8 +286,8 @@ def cut(sentence,cut_all=False):
                 else:
                     yield x
 
-def cut_for_search(sentence):
-    words = cut(sentence)
+def cut_for_search(sentence,HMM=True):
+    words = cut(sentence,HMM=HMM)
     for w in words:
         if len(w)>2:
             for i in range(len(w)-1):
@@ -272,8 +303,17 @@ def cut_for_search(sentence):
 
 @require_initialized
 def load_userdict(f):
+    ''' Load personalized dict to improve detect rate.
+    Parameter:
+        - f : A plain text file contains words and their ocurrences.
+    Structure of dict file: 
+    word1 freq1 word_type1
+    word2 freq2 word_type2
+    ...
+    Word type may be ignored
+    '''
     global trie,total,FREQ
-    if isinstance(f, (str, )):
+    if isinstance(f, str):
         f = open(f, 'rb')
     content = f.read().decode('utf-8')
     line_no = 0
@@ -282,6 +322,7 @@ def load_userdict(f):
         if line.rstrip()=='': continue
         tup =line.split(" ")
         word,freq = tup[0],tup[1]
+        if freq.isdigit() is False: continue
         if line_no==1:
             word = word.replace('\ufeff',"") #remove bom flag if it exists
         if len(tup)==3:
@@ -308,6 +349,8 @@ __ref_cut_for_search = cut_for_search
 
 def __lcut(sentence):
     return list(__ref_cut(sentence,False))
+def __lcut_no_hmm(sentence):
+    return list(__ref_cut(sentence,False,False))
 def __lcut_all(sentence):
     return list(__ref_cut(sentence,True))
 def __lcut_for_search(sentence):
@@ -326,18 +369,21 @@ def enable_parallel(processnum=None):
         processnum = cpu_count()
     pool = Pool(processnum)
 
-    def pcut(sentence,cut_all=False):
-        parts = re.compile(b'([\r\n]+)').split(sentence)
+    def pcut(sentence,cut_all=False,HMM=True):
+        parts = re.compile('([\r\n]+)').split(sentence)
         if cut_all:
-            result = pool.map(__lcut_all,parts)
+            result = pool.map(__lcut_all,parts) 
         else:
-            result = pool.map(__lcut,parts)
+            if HMM:
+                result = pool.map(__lcut,parts)
+            else:
+                result = pool.map(__lcut_no_hmm,parts)
         for r in result:
             for w in r:
                 yield w
 
     def pcut_for_search(sentence):
-        parts = re.compile(b'([\r\n]+)').split(sentence)
+        parts = re.compile('([\r\n]+)').split(sentence)
         result = pool.map(__lcut_for_search,parts)
         for r in result:
             for w in r:
@@ -359,7 +405,7 @@ def set_dictionary(dictionary_path):
     with DICT_LOCK:
         abs_path = os.path.normpath( os.path.join( os.getcwd(), dictionary_path )  )
         if not os.path.exists(abs_path):
-            raise Exception("jieba: path does not exists:" + abs_path)
+            raise Exception("jieba: path does not exist:" + abs_path)
         DICTIONARY = abs_path
         initialized = False
 
@@ -368,18 +414,18 @@ def get_abs_path_dict():
     abs_path = os.path.join(_curpath,DICTIONARY)
     return abs_path
 
-def tokenize(unicode_sentence,mode="default"):
+def tokenize(unicode_sentence,mode="default",HMM=True):
     #mode ("default" or "search")
     if not isinstance(unicode_sentence, str):
-        raise Exception("jieba: the input parameter should  unicode.")
+        raise Exception("jieba: the input parameter should be str.")
     start = 0
     if mode=='default':
-        for w in cut(unicode_sentence):
+        for w in cut(unicode_sentence,HMM=HMM):
             width = len(w)
             yield (w,start,start+width)
             start+=width
     else:
-        for w in cut(unicode_sentence):
+        for w in cut(unicode_sentence,HMM=HMM):
             width = len(w)
             if len(w)>2:
                 for i in range(len(w)-1):
@@ -393,3 +439,4 @@ def tokenize(unicode_sentence,mode="default"):
                         yield (gram3,start+i,start+i+3)
             yield (w,start,start+width)
             start+=width
+

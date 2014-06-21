@@ -2,6 +2,68 @@ from __future__ import with_statement
 __version__ = '0.32'
 __license__ = 'MIT'
 
+class Trie(object):
+    def __init__(self, *args, **kwargs):
+        self.root = {}
+        self._no_value = object()
+        for k, v in kwargs.items():
+            self[k] = v
+
+    def __setitem__(self, key, value):
+        node = self.root
+        for c in key:
+            if c not in node:
+                node[c] = {}
+            node = node[c]
+
+        node[''] = value  # ending flag, '' is special
+
+    def __getitem__(self, item):
+        node = self._find(item)
+        if not node or '' not in node:
+            raise KeyError(item)
+        return node['']
+
+    def __contains__(self, item):
+        return self.get(item, self._no_value) is not self._no_value
+
+    def get(self, key, default_value=None):
+        node = self._find(key)
+        if node:
+            return node.get('', default_value)
+        return default_value
+
+    def _find(self, key):
+        node = self.root
+        for c in key:
+            if c in node:
+                node = node[c]
+            else:
+                return None
+        return node
+
+    def items(self, prefix=''):
+        start = self._find(prefix)
+        if not start:
+            raise StopIteration
+
+        stack = [(prefix, start)]
+        while stack:
+            current_prefix, node = stack.pop()
+            if '' in node:
+                yield current_prefix, node['']
+
+            for c, child in node.items():
+                if c:  # ignore special ''
+                    stack.append((current_prefix + c, child))
+
+    def keys(self, prefix=''):
+        return (key for key, value in self.items(prefix))
+
+    def values(self, prefix=''):
+        return (value for key, value in self.items(prefix))
+
+
 import re
 import os
 import sys
@@ -35,28 +97,27 @@ def setLogLevel(log_level):
     logger.setLevel(log_level)
 
 def gen_trie(f_name):
-    lfreq = {}
-    trie = {}
-    ltotal = 0.0
+    trie, ltotal = Trie(), 0.0
+
     with open(f_name, 'rb') as f:
-        lineno = 0 
-        for line in f.read().rstrip().decode('utf-8').split('\n'):
+        lineno, freqs = 0, {}
+        for line in f:
             lineno += 1
+            line = line.strip().decode('utf-8')
             try:
                 word,freq,_ = line.split(' ')
-                freq = float(freq)
-                lfreq[word] = freq
-                ltotal+=freq
-                p = trie
-                for c in word:
-                    if c not in p:
-                        p[c] ={}
-                    p = p[c]
-                p['']='' #ending flag
+                freqs[word] = float(freq)
             except ValueError, e:
                 logger.debug('%s at line %s %s' % (f_name,  lineno, line))
                 raise ValueError, e
-    return trie, lfreq,ltotal
+
+        ltotal = sum(freqs.values())
+        min_freq = min(freqs.values())
+
+        for word, freq in freqs.items():
+            trie[word] = log(freq/ltotal)
+
+    return trie, ltotal, float(min_freq / ltotal)
 
 def initialize(*args):
     global trie, FREQ, total, min_freq, initialized
@@ -78,26 +139,27 @@ def initialize(*args):
         if abs_path == os.path.join(_curpath,"dict.txt"): #defautl dictionary
             cache_file = os.path.join(tempfile.gettempdir(),"jieba.cache")
         else: #customer dictionary
-            cache_file = os.path.join(tempfile.gettempdir(),"jieba.user."+str(hash(abs_path))+".cache")
+            cache_file = os.path.join(tempfile.gettempdir(),"jieba.user."+str(hash(abs_path))+".cache2")
 
         load_from_cache_fail = True
         if os.path.exists(cache_file) and os.path.getmtime(cache_file)>os.path.getmtime(abs_path):
             logger.debug("loading model from cache %s" % cache_file)
             try:
-                trie,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+                root, total,min_freq = marshal.load(open(cache_file,'rb'))
                 load_from_cache_fail = False
+                trie = Trie()
+                trie.root = root
             except:
                 load_from_cache_fail = True
 
         if load_from_cache_fail:
-            trie,FREQ,total = gen_trie(abs_path)
-            FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
-            min_freq = min(FREQ.itervalues())
+            trie, total, min_freq = gen_trie(abs_path)
+
             logger.debug("dumping model to file cache %s" % cache_file)
             try:
                 tmp_suffix = "."+str(random.random())
                 with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
-                    marshal.dump((trie,FREQ,total,min_freq),temp_cache_file)
+                    marshal.dump((trie.root, total, min_freq), temp_cache_file)
                 if os.name=='nt':
                     import shutil
                     replace_file = shutil.move
@@ -109,6 +171,7 @@ def initialize(*args):
                 logger.exception("")
 
         initialized = True
+        FREQ = trie
 
         logger.debug("loading model cost %s seconds." % (time.time() - t1))
         logger.debug("Trie has been built succesfully.")
@@ -153,7 +216,7 @@ def calc(sentence,DAG,idx,route):
 def get_DAG(sentence):
     N = len(sentence)
     i,j=0,0
-    p = trie
+    p = trie.root
     DAG = {}
     while i<N:
         c = sentence[j]
@@ -167,9 +230,9 @@ def get_DAG(sentence):
             if j>=N:
                 i+=1
                 j=i
-                p=trie
+                p=trie.root
         else:
-            p = trie
+            p = trie.root
             i+=1
             j=i
     for i in xrange(len(sentence)):

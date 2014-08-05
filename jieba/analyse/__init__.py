@@ -1,3 +1,4 @@
+#encoding=utf-8
 import jieba
 import os
 try:
@@ -5,22 +6,34 @@ try:
 except ImportError:
     pass
 
-_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
-f_name = os.path.join(_curpath,"idf.txt")
-content = open(f_name,'rb').read().decode('utf-8')
+_curpath = os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+abs_path = os.path.join(_curpath, "idf.txt")
+IDF_DICTIONARY = abs_path
 
-idf_freq = {}
-lines = content.split('\n')
-for line in lines:
-    word,freq = line.split(' ')
-    idf_freq[word] = float(freq)
+def set_idf_path(idf_path):
+    global IDF_DICTIONARY
+    abs_path = os.path.normpath( os.path.join( os.getcwd(), idf_path )  )
+    if not os.path.exists(abs_path):
+        raise Exception("jieba: path does not exist:" + abs_path)
+    IDF_DICTIONARY = abs_path
+    return
 
-median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
-stop_words= set([
-"the","of","is","and","to","in","that","we","for","an","are","by","be","as","on","with","can","if","from","which","you","it","this","then","at","have","all","not","one","has","or","that"
-])
+def get_idf(abs_path):
+    content = open(abs_path,'rb').read().decode('utf-8')
+    idf_freq = {}
+    lines = content.split('\n')
+    for line in lines:
+        word,freq = line.split(' ')
+        idf_freq[word] = float(freq)
+    median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
+    return idf_freq, median_idf
 
 def extract_tags(sentence,topK=20):
+    global IDF_DICTIONARY
+    idf_freq, median_idf = get_idf(IDF_DICTIONARY)
+    stop_words= set([
+        "the","of","is","and","to","in","that","we","for","an","are","by","be","as","on","with","can","if","from","which","you","it","this","then","at","have","all","not","one","has","or","that"
+    ])
     words = jieba.cut(sentence)
     freq = {}
     for w in words:

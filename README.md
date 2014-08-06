@@ -113,15 +113,15 @@ Output:
 * 范例：
 
 	* 自定义词典：https://github.com/fxsjy/jieba/blob/master/test/userdict.txt
-	
+
 	* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py
-	
+
 
 		* 之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 
 		* 加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 
-		
+
 * "通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
 功能 3) ：关键词提取
@@ -133,6 +133,18 @@ Output:
 代码示例 （关键词提取）
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+
+关键词提取所使用逆向文件频率（IDF）文本语料库可以切换成自定义语料库的路径
+
+* 用法： jieba.analyse.set_idf_path(file_name) # file_name为自定义语料库的路径
+* 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big
+* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py
+
+关键词提取所使用停止词（Stop Words）文本语料库可以切换成自定义语料库的路径
+
+* 用法： jieba.analyse.set_stop_words(file_name) # file_name为自定义语料库的路径
+* 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt
+* 用法示例：hhttps://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
 
 功能 4) : 词性标注
 ================
@@ -148,7 +160,7 @@ Output:
 		爱 v
 		北京 ns
 		天安门 ns
-		
+
 功能 5) : 并行分词
 ==================
 * 原理：将目标文本按行分隔后，把各行文本分配到多个python进程并行分词，然后归并结果，从而获得分词速度的可观提升
@@ -198,8 +210,8 @@ word 有限                start: 6                end:8
 word 公司                start: 8                end:10
 word 有限公司            start: 6                end:10
 ```
-  
-  
+
+
 功能 7) : ChineseAnalyzer for Whoosh搜索引擎
 ============================================
 * 引用： `from jieba.analyse import ChineseAnalyzer `
@@ -246,11 +258,11 @@ jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一�
 常见问题
 =========
  1）模型的数据是如何生成的？https://github.com/fxsjy/jieba/issues/7
- 
+
  2）这个库的授权是? https://github.com/fxsjy/jieba/issues/2
- 
+
  更多问题请点击：https://github.com/fxsjy/jieba/issues?sort=updated&state=closed
- 
+
 Change Log
 ==========
 https://github.com/fxsjy/jieba/blob/master/Changelog
@@ -327,9 +339,9 @@ Function 2): Add a custom dictionary
 		李小福 2
 		创新办 3
 
-		之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
+		[Before]： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 
-		加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
+		[After]：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 
 Function 3): Keyword Extraction
 ================
@@ -340,6 +352,18 @@ Function 3): Keyword Extraction
 Code sample (keyword extraction)
 
 	https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+
+Developers can specify their own custom IDF corpus in jieba keyword extraction
+
+* Usage： `jieba.analyse.set_idf_path(file_name) # file_name is a custom corpus path`
+* Custom Corpus Sample：https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big
+* Sample Code：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py
+
+Developers can specify their own custom stop words corpus in jieba keyword extraction
+
+* Usage： `jieba.analyse.set_stop_words(file_name) # file_name is a custom corpus path`
+* Custom Corpus Sample：https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt
+* Sample Code：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
 
 Using Other Dictionaries
 ========
@@ -363,7 +387,7 @@ By default, Jieba employs lazy loading to only build the trie once it is necessa
     jieba.initialize()  # (optional)
 
 You can also specify the dictionary (not supported before version 0.28) :
-    
+
     jieba.set_dictionary('data/dict.txt.big')
 
 Segmentation speed

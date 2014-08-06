@@ -144,7 +144,7 @@ Output:
 
 * 用法： jieba.analyse.set_stop_words(file_name) # file_name为自定义语料库的路径
 * 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt
-* 用法示例：hhttps://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
+* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
 
 功能 4) : 词性标注
 ================

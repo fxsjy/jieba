@@ -1,6 +1,6 @@
 jieba
 ========
-"结巴"中文分词：做最好的Python中文分词组件
+"结巴"中文分词：做最好的 Python 中文分词组件
 "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
 - _Scroll down for English documentation._
 
@@ -30,52 +30,52 @@ http://jiebademo.ap01.aws.af.cm/
 Python 2.x 下的安装
 ===================
 * 全自动安装：`easy_install jieba` 或者 `pip install jieba`
-* 半自动安装：先下载http://pypi.python.org/pypi/jieba/ ，解压后运行python setup.py install
-* 手动安装：将jieba目录放置于当前目录或者site-packages目录
-* 通过import jieba 来引用
+* 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 python setup.py install
+* 手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
+* 通过 import jieba 来引用
 
 
 Python 3.x 下的安装
 ====================
-* 目前master分支是只支持Python2.x 的
+* 目前 master 分支是只支持 Python2.x 的
 * Python3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
 
         git clone https://github.com/fxsjy/jieba.git
         git checkout jieba3k
         python setup.py install
 
-结巴分词Java版本
+结巴分词 Java 版本
 ================
 作者：piaolingxue
 地址：https://github.com/huaban/jieba-analysis
 
-结巴分词C++版本
+结巴分词 C++ 版本
 ================
 作者：Aszxqw
 地址：https://github.com/aszxqw/cppjieba
 
-结巴分词Node.js版本
+结巴分词 Node.js 版本
 ================
 作者：Aszxqw
 地址：https://github.com/aszxqw/nodejieba
 
-结巴分词Erlang版本
+结巴分词 Erlang 版本
 ================
 作者：falood
 https://github.com/falood/exjieba
 
 Algorithm
 ========
-* 基于Trie树结构实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图（DAG)
+* 基于 Trie 树结构实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图（DAG)
 * 采用了动态规划查找最大概率路径, 找出基于词频的最大切分组合
-* 对于未登录词，采用了基于汉字成词能力的HMM模型，使用了Viterbi算法
+* 对于未登录词，采用了基于汉字成词能力的 HMM 模型，使用了 Viterbi 算法
 
 功能 1)：分词
 ==========
-* `jieba.cut`方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all参数用来控制是否采用全模式
-* `jieba.cut_for_search`方法接受一个参数：需要分词的字符串,该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
-* 注意：待分词的字符串可以是gbk字符串、utf-8字符串或者unicode
-* `jieba.cut`以及`jieba.cut_for_search`返回的结构都是一个可迭代的generator，可以使用for循环来获得分词后得到的每一个词语(unicode)，也可以用list(jieba.cut(...))转化为list
+* `jieba.cut` 方法接受两个输入参数: 1) 第一个参数为需要分词的字符串 2）cut_all 参数用来控制是否采用全模式
+* `jieba.cut_for_search` 方法接受一个参数：需要分词的字符串,该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
+* 注意：待分词的字符串可以是gbk字符串、utf-8 字符串或者 unicode
+* `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，也可以用 list(jieba.cut(...))转化为 list
 
 代码示例( 分词 )
 
@@ -107,8 +107,8 @@ Output:
 功能 2) ：添加自定义词典
 ================
 
-* 开发者可以指定自己自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
-* 用法： jieba.load_userdict(file_name) # file_name为自定义词典的路径
+* 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
+* 用法： jieba.load_userdict(file_name) # file_name 为自定义词典的路径
 * 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频，最后为词性（可省略），用空格隔开
 * 范例：
 
@@ -126,9 +126,9 @@ Output:
 
 功能 3) ：关键词提取
 ================
-* jieba.analyse.extract_tags(sentence,topK) #需要先import jieba.analyse
-* setence为待提取的文本
-* topK为返回几个TF/IDF权重最大的关键词，默认值为20
+* jieba.analyse.extract_tags(sentence,topK) #需要先 import jieba.analyse
+* setence 为待提取的文本
+* topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
 
 代码示例 （关键词提取）
 
@@ -148,7 +148,7 @@ Output:
 
 功能 4) : 词性标注
 ================
-* 标注句子分词后每个词的词性，采用和ictclas兼容的标记法
+* 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法
 * 用法示例
 
 		>>> import jieba.posseg as pseg
@@ -163,8 +163,8 @@ Output:
 
 功能 5) : 并行分词
 ==================
-* 原理：将目标文本按行分隔后，把各行文本分配到多个python进程并行分词，然后归并结果，从而获得分词速度的可观提升
-* 基于python自带的multiprocessing模块，目前暂不支持windows
+* 原理：将目标文本按行分隔后，把各行文本分配到多个 python 进程并行分词，然后归并结果，从而获得分词速度的可观提升
+* 基于 python 自带的 multiprocessing 模块，目前暂不支持 windows
 * 用法：
 	* `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
 	* `jieba.disable_parallel()` # 关闭并行分词模式
@@ -172,12 +172,12 @@ Output:
 * 例子：
 		https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
 
-* 实验结果：在4核3.4GHz Linux机器上，对金庸全集进行精确分词，获得了1MB/s的速度，是单进程版的3.3倍。
+* 实验结果：在 4 核 3.4GHz Linux 机器上，对金庸全集进行精确分词，获得了 1MB/s 的速度，是单进程版的 3.3 倍。
 
 
 功能 6) : Tokenize：返回词语在原文的起始位置
 ============================================
-* 注意，输入参数只接受unicode
+* 注意，输入参数只接受 unicode
 * 默认模式
 
 ```python
@@ -212,7 +212,7 @@ word 有限公司            start: 6                end:10
 ```
 
 
-功能 7) : ChineseAnalyzer for Whoosh搜索引擎
+功能 7) : ChineseAnalyzer for Whoosh 搜索引擎
 ============================================
 * 引用： `from jieba.analyse import ChineseAnalyzer `
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
@@ -226,19 +226,19 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small
 2. 支持繁体分词更好的词典文件
 https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
-下载你所需要的词典，然后覆盖jieba/dict.txt 即可或者用`jieba.set_dictionary('data/dict.txt.big')`
+下载你所需要的词典，然后覆盖jieba/dict.txt 即可或者用 `jieba.set_dictionary('data/dict.txt.big')`
 
 
 模块初始化机制的改变:lazy load （从0.28版本开始）
 ================================================
 
-jieba采用延迟加载，"import jieba"不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始jieba，也可以手动初始化。
+jieba 采用延迟加载，"import jieba" 不会立即触发词典的加载，一旦有必要才开始加载词典构建trie。如果你想手工初始 jieba，也可以手动初始化。
 
     import jieba
     jieba.initialize()  # 手动初始化（可选）
 
 
-在0.28之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
+在 0.28 之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
 
 
     jieba.set_dictionary('data/dict.txt.big')

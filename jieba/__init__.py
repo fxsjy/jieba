@@ -39,7 +39,7 @@ def gen_trie(f_name):
     trie = {}
     ltotal = 0.0
     with open(f_name, 'rb') as f:
-        lineno = 0 
+        lineno = 0
         for line in f.read().rstrip().decode('utf-8').split('\n'):
             lineno += 1
             try:
@@ -134,7 +134,7 @@ def __cut_all(sentence):
     for k,L in dag.iteritems():
         if len(L)==1 and k>old_j:
             yield sentence[k:L[0]+1]
-            old_j = L[0] 
+            old_j = L[0]
         else:
             for j in L:
                 if j>k:
@@ -195,7 +195,7 @@ def __cut_DAG_NO_HMM(sentence):
             if len(buf)>0:
                 yield buf
                 buf = u''
-            yield l_word        
+            yield l_word
             x =y
     if len(buf)>0:
         yield buf
@@ -227,7 +227,7 @@ def __cut_DAG(sentence):
                         for elem in buf:
                             yield elem
                     buf=u''
-            yield l_word        
+            yield l_word
         x =y
 
     if len(buf)>0:
@@ -243,8 +243,8 @@ def __cut_DAG(sentence):
                     yield elem
 
 def cut(sentence,cut_all=False,HMM=True):
-    '''The main function that segments an entire sentence that contains 
-    Chinese characters into seperated words. 
+    '''The main function that segments an entire sentence that contains
+    Chinese characters into seperated words.
     Parameter:
         - sentence: The String to be segmented
         - cut_all: Model. True means full pattern, false means accurate pattern.
@@ -257,8 +257,8 @@ def cut(sentence,cut_all=False,HMM=True):
             sentence = sentence.decode('gbk','ignore')
     '''
         \u4E00-\u9FA5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
-        \r\n|\s : whitespace characters. Will not be Handled. 
-    ''' 
+        \r\n|\s : whitespace characters. Will not be Handled.
+    '''
     re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\r\n|\s)", re.U)
     if cut_all:
         re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
@@ -306,7 +306,7 @@ def load_userdict(f):
     ''' Load personalized dict to improve detect rate.
     Parameter:
         - f : A plain text file contains words and their ocurrences.
-    Structure of dict file: 
+    Structure of dict file:
     word1 freq1 word_type1
     word2 freq2 word_type2
     ...
@@ -372,7 +372,7 @@ def enable_parallel(processnum=None):
     def pcut(sentence,cut_all=False,HMM=True):
         parts = re.compile('([\r\n]+)').split(sentence)
         if cut_all:
-            result = pool.map(__lcut_all,parts) 
+            result = pool.map(__lcut_all,parts)
         else:
             if HMM:
                 result = pool.map(__lcut,parts)
@@ -418,7 +418,7 @@ def tokenize(unicode_sentence,mode="default",HMM=True):
     #mode ("default" or "search")
     if not isinstance(unicode_sentence, unicode):
         raise Exception("jieba: the input parameter should  unicode.")
-    start = 0 
+    start = 0
     if mode=='default':
         for w in cut(unicode_sentence,HMM=HMM):
             width = len(w)

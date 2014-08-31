@@ -1,5 +1,5 @@
 from distutils.core import setup  
-setup(name='jieba',  
+setup(name='jieba3k',  
       version='0.32',  
       description='Chinese Words Segementation Utilities',  
       author='Sun, Junyi',  

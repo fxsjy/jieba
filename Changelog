@@ -1,3 +1,9 @@
+2014-08-31: version 0.33
+1. 支持自定义stop words; by @fukuball
+2. 支持自定义idf词典; by @fukuball
+3. 修复自定义词典的词性不能正常显示的bug; by @ShuraChow
+
+
 2014-02-07: version 0.32
 1. 新增分词选项：可以关闭新词发现功能；详见：https://github.com/fxsjy/jieba/blob/master/test/test_no_hmm.py#L8
 2. 修复posseg子模块的Bug；详见: https://github.com/fxsjy/jieba/issues/111 https://github.com/fxsjy/jieba/issues/132

@@ -43,6 +43,8 @@ Python 3.x 下的安装
         git clone https://github.com/fxsjy/jieba.git
         git checkout jieba3k
         python setup.py install
+* 或使用pip3安装： pip3 install jieba3k
+
 
 结巴分词Java版本
 ================

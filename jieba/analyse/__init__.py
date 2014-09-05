@@ -35,7 +35,7 @@ def extract_tags(sentence,topK=20):
 
     top_tuples= st_list[:topK]
     tags = [a[1] for a in top_tuples]
-    return    tags
+    return tags
 
 
 def set_stop_words(stop_words_path):

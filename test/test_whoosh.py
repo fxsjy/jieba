@@ -59,5 +59,5 @@ for keyword in ("水果世博园","你","first","中文","交换机","交换"):
         print(hit.highlights("content"))
     print("="*10)
 
-for t in analyzer("我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream."):
+for t in analyzer("我的好朋友是李明;我爱北京天安门;IBM和Microsoft; I have a dream. this is intetesting and interested me a lot"):
     print(t.text)

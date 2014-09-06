@@ -23,6 +23,6 @@ while True:
         break
     line = line.strip()
     for word in jieba.cut(line):
-        print(word.encode(default_encoding))
+        print(word)
 
 

@@ -24,13 +24,13 @@ def set_idf_path(idf_path):
 
 def get_idf(abs_path):
     content = open(abs_path,'rb').read().decode('utf-8')
-idf_freq = {}
-lines = content.split('\n')
-for line in lines:
-    word,freq = line.split(' ')
-    idf_freq[word] = float(freq)
-    median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
-    return idf_freq, median_idf
+    idf_freq = {}
+    lines = content.split('\n')
+    for line in lines:
+        word,freq = line.split(' ')
+        idf_freq[word] = float(freq)
+        median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
+        return idf_freq, median_idf
 
 def set_stop_words(stop_words_path):
     global STOP_WORDS

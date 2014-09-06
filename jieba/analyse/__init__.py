@@ -16,7 +16,7 @@ for line in lines:
     idf_freq[word] = float(freq)
 
 median_idf = sorted(idf_freq.values())[int(len(idf_freq)/2)]
-stop_words= set([
+STOP_WORDS = set([
 "the","of","is","and","to","in","that","we","for","an","are","by","be","as","on","with","can","if","from","which","you","it","this","then","at","have","all","not","one","has","or","that"
 ])
 
@@ -36,3 +36,15 @@ def extract_tags(sentence,topK=20):
     top_tuples= st_list[:topK]
     tags = [a[1] for a in top_tuples]
     return tags
+
+
+def set_stop_words(stop_words_path):
+    global STOP_WORDS
+    abs_path = os.path.normpath( os.path.join(_curpath, stop_words_path )  )
+    if not os.path.exists(abs_path):
+        raise Exception("jieba: path does not exist:" + abs_path)
+    content = open(abs_path,'rb').read().decode('utf-8')
+    lines = content.split('\n')
+    for line in lines:
+        STOP_WORDS.add(line)
+    return

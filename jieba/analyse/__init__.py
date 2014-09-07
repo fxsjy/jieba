@@ -29,7 +29,7 @@ def get_idf(abs_path):
     for line in lines:
         word,freq = line.split(' ')
         idf_freq[word] = float(freq)
-        median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
+        median_idf = sorted(idf_freq.values())[len(idf_freq)//2]
         return idf_freq, median_idf
 
 def set_stop_words(stop_words_path):
@@ -56,7 +56,7 @@ def extract_tags(sentence,topK=20):
         if w.lower() in STOP_WORDS: continue
         freq[w]=freq.get(w,0.0)+1.0
     total = sum(freq.values())
-    freq = [(k,v/total) for k,v in freq.iteritems()]
+    freq = [(k,v/total) for k,v in freq.items()]
 
     tf_idf_list = [(v * idf_freq.get(k,median_idf),k) for k,v in freq]
     st_list = sorted(tf_idf_list,reverse=True)

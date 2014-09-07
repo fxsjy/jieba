@@ -91,7 +91,7 @@ def initialize(*args):
 
         if load_from_cache_fail:
             trie,FREQ,total = gen_trie(abs_path)
-            FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.iteritems()]) #normalize
+            FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.items()]) #normalize
             min_freq = min(FREQ.itervalues())
             logger.debug("dumping model to file cache %s" % cache_file)
             try:
@@ -131,7 +131,7 @@ def require_initialized(fn):
 def __cut_all(sentence):
     dag = get_DAG(sentence)
     old_j = -1
-    for k,L in dag.iteritems():
+    for k,L in dag.items():
         if len(L)==1 and k>old_j:
             yield sentence[k:L[0]+1]
             old_j = L[0]

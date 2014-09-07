@@ -92,7 +92,7 @@ def initialize(*args):
         if load_from_cache_fail:
             trie,FREQ,total = gen_trie(abs_path)
             FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.items()]) #normalize
-            min_freq = min(FREQ.itervalues())
+            min_freq = min(FREQ.values())
             logger.debug("dumping model to file cache %s" % cache_file)
             try:
                 tmp_suffix = "."+str(random.random())

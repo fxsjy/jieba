@@ -6,7 +6,9 @@ jieba.enable_parallel(4)
 
 def cuttest(test_sent):
     result = jieba.cut_for_search(test_sent)
-    print("/ ".join(result))
+    for word in result:
+        print(word, "/", end=' ') 
+    print("")
 
 
 if __name__ == "__main__":

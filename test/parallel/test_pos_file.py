@@ -1,4 +1,4 @@
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import sys,time
 import sys
 sys.path.append("../../")
@@ -16,7 +16,7 @@ tm_cost = t2-t1
 
 log_f = open("1.log","wb")
 for w in words:
-    print >> log_f, w.encode("utf-8"), "/" ,
+    print(w.encode("utf-8"), "/", end=' ', file=log_f)
 
-print 'speed' , len(content)/tm_cost, " bytes/second"
+print('speed' , len(content)/tm_cost, " bytes/second")
 

@@ -1,7 +1,7 @@
 #-*-coding: utf-8 -*-
 import sys
+import imp
 sys.path.append("../")
-from imp import reload
 import unittest
 import types
 import jieba
@@ -98,7 +98,7 @@ test_contents = [
 
 class JiebaTestCase(unittest.TestCase):
     def setUp(self):
-        reload(jieba)
+        imp.reload(jieba)
 
     def tearDown(self):
         pass

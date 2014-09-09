@@ -29,6 +29,6 @@ content = open(file_name,'rb').read()
 
 tags = jieba.analyse.extract_tags(content,topK=topK)
 
-print(",".join(tags) )
+print(",".join(tags))
 
 

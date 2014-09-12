@@ -26,6 +26,8 @@ def get_idf(abs_path):
     content = open(abs_path,'rb').read().decode('utf-8')
     idf_freq = {}
     lines = content.split('\n')
+    if lines and not lines[-1]:
+        lines.pop(-1)
     for line in lines:
         word,freq = line.split(' ')
         idf_freq[word] = float(freq)

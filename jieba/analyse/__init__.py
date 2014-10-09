@@ -45,11 +45,11 @@ def set_stop_words(stop_words_path):
         STOP_WORDS.add(line)
     return
 
-def extract_tags(sentence,topK=20):
-    global IDF_DICTIONARY
-    global STOP_WORDS
+global IDF_DICTIONARY
+idf_freq, median_idf = get_idf(IDF_DICTIONARY)
 
-    idf_freq, median_idf = get_idf(IDF_DICTIONARY)
+def extract_tags(sentence,topK=20):
+    global STOP_WORDS
 
     words = jieba.cut(sentence)
     freq = {}

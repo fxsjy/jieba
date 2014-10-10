@@ -259,9 +259,9 @@ def cut(sentence,cut_all=False,HMM=True):
         \u4E00-\u9FA5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
         \r\n|\s : whitespace characters. Will not be Handled.
     '''
-    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\r\n|\s)", re.U)
+    re_han, re_skip = re.compile(ur"([\u00B7\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\r\n|\s)", re.U)
     if cut_all:
-        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
+        re_han, re_skip = re.compile(ur"([\u00B7\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
     blocks = re_han.split(sentence)
     if HMM:
         cut_block = __cut_DAG

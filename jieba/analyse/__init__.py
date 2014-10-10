@@ -9,30 +9,43 @@ except ImportError:
 _curpath = os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
 abs_path = os.path.join(_curpath, "idf.txt")
 
-IDF_DICTIONARY = abs_path
 STOP_WORDS = set([
     "the","of","is","and","to","in","that","we","for","an","are","by","be","as","on","with","can","if","from","which","you","it","this","then","at","have","all","not","one","has","or","that"
 ])
 
-def set_idf_path(idf_path):
-    global IDF_DICTIONARY
-    abs_path = os.path.normpath( os.path.join( os.getcwd(), idf_path )  )
-    if not os.path.exists(abs_path):
-        raise Exception("jieba: path does not exist:" + abs_path)
-    IDF_DICTIONARY = abs_path
-    return
+class IDFLoader:
+    def __init__(self):
+        self.path = ""
+        self.idf_freq = {}
+        self.median_idf = 0.0
 
-def get_idf(abs_path):
-    content = open(abs_path,'rb').read().decode('utf-8')
-    idf_freq = {}
-    lines = content.split('\n')
-    if lines and not lines[-1]:
-        lines.pop(-1)
-    for line in lines:
-        word,freq = line.split(' ')
-        idf_freq[word] = float(freq)
-    median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
-    return idf_freq, median_idf
+    def set_new_path(self, new_idf_path):
+        if self.path != new_idf_path:
+            content = open(new_idf_path,'rb').read().decode('utf-8')
+            idf_freq = {}
+            lines = content.split('\n')
+            if lines and not lines[-1]:
+                lines.pop(-1)
+            for line in lines:
+                word,freq = line.split(' ')
+                idf_freq[word] = float(freq)
+            median_idf = sorted(idf_freq.values())[len(idf_freq)/2]
+            self.idf_freq = idf_freq
+            self.median_idf = median_idf
+            self.path = new_idf_path
+
+    def get_idf(self):
+        return self.idf_freq, self.median_idf
+
+idf_loader = IDFLoader()
+idf_loader.set_new_path(abs_path)
+
+def set_idf_path(idf_path):
+    new_abs_path = os.path.normpath( os.path.join( os.getcwd(), idf_path )  )
+    if not os.path.exists(new_abs_path):
+        raise Exception("jieba: path does not exist:" + new_abs_path)
+    idf_loader.set_new_path(new_abs_path)
+    return
 
 def set_stop_words(stop_words_path):
     global STOP_WORDS
@@ -46,10 +59,9 @@ def set_stop_words(stop_words_path):
     return
 
 def extract_tags(sentence,topK=20):
-    global IDF_DICTIONARY
     global STOP_WORDS
 
-    idf_freq, median_idf = get_idf(IDF_DICTIONARY)
+    idf_freq, median_idf = idf_loader.get_idf()
 
     words = jieba.cut(sentence)
     freq = {}

@@ -14,6 +14,7 @@ import random
 import threading
 from functools import wraps
 import logging
+import re
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -43,7 +44,8 @@ def gen_trie(f_name):
         for line in f.read().rstrip().decode('utf-8').split('\n'):
             lineno += 1
             try:
-                word,freq,_ = line.split(' ')
+                #word,freq,_ = line.strip().split(' ')
+                word, freq, _ = re.split(r'\s+', line.strip())
                 freq = float(freq)
                 lfreq[word] = freq
                 ltotal+=freq

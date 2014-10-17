@@ -29,4 +29,5 @@ jieba.analyse.set_idf_path("../extra_dict/idf.txt.big");
 
 tags = jieba.analyse.extract_tags(content, topK=topK)
 
-print ",".join(tags)
+for tag in tags:
+    print "tag %s\t\t weight: %f" % (tag[1],tag[0])

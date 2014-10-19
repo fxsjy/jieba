@@ -15,21 +15,19 @@ STOP_WORDS = frozenset(('a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'can',
 accepted_chars = re.compile(r"[\u4E00-\u9FA5]+")
 
 class ChineseTokenizer(Tokenizer):
-    def __call__(self,text,**kargs):
-        words = jieba.tokenize(text,mode="search")
-        token  = Token()
+    def __call__(self, text, **kargs):
+        words = jieba.tokenize(text, mode="search")
+        token = Token()
         for (w,start_pos,stop_pos) in words:
-            if not accepted_chars.match(w):
-                if len(w)>1:
-                    pass
-                else:
-                    continue
+            if not accepted_chars.match(w) and len(w)<=1:
+                continue
             token.original = token.text = w
             token.pos = start_pos
             token.startchar = start_pos
             token.endchar = stop_pos
             yield token
 
-def ChineseAnalyzer(stoplist=STOP_WORDS,minsize=1,stemfn=stem,cachesize=50000):
-    return ChineseTokenizer() | LowercaseFilter() | StopFilter(stoplist=stoplist,minsize=minsize)\
-                                        |StemFilter(stemfn=stemfn, ignore=None,cachesize=cachesize)
+def ChineseAnalyzer(stoplist=STOP_WORDS, minsize=1, stemfn=stem, cachesize=50000):
+    return (ChineseTokenizer() | LowercaseFilter() |
+            StopFilter(stoplist=stoplist,minsize=minsize) |
+            StemFilter(stemfn=stemfn, ignore=None,cachesize=cachesize))

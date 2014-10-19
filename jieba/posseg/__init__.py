@@ -13,17 +13,17 @@ PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
 
-def load_model(f_name,isJython=True):
-    _curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
+def load_model(f_name, isJython=True):
+    _curpath=os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     result = {}
     with open(f_name, "rb") as f:
         for line in open(f_name,"rb"):
             line = line.strip()
-            if line=="":continue
+            if not line: continue
             line = line.decode("utf-8")
             word, _, tag = line.split(" ")
-            result[word]=tag
+            result[word] = tag
     f.closed
     if not isJython:
         return result
@@ -59,7 +59,7 @@ if sys.platform.startswith("java"):
 else:
     from . import char_state_tab, prob_start, prob_trans, prob_emit
     char_state_tab_P, start_P, trans_P, emit_P = char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P
-    word_tag_tab = load_model(jieba.get_abs_path_dict(),isJython=False)
+    word_tag_tab = load_model(jieba.get_abs_path_dict(), isJython=False)
 
 def makesure_userdict_loaded(fn):
     
@@ -78,7 +78,7 @@ class pair(object):
         self.flag = flag
 
     def __unicode__(self):
-        return self.word+"/"+self.flag
+        return '%s/%s' % (self.word, self.flag)
 
     def __repr__(self):
         return self.__str__()
@@ -90,25 +90,25 @@ class pair(object):
         return self.__unicode__().encode(arg)
 
 def __cut(sentence):
-    prob, pos_list =  viterbi.viterbi(sentence,char_state_tab_P, start_P, trans_P, emit_P)
-    begin, next = 0,0
+    prob, pos_list = viterbi.viterbi(sentence, char_state_tab_P, start_P, trans_P, emit_P)
+    begin, next = 0, 0
 
     for i,char in enumerate(sentence):
         pos = pos_list[i][0]
-        if pos=='B':
+        if pos == 'B':
             begin = i
-        elif pos=='E':
+        elif pos == 'E':
             yield pair(sentence[begin:i+1], pos_list[i][1])
             next = i+1
-        elif pos=='S':
-            yield pair(char,pos_list[i][1])
+        elif pos == 'S':
+            yield pair(char, pos_list[i][1])
             next = i+1
-    if next<len(sentence):
-        yield pair(sentence[next:], pos_list[next][1] )
+    if next < len(sentence):
+        yield pair(sentence[next:], pos_list[next][1])
 
 def __cut_detail(sentence):
     re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"([\.0-9]+|[a-zA-Z0-9]+)")
-    re_eng,re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
+    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):
@@ -117,89 +117,88 @@ def __cut_detail(sentence):
         else:
             tmp = re_skip.split(blk)
             for x in tmp:
-                if x!="":
+                if x:
                     if re_num.match(x):
-                        yield pair(x,'m')
+                        yield pair(x, 'm')
                     elif re_eng.match(x):
-                        yield pair(x,'eng')
+                        yield pair(x, 'eng')
                     else:
-                        yield pair(x,'x')
+                        yield pair(x, 'x')
 
 def __cut_DAG_NO_HMM(sentence):
     DAG = jieba.get_DAG(sentence)
-    route ={}
-    jieba.calc(sentence,DAG,0,route=route)
+    route = {}
+    jieba.calc(sentence, DAG, 0, route=route)
     x = 0
     N = len(sentence)
-    buf =''
+    buf = ''
     re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
-    while x<N:
+    while x < N:
         y = route[x][1]+1
         l_word = sentence[x:y]
-        if re_eng.match(l_word) and len(l_word)==1:
+        if re_eng.match(l_word) and len(l_word) == 1:
             buf += l_word
             x = y
         else:
-            if len(buf)>0:
+            if buf:
                 yield pair(buf,'eng')
                 buf = ''
-            yield pair(l_word,word_tag_tab.get(l_word,'x'))
-            x =y
-    if len(buf)>0:
+            yield pair(l_word, word_tag_tab.get(l_word, 'x'))
+            x = y
+    if buf:
         yield pair(buf,'eng')
         buf = ''
 
 def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
-    route ={}
+    route = {}
     
     jieba.calc(sentence,DAG,0,route=route)
 
     x = 0
-    buf =''
+    buf = ''
     N = len(sentence)
-    while x<N:
+    while x < N:
         y = route[x][1]+1
         l_word = sentence[x:y]
-        if y-x==1:
-            buf+= l_word
+        if y-x == 1:
+            buf += l_word
         else:
-            if len(buf)>0:
-                if len(buf)==1:
-                    yield pair(buf,word_tag_tab.get(buf,'x'))
-                    buf=''
+            if buf:
+                if len(buf) == 1:
+                    yield pair(buf, word_tag_tab.get(buf, 'x'))
+                    buf = ''
                 else:
                     if (buf not in jieba.FREQ):
-                        regognized = __cut_detail(buf)
-                        for t in regognized:
+                        recognized = __cut_detail(buf)
+                        for t in recognized:
                             yield t
                     else:
                         for elem in buf:
-                            yield pair(elem,word_tag_tab.get(elem,'x'))
-                    buf=''
-            yield pair(l_word,word_tag_tab.get(l_word,'x'))
-        x =y
+                            yield pair(elem, word_tag_tab.get(elem, 'x'))
+                    buf = ''
+            yield pair(l_word, word_tag_tab.get(l_word, 'x'))
+        x = y
 
-    if len(buf)>0:
-        if len(buf)==1:
-            yield pair(buf,word_tag_tab.get(buf,'x'))
+    if buf:
+        if len(buf) == 1:
+            yield pair(buf, word_tag_tab.get(buf, 'x'))
+        elif (buf not in jieba.FREQ):
+            recognized = __cut_detail(buf)
+            for t in recognized:
+                yield t
         else:
-            if (buf not in jieba.FREQ):
-                regognized = __cut_detail(buf)
-                for t in regognized:
-                    yield t
-            else:
-                for elem in buf:
-                    yield pair(elem,word_tag_tab.get(elem,'x'))
+            for elem in buf:
+                yield pair(elem, word_tag_tab.get(elem, 'x'))
 
-def __cut_internal(sentence,HMM=True):
+def __cut_internal(sentence, HMM=True):
     if not isinstance(sentence, str):
         try:
             sentence = sentence.decode('utf-8')
-        except:
-            sentence = sentence.decode('gbk','ignore')
+        except UnicodeDecodeError:
+            sentence = sentence.decode('gbk', 'ignore')
     re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(r"(\r\n|\s)")
-    re_eng,re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
+    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
     blocks = re_han.split(sentence)
     if HMM:
         __cut_blk = __cut_DAG
@@ -214,15 +213,15 @@ def __cut_internal(sentence,HMM=True):
             tmp = re_skip.split(blk)
             for x in tmp:
                 if re_skip.match(x):
-                    yield pair(x,'x')
+                    yield pair(x, 'x')
                 else:
                     for xx in x:
                         if re_num.match(xx):
-                            yield pair(xx,'m')
+                            yield pair(xx, 'm')
                         elif re_eng.match(x):
-                            yield pair(xx,'eng')
+                            yield pair(xx, 'eng')
                         else:
-                            yield pair(xx,'x')
+                            yield pair(xx, 'x')
 
 def __lcut_internal(sentence):
     return list(__cut_internal(sentence))
@@ -231,16 +230,16 @@ def __lcut_internal_no_hmm(sentence):
 
 
 @makesure_userdict_loaded
-def cut(sentence,HMM=True):
-    if (not hasattr(jieba,'pool')) or (jieba.pool==None):
-        for w in __cut_internal(sentence,HMM=HMM):
+def cut(sentence, HMM=True):
+    if (not hasattr(jieba, 'pool')) or (jieba.pool is None):
+        for w in __cut_internal(sentence, HMM=HMM):
             yield w
     else:
         parts = re.compile('([\r\n]+)').split(sentence)
         if HMM:
-            result = jieba.pool.map(__lcut_internal,parts)
+            result = jieba.pool.map(__lcut_internal, parts)
         else:
-            result = jieba.pool.map(__lcut_internal_no_hmm,parts)
+            result = jieba.pool.map(__lcut_internal_no_hmm, parts)
         for r in result:
             for w in r:
                 yield w

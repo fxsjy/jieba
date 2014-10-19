@@ -5,7 +5,7 @@ from whoosh.index import create_in,open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 
-from jieba.analyse import ChineseAnalyzer 
+from jieba.analyse import ChineseAnalyzer
 
 analyzer = ChineseAnalyzer()
 
@@ -18,31 +18,31 @@ ix = create_in("tmp", schema) # for create new index
 writer = ix.writer()
 
 writer.add_document(
-    title=u"document1", 
+    title=u"document1",
     path=u"/a",
     content=u"This is the first document we’ve added!"
 )
 
 writer.add_document(
-    title=u"document2", 
+    title=u"document2",
     path=u"/b",
     content=u"The second one 你 中文测试中文 is even more interesting! 吃水果"
 )
 
 writer.add_document(
-    title=u"document3", 
+    title=u"document3",
     path=u"/c",
     content=u"买水果然后来世博园。"
 )
 
 writer.add_document(
-    title=u"document4", 
+    title=u"document4",
     path=u"/c",
     content=u"工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作"
 )
 
 writer.add_document(
-    title=u"document4", 
+    title=u"document4",
     path=u"/c",
     content=u"咱俩交换一下吧。"
 )
@@ -55,7 +55,7 @@ for keyword in (u"水果世博园",u"你",u"first",u"中文",u"交换机",u"交�
     print "result of ",keyword
     q = parser.parse(keyword)
     results = searcher.search(q)
-    for hit in results:  
+    for hit in results:
         print hit.highlights("content")
     print "="*10
 

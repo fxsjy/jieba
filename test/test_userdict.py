@@ -14,7 +14,7 @@ for w in words:
 result = pseg.cut(test_sent)
 
 for w in result:
-    print w.word, "/", w.flag, ", ",  
+    print w.word, "/", w.flag, ", ",
 
 print "\n========"
 

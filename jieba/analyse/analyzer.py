@@ -1,6 +1,6 @@
 ##encoding=utf-8
 from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter,StemFilter
-from whoosh.analysis import Tokenizer,Token 
+from whoosh.analysis import Tokenizer,Token
 from whoosh.lang.porter import stem
 
 import jieba

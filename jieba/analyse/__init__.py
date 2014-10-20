@@ -43,7 +43,7 @@ def set_stop_words(stop_words_path):
         STOP_WORDS.add(line)
     return
 
-def extract_tags(sentence,topK=20):
+def extract_tags(sentence,topK=20,withWeight=False):
     global IDF_DICTIONARY
     global STOP_WORDS
 
@@ -61,5 +61,9 @@ def extract_tags(sentence,topK=20):
     tf_idf_list = [(v * idf_freq.get(k,median_idf),k) for k,v in freq]
     st_list = sorted(tf_idf_list,reverse=True)
 
-    tags = st_list[:topK]
+    if withWeight:
+        tags = st_list[:topK]
+    else:
+        top_tuples = st_list[:topK]
+        tags = [a[1] for a in top_tuples]
     return tags

@@ -1,5 +1,5 @@
 from __future__ import with_statement
-__version__ = '0.32'
+__version__ = '0.34'
 __license__ = 'MIT'
 
 import re

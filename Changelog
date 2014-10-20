@@ -1,3 +1,8 @@
+2014-10-20: version 0.34
+1. 提升性能，词典结构由Trie改为Prefix Set，内存占用减少2/3, 详见：https://github.com/fxsjy/jieba/pull/187；by @gumblex
+2. 修复关键词提取功能的性能问题
+
+
 2014-08-31: version 0.33
 1. 支持自定义stop words; by @fukuball
 2. 支持自定义idf词典; by @fukuball

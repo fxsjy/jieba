@@ -126,9 +126,10 @@ Output:
 
 功能 3) ：关键词提取
 ================
-* jieba.analyse.extract_tags(sentence,topK) #需要先 import jieba.analyse
+* jieba.analyse.extract_tags(sentence,topK,withWeight) #需要先 import jieba.analyse
 * setence 为待提取的文本
 * topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
+* withWeight 为是否一并返回关键词权重值，默认值为 False
 
 代码示例 （关键词提取）
 
@@ -145,6 +146,10 @@ Output:
 * 用法： jieba.analyse.set_stop_words(file_name) # file_name为自定义语料库的路径
 * 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
+
+关键词一并返回关键词权重值示例
+
+* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py
 
 功能 4) : 词性标注
 ================

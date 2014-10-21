@@ -219,6 +219,30 @@ word 有限公司            start: 6                end:10
 * 引用： `from jieba.analyse import ChineseAnalyzer `
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
 
+功能 8) : 命令行分词
+====================
+
+	example:
+	cat news.txt | python -m jieba > cut_result.txt
+	
+	$> python -m jieba --help
+	usage: c:\python27\python.exe -m jieba [options] filename
+	
+	Jieba command line interface.
+	
+	positional arguments:
+	  filename              input file
+	
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -d [DELIM], --delimiter [DELIM]
+	                        use DELIM instead of ' / ' for word delimiter; use a
+	                        space if it is without DELIM
+	  -a, --cut-all         full pattern cutting
+	  -n, --no-hmm          don't use the Hidden Markov Model
+	  -q, --quiet           don't print loading messages to stderr
+	  -V, --version         show program's version number and exit
+  
 
 其他词典
 ========

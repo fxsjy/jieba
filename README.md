@@ -153,6 +153,35 @@ Output:
 
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py
 
+####基于TextRank算法的关键词抽取实现
+[算法论文链接](http://digital.library.unt.edu/ark:/67531/metadc30962/m2/1/high_res_d/Mihalcea-2004-TextRank-Bringing_Order_into_Texts.pdf)
+
+#####基本思想:
+
+1. 将待抽取关键词的文本进行分词
+1. 以固定窗口大小(我选的5，可适当调整)，词之间的共现关系，构建图
+1. 计算图中节点的PageRank，注意是无向带权图
+
+#####基本使用:
+1. jieba.analyse.textrank.textrank(raw_text)，注意导入包的路径。
+
+#####示例结果:
+来自__main__的示例结果：
+
+```shell
+吉林 100.0
+欧亚 86.4592606421
+置业 55.3262889963
+实现 52.0353476663
+收入 37.9475518129
+增资 35.5042189944
+子公司 34.9286032861
+全资 30.8154823412
+城市 30.6031961172
+商业 30.4779050167
+
+```
+
 功能 4) : 词性标注
 ================
 * 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法

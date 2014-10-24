@@ -248,6 +248,9 @@ word 有限公司            start: 6                end:10
 	  -q, --quiet           don't print loading messages to stderr
 	  -V, --version         show program's version number and exit
   
+系统集成
+========
+1. Solr: https://github.com/sing1ee/jieba-solr
 
 其他词典
 ========

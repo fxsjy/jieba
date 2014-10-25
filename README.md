@@ -38,9 +38,11 @@ Python 3.x
 * 目前 master 分支是只支持 Python2.x 的
 * Python 3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
 
-        git clone https://github.com/fxsjy/jieba.git
-        git checkout jieba3k
-        python setup.py install
+```shell
+git clone https://github.com/fxsjy/jieba.git
+git checkout jieba3k
+python setup.py install
+```
 
 * 或使用pip3安装： pip3 install jieba3k
 
@@ -61,20 +63,22 @@ Python 3.x
 
 代码示例( 分词 )
 
-    #encoding=utf-8
-    import jieba
+```python
+#encoding=utf-8
+import jieba
 
-    seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
-    print "Full Mode:", "/ ".join(seg_list)  # 全模式
+seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+print "Full Mode:", "/ ".join(seg_list)  # 全模式
 
-    seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
-    print "Default Mode:", "/ ".join(seg_list)  # 精确模式
+seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+print "Default Mode:", "/ ".join(seg_list)  # 精确模式
 
-    seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
-    print ", ".join(seg_list)
+seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
+print ", ".join(seg_list)
 
-    seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
-    print ", ".join(seg_list)
+seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+print ", ".join(seg_list)
+```
 
 输出:
 
@@ -115,7 +119,7 @@ Python 3.x
 
 代码示例 （关键词提取）
 
-    https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
 关键词提取所使用逆向文件频率（IDF）文本语料库可以切换成自定义语料库的路径
 
@@ -134,9 +138,7 @@ Python 3.x
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py
 
 #### 基于TextRank算法的关键词抽取实现
-算法论文：
-
-[TextRank: Bringing Order into Texts](http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf)
+算法论文： [TextRank: Bringing Order into Texts](http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf)
 
 ##### 基本思想:
 
@@ -169,15 +171,17 @@ jieba.analyse.textrank(raw_text)
 * 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法
 * 用法示例
 
-    >>> import jieba.posseg as pseg
-    >>> words = pseg.cut("我爱北京天安门")
-    >>> for w in words:
-    ...    print w.word, w.flag
-    ...
-    我 r
-    爱 v
-    北京 ns
-    天安门 ns
+```pycon
+>>> import jieba.posseg as pseg
+>>> words = pseg.cut("我爱北京天安门")
+>>> for w in words:
+...    print w.word, w.flag
+...
+我 r
+爱 v
+北京 ns
+天安门 ns
+```
 
 5) : 并行分词
 -----------
@@ -187,8 +191,7 @@ jieba.analyse.textrank(raw_text)
     * `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
     * `jieba.disable_parallel()` # 关闭并行分词模式
 
-* 例子：
-        https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
+* 例子：https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py
 
 * 实验结果：在 4 核 3.4GHz Linux 机器上，对金庸全集进行精确分词，获得了 1MB/s 的速度，是单进程版的 3.3 倍。
 
@@ -290,6 +293,21 @@ word 有限公司            start: 6                end:10
 
     If no filename specified, use STDIN instead.
 
+模块初始化机制的改变:lazy load （从0.28版本开始）
+-------------------------------------------
+
+jieba 采用延迟加载，"import jieba" 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。
+
+    import jieba
+    jieba.initialize()  # 手动初始化（可选）
+
+
+在 0.28 之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
+
+    jieba.set_dictionary('data/dict.txt.big')
+
+例子： https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py
+
 其他词典
 ========
 1. 占用内存较小的词典文件
@@ -321,27 +339,12 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 结巴分词 Erlang 版本
 ----------------
 作者：falood
-https://github.com/falood/exjieba
+地址：https://github.com/falood/exjieba
 
 
 系统集成
 ========
 1. Solr: https://github.com/sing1ee/jieba-solr
-
-模块初始化机制的改变:lazy load （从0.28版本开始）
-================================================
-
-jieba 采用延迟加载，"import jieba" 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。
-
-    import jieba
-    jieba.initialize()  # 手动初始化（可选）
-
-
-在 0.28 之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:
-
-    jieba.set_dictionary('data/dict.txt.big')
-
-例子： https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py
 
 分词速度
 =========
@@ -563,6 +566,18 @@ word 有限公司            start: 6                end:10
 
     If no filename specified, use STDIN instead.
 
+Initialization
+---------------
+By default, Jieba don't build the prefix dictionary unless it's necessary. This takes 1-3 seconds, after which it is not initialized again. If you want to initialize Jieba manually, you can call:
+
+    import jieba
+    jieba.initialize()  # (optional)
+
+You can also specify the dictionary (not supported before version 0.28) :
+
+    jieba.set_dictionary('data/dict.txt.big')
+
+
 Using Other Dictionaries
 ========
 It is possible to use your own dictionary with Jieba, and there are also two dictionaries ready for download:
@@ -576,17 +591,6 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 By default, an in-between dictionary is used, called `dict.txt` and included in the distribution.
 
 In either case, download the file you want, and then call `jieba.set_dictionary('data/dict.txt.big')` or just replace the existing `dict.txt`.
-
-Initialization
-========
-By default, Jieba don't build the prefix dictionary unless it's necessary. This takes 1-3 seconds, after which it is not initialized again. If you want to initialize Jieba manually, you can call:
-
-    import jieba
-    jieba.initialize()  # (optional)
-
-You can also specify the dictionary (not supported before version 0.28) :
-
-    jieba.set_dictionary('data/dict.txt.big')
 
 Segmentation speed
 =========

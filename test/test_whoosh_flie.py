@@ -6,7 +6,7 @@ from whoosh.index import create_in
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 
-from jieba.analyse import ChineseAnalyzer 
+from jieba.analyse import ChineseAnalyzer
 
 analyzer = ChineseAnalyzer()
 
@@ -23,7 +23,7 @@ with open(file_name,"rb") as inf:
     for line in inf:
         i+=1
         writer.add_document(
-            title="line"+str(i), 
+            title="line"+str(i),
             path="/a",
             content=line.decode('gbk','ignore')
         )
@@ -36,6 +36,6 @@ for keyword in ("水果小姐","你","first","中文","交换机","交换"):
     print("result of ",keyword)
     q = parser.parse(keyword)
     results = searcher.search(q)
-    for hit in results:  
+    for hit in results:
         print(hit.highlights("content"))
     print("="*10)

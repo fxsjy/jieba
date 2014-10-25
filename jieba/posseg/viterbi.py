@@ -3,8 +3,7 @@ MIN_FLOAT = -3.14e100
 MIN_INF = float("-inf")
 
 def get_top_states(t_state_v, K=4):
-    items = t_state_v.items()
-    topK = sorted(items, key=operator.itemgetter(1), reverse=True)[:K]
+    topK = sorted(t_state_v.items(), key=operator.itemgetter(1), reverse=True)[:K]
     return [x[0] for x in topK]
 
 def viterbi(obs, states, start_p, trans_p, emit_p):

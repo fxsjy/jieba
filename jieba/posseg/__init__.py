@@ -14,32 +14,33 @@ PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
 
 def load_model(f_name, isJython=True):
-    _curpath=os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     result = {}
     with open(f_name, "rb") as f:
-        for line in open(f_name,"rb"):
+        for line in f:
             line = line.strip()
-            if not line: continue
+            if not line:
+                continue
             line = line.decode("utf-8")
             word, _, tag = line.split(" ")
             result[word] = tag
     f.closed
     if not isJython:
         return result
-    
+
     start_p = {}
     abs_path = os.path.join(_curpath, PROB_START_P)
     with open(abs_path, mode='rb') as f:
         start_p = marshal.load(f)
     f.closed
-    
+
     trans_p = {}
     abs_path = os.path.join(_curpath, PROB_TRANS_P)
     with open(abs_path, 'rb') as f:
         trans_p = marshal.load(f)
     f.closed
-    
+
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
     with open(abs_path, 'rb') as f:
@@ -62,14 +63,14 @@ else:
     word_tag_tab = load_model(jieba.get_abs_path_dict(), isJython=False)
 
 def makesure_userdict_loaded(fn):
-    
+
     @wraps(fn)
     def wrapped(*args,**kwargs):
-        if len(jieba.user_word_tag_tab)>0:
+        if jieba.user_word_tag_tab:
             word_tag_tab.update(jieba.user_word_tag_tab)
             jieba.user_word_tag_tab = {}
         return fn(*args,**kwargs)
-    
+
     return wrapped
 
 class pair(object):
@@ -152,7 +153,7 @@ def __cut_DAG_NO_HMM(sentence):
 def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
     route = {}
-    
+
     jieba.calc(sentence,DAG,0,route=route)
 
     x = 0

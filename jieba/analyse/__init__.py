@@ -5,6 +5,7 @@ try:
     from .analyzer import ChineseAnalyzer
 except ImportError:
     pass
+from .textrank import textrank
 
 _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 abs_path = os.path.join(_curpath, "idf.txt")
@@ -58,7 +59,7 @@ def set_stop_words(stop_words_path):
     for line in lines:
         STOP_WORDS.add(line)
 
-def extract_tags(sentence, topK=20):
+def extract_tags(sentence, topK=20, withWeight=False):
     global STOP_WORDS
 
     idf_freq, median_idf = idf_loader.get_idf()
@@ -77,6 +78,9 @@ def extract_tags(sentence, topK=20):
     tf_idf_list = [(v*idf_freq.get(k,median_idf), k) for k,v in freq]
     st_list = sorted(tf_idf_list, reverse=True)
 
-    top_tuples = st_list[:topK]
-    tags = [a[1] for a in top_tuples]
+    if withWeight:
+        tags = st_list[:topK]
+    else:
+        top_tuples = st_list[:topK]
+        tags = [a[1] for a in top_tuples]
     return tags

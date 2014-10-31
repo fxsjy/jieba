@@ -25,27 +25,24 @@ def load_model(f_name, isJython=True):
                 continue
             word, _, tag = line.split(' ')
             result[word.decode('utf-8')] = tag
-    f.closed
+
     if not isJython:
         return result
 
     start_p = {}
     abs_path = os.path.join(_curpath, PROB_START_P)
-    with open(abs_path, mode='r') as f:
+    with open(abs_path, 'rb') as f:
         start_p = marshal.load(f)
-    f.closed
 
     trans_p = {}
     abs_path = os.path.join(_curpath, PROB_TRANS_P)
-    with open(abs_path, 'r') as f:
+    with open(abs_path, 'rb') as f:
         trans_p = marshal.load(f)
-    f.closed
 
     emit_p = {}
     abs_path = os.path.join(_curpath, PROB_EMIT_P)
-    with open(abs_path, 'r') as f:
+    with open(abs_path, 'rb') as f:
         emit_p = marshal.load(f)
-    f.closed
 
     state = {}
     abs_path = os.path.join(_curpath, CHAR_STATE_TAB_P)

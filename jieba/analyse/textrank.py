@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import jieba.posseg as pseg
-import collections
 import sys
+import collections
+from operator import itemgetter
+import jieba.posseg as pseg
 
 class UndirectWeightedGraph:
     d = 0.85
@@ -41,17 +42,25 @@ class UndirectWeightedGraph:
                 max_rank = w
 
         for n, w in ws.items():
-            ws[n] = (w - min_rank / 10.0) / (max_rank - min_rank / 10.0) * 100
+            # to unify the weights, don't *100.
+            ws[n] = (w - min_rank / 10.0) / (max_rank - min_rank / 10.0)
 
         return ws
 
 
-def textrank(raw, topk=10):
+def textrank(sentence, topK=10, withWeight=False):
+    """
+    Extract keywords from sentence using TextRank algorithm.
+    Parameter:
+        - topK: return how many top keywords. `None` for all possible words.
+        - withWeight: if True, return a list of (word, weight);
+                      if False, return a list of words.
+    """
     pos_filt = frozenset(('ns', 'n', 'vn', 'v'))
     g = UndirectWeightedGraph()
     cm = collections.defaultdict(int)
     span = 5
-    words = [x for x in pseg.cut(raw)]
+    words = list(pseg.cut(sentence))
     for i in xrange(len(words)):
         if words[i].flag in pos_filt:
             for j in xrange(i + 1, i + span):
@@ -65,10 +74,16 @@ def textrank(raw, topk=10):
         g.addEdge(terms[0], terms[1], w)
 
     nodes_rank = g.rank()
-    nrs = sorted(nodes_rank.items(), key=lambda x: x[1], reverse=True)
-    return nrs[:topk]
+    if withWeight:
+        tags = sorted(nodes_rank.items(), key=itemgetter(1), reverse=True)
+    else:
+        tags = sorted(nodes_rank, key=nodes_rank.__getitem__, reverse=True)
+    if topK:
+        return tags[:topK]
+    else:
+        return tags
 
 if __name__ == '__main__':
     s = "此外，公司拟对全资子公司吉林欧亚置业有限公司增资4.3亿元，增资后，吉林欧亚置业注册资本由7000万元增加到5亿元。吉林欧亚置业主要经营范围为房地产开发及百货零售等业务。目前在建吉林欧亚城市商业综合体项目。2013年，实现营业收入0万元，实现净利润-139.13万元。"
-    for x, w in textrank(s):
+    for x, w in textrank(s, withWeight=True):
         print x, w

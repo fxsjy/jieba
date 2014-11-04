@@ -340,6 +340,10 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：falood
 地址：https://github.com/falood/exjieba
 
+结巴分词 R 版本
+----------------
+作者：qinwf
+地址：https://github.com/qinwf/jiebaR
 
 系统集成
 ========

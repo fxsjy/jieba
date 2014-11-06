@@ -38,6 +38,6 @@ tags = jieba.analyse.extract_tags(content, topK=topK, withWeight=withWeight)
 
 if withWeight is True:
     for tag in tags:
-        print "tag: %s\t\t weight: %f" % (tag[1],tag[0])
+        print "tag: %s\t\t weight: %f" % (tag[0],tag[1])
 else:
     print ",".join(tags)

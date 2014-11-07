@@ -156,17 +156,16 @@ jieba.analyse.textrank(raw_text)
 来自`__main__`的示例结果：
 
 ```
-吉林 100.0
-欧亚 86.4592606421
-置业 55.3262889963
-实现 52.0353476663
-收入 37.9475518129
-增资 35.5042189944
-子公司 34.9286032861
-全资 30.8154823412
-城市 30.6031961172
-商业 30.4779050167
-
+吉林 1.0
+欧亚 0.864834432786
+置业 0.553465925497
+实现 0.520660869531
+收入 0.379699688954
+增资 0.355086023683
+子公司 0.349758490263
+全资 0.308537396283
+城市 0.306103738053
+商业 0.304837414946
 ```
 
 4) : 词性标注
@@ -344,6 +343,10 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：falood
 地址：https://github.com/falood/exjieba
 
+结巴分词 R 版本
+----------------
+作者：qinwf
+地址：https://github.com/qinwf/jiebaR
 
 系统集成
 ========
@@ -411,9 +414,9 @@ seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
 print("Full Mode:", "/ ".join(seg_list))  # 全模式
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
-print("Default Mode:", "/ ".join(seg_list))  # 精确模式
+print("Default Mode:", "/ ".join(seg_list))  # 默认模式
 
-seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
+seg_list = jieba.cut("他来到了网易杭研大厦")
 print(", ".join(seg_list))
 
 seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式

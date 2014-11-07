@@ -1,6 +1,7 @@
 #encoding=utf-8
 import jieba
 import os
+from operator import itemgetter
 try:
     from .analyzer import ChineseAnalyzer
 except ImportError:
@@ -26,9 +27,7 @@ class IDFLoader:
         if self.path != new_idf_path:
             content = open(new_idf_path, 'r', encoding='utf-8').read()
             idf_freq = {}
-            lines = content.split('\n')
-            if lines and not lines[-1]:
-                lines.pop(-1)
+            lines = content.rstrip('\n').split('\n')
             for line in lines:
                 word, freq = line.split(' ')
                 idf_freq[word] = float(freq)
@@ -60,27 +59,32 @@ def set_stop_words(stop_words_path):
         STOP_WORDS.add(line)
 
 def extract_tags(sentence, topK=20, withWeight=False):
-    global STOP_WORDS
+    """
+    Extract keywords from sentence using TF-IDF algorithm.
+    Parameter:
+        - topK: return how many top keywords. `None` for all possible words.
+        - withWeight: if True, return a list of (word, weight);
+                      if False, return a list of words.
+    """
+    global STOP_WORDS, idf_loader
 
     idf_freq, median_idf = idf_loader.get_idf()
 
     words = jieba.cut(sentence)
     freq = {}
     for w in words:
-        if len(w.strip()) < 2:
-            continue
-        if w.lower() in STOP_WORDS:
+        if len(w.strip()) < 2 or w.lower() in STOP_WORDS:
             continue
         freq[w] = freq.get(w, 0.0) + 1.0
     total = sum(freq.values())
-    freq = [(k,v/total) for k,v in freq.items()]
-
-    tf_idf_list = [(v*idf_freq.get(k,median_idf), k) for k,v in freq]
-    st_list = sorted(tf_idf_list, reverse=True)
+    for k in freq:
+        freq[k] *= idf_freq.get(k, median_idf) / total
 
     if withWeight:
-        tags = st_list[:topK]
+        tags = sorted(freq.items(), key=itemgetter(1), reverse=True)
     else:
-        top_tuples = st_list[:topK]
-        tags = [a[1] for a in top_tuples]
-    return tags
+        tags = sorted(freq, key=freq.__getitem__, reverse=True)
+    if topK:
+        return tags[:topK]
+    else:
+        return tags

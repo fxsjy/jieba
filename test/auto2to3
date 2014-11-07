@@ -18,13 +18,17 @@ if [ -d ../jieba2 ]; then
   rm -rf ../jieba2
  fi
 fi
-git checkout master
+if ! git checkout jieba3k; then
+ exit 1
+fi
 cp -r . ../jieba2
-git checkout jieba3k
 cd ../jieba2
+if ! git checkout master; then
+ exit 1
+fi
 # Here starts auto conversion.
 echo Converting jieba2 to Python3 ...
 find . -type f -name '*.py' \! -path '*/build/*' \! -name 'prob_*.py' \! -name 'char_state_tab.py' -exec $PYTHON2TO3 -w -n {} +
 find . -type f \! -path '*/build/*' -a \( -name 'prob_*.py' -o -name 'char_state_tab.py' \) -exec sed -i "s/u'\\\u/'\\\u/g" {} \;
-patch -p0 <2to3.diff
+patch -p0 -s <../jieba/test/2to3.diff
 echo Done. Compare jieba and jieba2 to manually port.

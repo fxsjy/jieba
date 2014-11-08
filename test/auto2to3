@@ -1,0 +1,34 @@
+#!/bin/bash
+# Set 2to3 path.
+PYTHON2TO3=2to3
+# Copy the python2 version.
+echo Jieba 2to3 manual conversion tool
+echo
+if ! git rev-parse; then
+ exit 1
+fi
+echo Copying working directory to ../jieba2
+if [ -d ../jieba2 ]; then
+ echo Found existing ../jieba2
+ read -p "Replace it with new one? (y/n) " -r
+ if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo Cancelled.
+  exit
+ else
+  rm -rf ../jieba2
+ fi
+fi
+if ! git checkout jieba3k; then
+ exit 1
+fi
+cp -r . ../jieba2
+cd ../jieba2
+if ! git checkout master; then
+ exit 1
+fi
+# Here starts auto conversion.
+echo Converting jieba2 to Python3 ...
+find . -type f -name '*.py' \! -path '*/build/*' \! -name 'prob_*.py' \! -name 'char_state_tab.py' -exec $PYTHON2TO3 -w -n {} +
+find . -type f \! -path '*/build/*' -a \( -name 'prob_*.py' -o -name 'char_state_tab.py' \) -exec sed -i "s/u'\\\u/'\\\u/g" {} \;
+patch -p0 -s <../jieba/test/2to3.diff
+echo Done. Compare jieba and jieba2 to manually port.

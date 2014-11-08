@@ -13,6 +13,7 @@ import random
 import threading
 from functools import wraps
 import logging
+from hashlib import md5
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -52,12 +53,10 @@ def gen_pfdict(f_name):
                 raise e
     return pfdict, lfreq, ltotal
 
-def initialize(*args):
-    global pfdict, FREQ, total, min_freq, initialized
-    if not args:
+def initialize(dictionary=None):
+    global pfdict, FREQ, total, min_freq, initialized, DICTIONARY, DICT_LOCK
+    if not dictionary:
         dictionary = DICTIONARY
-    else:
-        dictionary = args[0]
     with DICT_LOCK:
         if initialized:
             return
@@ -66,13 +65,13 @@ def initialize(*args):
             pfdict = None
         _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-        abs_path = os.path.join(_curpath,dictionary)
+        abs_path = os.path.join(_curpath, dictionary)
         logger.debug("Building prefix dict from %s ..." % abs_path)
         t1 = time.time()
         if abs_path == os.path.join(_curpath, "dict.txt"): #default dictionary
             cache_file = os.path.join(tempfile.gettempdir(), "jieba.cache")
         else: #custom dictionary
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.user.%s.cache" % hash(abs_path))
+            cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
 
         load_from_cache_fail = True
         if os.path.exists(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
@@ -87,18 +86,18 @@ def initialize(*args):
 
         if load_from_cache_fail:
             pfdict,FREQ,total = gen_pfdict(abs_path)
-            FREQ = dict([(k,log(float(v)/total)) for k,v in FREQ.items()]) #normalize
+            FREQ = dict((k,log(float(v)/total)) for k,v in FREQ.items()) #normalize
             min_freq = min(FREQ.values())
             logger.debug("Dumping model to file cache %s" % cache_file)
             try:
-                tmp_suffix = "."+str(random.random())
-                with open(cache_file+tmp_suffix,'wb') as temp_cache_file:
+                fd, fpath = tempfile.mkstemp()
+                with os.fdopen(fd, 'wb') as temp_cache_file:
                     marshal.dump((pfdict,FREQ,total,min_freq), temp_cache_file)
                 if os.name == 'nt':
                     from shutil import move as replace_file
                 else:
                     replace_file = os.rename
-                replace_file(cache_file + tmp_suffix, cache_file)
+                replace_file(fpath, cache_file)
             except:
                 logger.exception("Dump cache file failed.")
 
@@ -136,12 +135,11 @@ def __cut_all(sentence):
                     old_j = j
 
 
-def calc(sentence,DAG,idx,route):
+def calc(sentence, DAG, idx, route):
     N = len(sentence)
     route[N] = (0.0, '')
     for idx in range(N-1, -1, -1):
-        candidates = [(FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0], x) for x in DAG[idx]]
-        route[idx] = max(candidates)
+        route[idx] = max((FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0], x) for x in DAG[idx])
 
 @require_initialized
 def get_DAG(sentence):
@@ -166,7 +164,7 @@ def __cut_DAG_NO_HMM(sentence):
     re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
     DAG = get_DAG(sentence)
     route = {}
-    calc(sentence, DAG, 0, route=route)
+    calc(sentence, DAG, 0, route)
     x = 0
     N = len(sentence)
     buf = ''

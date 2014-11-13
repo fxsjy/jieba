@@ -1,5 +1,6 @@
 #encoding=utf-8
 import jieba
+import jieba.posseg
 import os
 from operator import itemgetter
 try:
@@ -58,21 +59,31 @@ def set_stop_words(stop_words_path):
     for line in lines:
         STOP_WORDS.add(line)
 
-def extract_tags(sentence, topK=20, withWeight=False):
+def extract_tags(sentence, topK=20, withWeight=False, allowPOS=[]):
     """
     Extract keywords from sentence using TF-IDF algorithm.
     Parameter:
         - topK: return how many top keywords. `None` for all possible words.
         - withWeight: if True, return a list of (word, weight);
                       if False, return a list of words.
+        - allowPOS: the allowed POS list eg. ['n'].
+                    if the POS of w is not in this list,it will be filtered.
     """
     global STOP_WORDS, idf_loader
 
     idf_freq, median_idf = idf_loader.get_idf()
 
-    words = jieba.cut(sentence)
+    if allowPOS:
+        words = jieba.posseg.cut(sentence)
+    else:
+        words = jieba.cut(sentence)
     freq = {}
     for w in words:
+        if allowPOS:
+            if w.flag not in allowPOS:
+                continue
+            else:
+                w = w.word
         if len(w.strip()) < 2 or w.lower() in STOP_WORDS:
             continue
         freq[w] = freq.get(w, 0.0) + 1.0

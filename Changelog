@@ -1,3 +1,10 @@
+2014-11-13: version 0.35
+1. 改进词典cache的dump和加载机制；by @gumblex
+2. 提升关键词提取的性能; by @gumblex
+3. 关键词提取新增基于textrank算法的子模块; by @singlee
+4. 修复自定义stopwords功能的bug; by @walkskyer
+
+
 2014-10-20: version 0.34
 1. 提升性能，词典结构由Trie改为Prefix Set，内存占用减少2/3, 详见：https://github.com/fxsjy/jieba/pull/187；by @gumblex
 2. 修复关键词提取功能的性能问题

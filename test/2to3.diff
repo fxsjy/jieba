@@ -354,7 +354,7 @@ diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.p
  from distutils.core import setup
 -setup(name='jieba',
 +setup(name='jieba3k',
-       version='0.34',
+       version='0.35',
        description='Chinese Words Segementation Utilities',
        author='Sun, Junyi',
 diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/extract_topic.py ../jieba/test/extract_topic.py

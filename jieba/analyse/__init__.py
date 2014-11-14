@@ -54,7 +54,7 @@ def set_stop_words(stop_words_path):
     if not os.path.exists(abs_path):
         raise Exception("jieba: path does not exist: " + abs_path)
     content = open(abs_path,'rb').read().decode('utf-8')
-    lines = content.split('\n')
+    lines = content.replace("\r", "").split('\n')
     for line in lines:
         STOP_WORDS.add(line)
 

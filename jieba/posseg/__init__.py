@@ -104,8 +104,8 @@ def __cut(sentence):
         yield pair(sentence[next:], pos_list[next][1])
 
 def __cut_detail(sentence):
-    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"([\.0-9]+|[a-zA-Z0-9]+)")
-    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
+    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):
@@ -129,7 +129,7 @@ def __cut_DAG_NO_HMM(sentence):
     x = 0
     N = len(sentence)
     buf = ''
-    re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
+    re_eng = re.compile('[a-zA-Z0-9]',re.U)
     while x < N:
         y = route[x][1]+1
         l_word = sentence[x:y]
@@ -194,8 +194,8 @@ def __cut_internal(sentence, HMM=True):
             sentence = sentence.decode('utf-8')
         except UnicodeDecodeError:
             sentence = sentence.decode('gbk', 'ignore')
-    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(r"(\r\n|\s)")
-    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\r\n|\s)")
+    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
     blocks = re_han.split(sentence)
     if HMM:
         __cut_blk = __cut_DAG

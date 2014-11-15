@@ -242,9 +242,9 @@ def cut(sentence, cut_all=False, HMM=True):
     # \r\n|\s : whitespace characters. Will not be handled.
 
     if cut_all:
-        re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)", re.U), re.compile(r"[^a-zA-Z0-9+#\n]", re.U)
+        re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)", re.U), re.compile("[^a-zA-Z0-9+#\n]", re.U)
     else:
-        re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(r"(\r\n|\s)", re.U)
+        re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile("(\r\n|\s)", re.U)
     blocks = re_han.split(sentence)
     if cut_all:
         cut_block = __cut_all

@@ -1,8 +1,11 @@
+2014-11-15: version 0.35.1
+1) fix Python 3.2的兼容性问题
+
 2014-11-13: version 0.35
-1. 改进词典cache的dump和加载机制；by @gumblex
-2. 提升关键词提取的性能; by @gumblex
-3. 关键词提取新增基于textrank算法的子模块; by @singlee
-4. 修复自定义stopwords功能的bug; by @walkskyer
+1) 改进词典cache的dump和加载机制；by @gumblex
+2）提升关键词提取的性能; by @gumblex
+3）关键词提取新增基于textrank算法的子模块; by @singlee
+4）修复自定义stopwords功能的bug; by @walkskyer
 
 
 2014-10-20: version 0.34

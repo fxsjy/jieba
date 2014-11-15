@@ -74,6 +74,7 @@ def extract_tags(sentence, topK=20, withWeight=False, allowPOS=[]):
     idf_freq, median_idf = idf_loader.get_idf()
 
     if allowPOS:
+        allowPOS = frozenset(allowPOS)
         words = jieba.posseg.cut(sentence)
     else:
         words = jieba.cut(sentence)

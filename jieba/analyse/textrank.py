@@ -48,15 +48,17 @@ class UndirectWeightedGraph:
         return ws
 
 
-def textrank(sentence, topK=10, withWeight=False):
+def textrank(sentence, topK=10, withWeight=False, allowPOS=['ns', 'n', 'vn', 'v']):
     """
     Extract keywords from sentence using TextRank algorithm.
     Parameter:
         - topK: return how many top keywords. `None` for all possible words.
         - withWeight: if True, return a list of (word, weight);
                       if False, return a list of words.
+        - allowPOS: the allowed POS list eg. ['ns', 'n', 'vn', 'v'].
+                    if the POS of w is not in this list,it will be filtered.
     """
-    pos_filt = frozenset(('ns', 'n', 'vn', 'v'))
+    pos_filt = frozenset(allowPOS)
     g = UndirectWeightedGraph()
     cm = collections.defaultdict(int)
     span = 5

@@ -3,9 +3,7 @@ MIN_FLOAT = -3.14e100
 MIN_INF = float("-inf")
 
 def get_top_states(t_state_v, K=4):
-    items = t_state_v.items()
-    topK = sorted(items, key=operator.itemgetter(1), reverse=True)[:K]
-    return [x[0] for x in topK]
+    return sorted(t_state_v, key=t_state_v.__getitem__, reverse=True)[:K]
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular
@@ -27,7 +25,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
             obs_states = prev_states_expect_next if prev_states_expect_next else all_states
 
         for y in obs_states:
-            prob, state = max([(V[t-1][y0] + trans_p[y0].get(y,MIN_INF) + emit_p[y].get(obs[t],MIN_FLOAT), y0) for y0 in prev_states])
+            prob, state = max((V[t-1][y0] + trans_p[y0].get(y,MIN_INF) + emit_p[y].get(obs[t],MIN_FLOAT), y0) for y0 in prev_states)
             V[t][y] = prob
             mem_path[t][y] = state
 

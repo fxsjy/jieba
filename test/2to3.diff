@@ -1,0 +1,522 @@
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/analyse/analyzer.py ../jieba/jieba/analyse/analyzer.py
+--- ./jieba/analyse/analyzer.py	2014-11-29 15:46:45.987925569 +0800
++++ ../jieba/jieba/analyse/analyzer.py	2014-11-29 15:34:42.859932465 +0800
+@@ -1,4 +1,4 @@
+-##encoding=utf-8
++#encoding=utf-8
+ from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter,StemFilter
+ from whoosh.analysis import Tokenizer,Token
+ from whoosh.lang.porter import stem
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/analyse/__init__.py ../jieba/jieba/analyse/__init__.py
+--- ./jieba/analyse/__init__.py	2014-11-29 15:46:46.139925567 +0800
++++ ../jieba/jieba/analyse/__init__.py	2014-11-29 15:36:13.147931604 +0800
+@@ -26,7 +26,7 @@
+ 
+     def set_new_path(self, new_idf_path):
+         if self.path != new_idf_path:
+-            content = open(new_idf_path, 'rb').read().decode('utf-8')
++            content = open(new_idf_path, 'r', encoding='utf-8').read()
+             idf_freq = {}
+             lines = content.rstrip('\n').split('\n')
+             for line in lines:
+@@ -93,7 +93,7 @@
+         freq[k] *= idf_freq.get(k, median_idf) / total
+ 
+     if withWeight:
+-        tags = sorted(list(freq.items()), key=itemgetter(1), reverse=True)
++        tags = sorted(freq.items(), key=itemgetter(1), reverse=True)
+     else:
+         tags = sorted(freq, key=freq.__getitem__, reverse=True)
+     if topK:
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/analyse/textrank.py ../jieba/jieba/analyse/textrank.py
+--- ./jieba/analyse/textrank.py	2014-11-29 15:46:46.043925568 +0800
++++ ../jieba/jieba/analyse/textrank.py	2014-11-29 15:36:39.291931354 +0800
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ # -*- coding: utf-8 -*-
+ 
+ import sys
+@@ -22,12 +22,12 @@
+         outSum = collections.defaultdict(float)
+ 
+         wsdef = 1.0 / len(self.graph)
+-        for n, out in list(self.graph.items()):
++        for n, out in self.graph.items():
+             ws[n] = wsdef
+             outSum[n] = sum((e[2] for e in out), 0.0)
+ 
+         for x in range(10):  # 10 iters
+-            for n, inedges in list(self.graph.items()):
++            for n, inedges in self.graph.items():
+                 s = 0
+                 for e in inedges:
+                     s += e[2] / outSum[e[1]] * ws[e[1]]
+@@ -41,7 +41,7 @@
+             elif w > max_rank:
+                 max_rank = w
+ 
+-        for n, w in list(ws.items()):
++        for n, w in ws.items():
+             # to unify the weights, don't *100.
+             ws[n] = (w - min_rank / 10.0) / (max_rank - min_rank / 10.0)
+ 
+@@ -72,12 +72,12 @@
+                     continue
+                 cm[(words[i].word, words[j].word)] += 1
+ 
+-    for terms, w in list(cm.items()):
++    for terms, w in cm.items():
+         g.addEdge(terms[0], terms[1], w)
+ 
+     nodes_rank = g.rank()
+     if withWeight:
+-        tags = sorted(list(nodes_rank.items()), key=itemgetter(1), reverse=True)
++        tags = sorted(nodes_rank.items(), key=itemgetter(1), reverse=True)
+     else:
+         tags = sorted(nodes_rank, key=nodes_rank.__getitem__, reverse=True)
+     if topK:
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/finalseg/__init__.py ../jieba/jieba/finalseg/__init__.py
+--- ./jieba/finalseg/__init__.py	2014-11-29 15:46:46.367925565 +0800
++++ ../jieba/jieba/finalseg/__init__.py	2014-11-29 15:34:42.859932465 +0800
+@@ -1,4 +1,3 @@
+-
+ import re
+ import os
+ import marshal
+@@ -89,7 +88,7 @@
+             sentence = sentence.decode('utf-8')
+         except UnicodeDecodeError:
+             sentence = sentence.decode('gbk', 'ignore')
+-    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"(\d+\.\d+|[a-zA-Z0-9]+)")
++    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("(\d+\.\d+|[a-zA-Z0-9]+)")
+     blocks = re_han.split(sentence)
+     for blk in blocks:
+         if re_han.match(blk):
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/__init__.py ../jieba/jieba/__init__.py
+--- ./jieba/__init__.py	2014-11-29 15:46:45.955925569 +0800
++++ ../jieba/jieba/__init__.py	2014-11-29 15:39:03.335929981 +0800
+@@ -1,4 +1,3 @@
+-
+ __version__ = '0.35'
+ __license__ = 'MIT'
+ 
+@@ -51,7 +50,7 @@
+                     pfdict.add(word[:ch+1])
+             except ValueError as e:
+                 logger.debug('%s at line %s %s' % (f_name, lineno, line))
+-                raise ValueError(e)
++                raise e
+     return pfdict, lfreq, ltotal
+ 
+ def initialize(dictionary=None):
+@@ -229,11 +228,11 @@
+     '''The main function that segments an entire sentence that contains
+     Chinese characters into seperated words.
+     Parameter:
+-        - sentence: The str/unicode to be segmented.
++        - sentence: The str to be segmented.
+         - cut_all: Model type. True for full pattern, False for accurate pattern.
+         - HMM: Whether to use the Hidden Markov Model.
+     '''
+-    if not isinstance(sentence, str):
++    if isinstance(sentence, bytes):
+         try:
+             sentence = sentence.decode('utf-8')
+         except UnicodeDecodeError:
+@@ -243,9 +242,9 @@
+     # \r\n|\s : whitespace characters. Will not be handled.
+ 
+     if cut_all:
+-        re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)", re.U), re.compile(r"[^a-zA-Z0-9+#\n]", re.U)
++        re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)", re.U), re.compile("[^a-zA-Z0-9+#\n]", re.U)
+     else:
+-        re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(r"(\r\n|\s)", re.U)
++        re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile("(\r\n|\s)", re.U)
+     blocks = re_han.split(sentence)
+     if cut_all:
+         cut_block = __cut_all
+@@ -339,8 +338,6 @@
+     global pool, cut, cut_for_search
+     if os.name == 'nt':
+         raise Exception("jieba: parallel mode only supports posix system")
+-    if sys.version_info[0]==2 and sys.version_info[1]<6:
+-        raise Exception("jieba: the parallel feature needs Python version>2.5")
+     from multiprocessing import Pool, cpu_count
+     if processnum is None:
+         processnum = cpu_count()
+@@ -393,12 +390,12 @@
+ def tokenize(unicode_sentence, mode="default", HMM=True):
+     """Tokenize a sentence and yields tuples of (word, start, end)
+     Parameter:
+-        - sentence: the unicode to be segmented.
++        - sentence: the str to be segmented.
+         - mode: "default" or "search", "search" is for finer segmentation.
+         - HMM: whether to use the Hidden Markov Model.
+     """
+     if not isinstance(unicode_sentence, str):
+-        raise Exception("jieba: the input parameter should be unicode.")
++        raise Exception("jieba: the input parameter should be str.")
+     start = 0
+     if mode == 'default':
+         for w in cut(unicode_sentence, HMM=HMM):
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/__main__.py ../jieba/jieba/__main__.py
+--- ./jieba/__main__.py	2014-11-29 15:46:45.747925571 +0800
++++ ../jieba/jieba/__main__.py	2014-11-29 15:34:42.859932465 +0800
+@@ -40,7 +40,7 @@
+ ln = fp.readline()
+ while ln:
+     l = ln.rstrip('\r\n')
+-    print((delim.join(jieba.cut(ln.rstrip('\r\n'), cutall, hmm)).encode('utf-8')))
++    print(delim.join(jieba.cut(ln.rstrip('\r\n'), cutall, hmm)))
+     ln = fp.readline()
+ 
+ fp.close()
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/posseg/__init__.py ../jieba/jieba/posseg/__init__.py
+--- ./jieba/posseg/__init__.py	2014-11-29 15:46:46.271925566 +0800
++++ ../jieba/jieba/posseg/__init__.py	2014-11-29 15:37:52.299930658 +0800
+@@ -1,4 +1,3 @@
+-
+ import re
+ import os
+ from . import viterbi
+@@ -18,14 +17,14 @@
+     _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+ 
+     result = {}
+-    with open(f_name, "r") as f:
++    with open(f_name, "rb") as f:
+         for line in f:
+             line = line.strip()
+             if not line:
+                 continue
+-            word, _, tag = line.split(' ')
+-            result[word.decode('utf-8')] = tag
+-
++            line = line.decode("utf-8")
++            word, _, tag = line.split(" ")
++            result[word] = tag
+     if not isJython:
+         return result
+ 
+@@ -105,8 +104,8 @@
+         yield pair(sentence[next:], pos_list[next][1])
+ 
+ def __cut_detail(sentence):
+-    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5]+)"), re.compile(r"([\.0-9]+|[a-zA-Z0-9]+)")
+-    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
++    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
++    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
+     blocks = re_han.split(sentence)
+     for blk in blocks:
+         if re_han.match(blk):
+@@ -130,7 +129,7 @@
+     x = 0
+     N = len(sentence)
+     buf = ''
+-    re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
++    re_eng = re.compile('[a-zA-Z0-9]',re.U)
+     while x < N:
+         y = route[x][1]+1
+         l_word = sentence[x:y]
+@@ -195,8 +194,8 @@
+             sentence = sentence.decode('utf-8')
+         except UnicodeDecodeError:
+             sentence = sentence.decode('gbk', 'ignore')
+-    re_han, re_skip = re.compile(r"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(r"(\r\n|\s)")
+-    re_eng, re_num = re.compile(r"[a-zA-Z0-9]+"), re.compile(r"[\.0-9]+")
++    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\r\n|\s)")
++    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
+     blocks = re_han.split(sentence)
+     if HMM:
+         __cut_blk = __cut_DAG
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./jieba/posseg/viterbi.py ../jieba/jieba/posseg/viterbi.py
+--- ./jieba/posseg/viterbi.py	2014-11-29 15:46:46.303925566 +0800
++++ ../jieba/jieba/posseg/viterbi.py	2014-11-29 15:38:28.527930313 +0800
+@@ -8,7 +8,7 @@
+ def viterbi(obs, states, start_p, trans_p, emit_p):
+     V = [{}] #tabular
+     mem_path = [{}]
+-    all_states = list(trans_p.keys())
++    all_states = trans_p.keys()
+     for y in states.get(obs[0], all_states): #init
+         V[0][y] = start_p[y] + emit_p[y].get(obs[0], MIN_FLOAT)
+         mem_path[0][y] = ''
+@@ -16,9 +16,9 @@
+         V.append({})
+         mem_path.append({})
+         #prev_states = get_top_states(V[t-1])
+-        prev_states = [x for x in list(mem_path[t-1].keys()) if len(trans_p[x]) > 0]
++        prev_states = [x for x in mem_path[t-1].keys() if len(trans_p[x]) > 0]
+ 
+-        prev_states_expect_next = set((y for x in prev_states for y in list(trans_p[x].keys())))
++        prev_states_expect_next = set((y for x in prev_states for y in trans_p[x].keys()))
+         obs_states = set(states.get(obs[t], all_states)) & prev_states_expect_next
+ 
+         if not obs_states:
+@@ -29,7 +29,7 @@
+             V[t][y] = prob
+             mem_path[t][y] = state
+ 
+-    last = [(V[-1][y], y) for y in list(mem_path[-1].keys())]
++    last = [(V[-1][y], y) for y in mem_path[-1].keys()]
+     #if len(last)==0:
+         #print obs
+     prob, state = max(last)
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./README.md ../jieba/README.md
+--- ./README.md	2014-11-29 15:46:08.487925926 +0800
++++ ../jieba/README.md	2014-11-29 15:34:42.859932465 +0800
+@@ -4,6 +4,9 @@
+ "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+ - _Scroll down for English documentation._
+ 
++注意！
++========
++这个branch `jieba3k` 是专门用于Python3.x的版本
+ 
+ 特点
+ ========
+@@ -68,16 +71,16 @@
+ import jieba
+ 
+ seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+-print "Full Mode:", "/ ".join(seg_list)  # 全模式
++print("Full Mode:", "/ ".join(seg_list))  # 全模式
+ 
+ seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+-print "Default Mode:", "/ ".join(seg_list)  # 精确模式
++print("Default Mode:", "/ ".join(seg_list))  # 精确模式
+ 
+ seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
+-print ", ".join(seg_list)
++print(", ".join(seg_list))
+ 
+ seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+-print ", ".join(seg_list)
++print(", ".join(seg_list))
+ ```
+ 
+ 输出:
+@@ -174,7 +177,7 @@
+ >>> import jieba.posseg as pseg
+ >>> words = pseg.cut("我爱北京天安门")
+ >>> for w in words:
+-...    print w.word, w.flag
++...    print(w.word, w.flag)
+ ...
+ 我 r
+ 爱 v
+@@ -203,7 +206,7 @@
+ ```python
+ result = jieba.tokenize(u'永和服装饰品有限公司')
+ for tk in result:
+-    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
++    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+ ```
+ 
+ ```
+@@ -219,7 +222,7 @@
+ ```python
+ result = jieba.tokenize(u'永和服装饰品有限公司',mode='search')
+ for tk in result:
+-    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
++    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+ ```
+ 
+ ```
+@@ -408,16 +411,16 @@
+ import jieba
+ 
+ seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+-print "Full Mode:", "/ ".join(seg_list)  # 全模式
++print("Full Mode:", "/ ".join(seg_list))  # 全模式
+ 
+ seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+-print "Default Mode:", "/ ".join(seg_list)  # 默认模式
++print("Default Mode:", "/ ".join(seg_list))  # 默认模式
+ 
+ seg_list = jieba.cut("他来到了网易杭研大厦")
+-print ", ".join(seg_list)
++print(", ".join(seg_list))
+ 
+ seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+-print ", ".join(seg_list)
++print(", ".join(seg_list))
+ ```
+ 
+ Output:
+@@ -483,7 +486,7 @@
+ >>> import jieba.posseg as pseg
+ >>> words = pseg.cut("我爱北京天安门")
+ >>> for w in words:
+-...    print w.word, w.flag
++...    print(w.word, w.flag)
+ ...
+ 我 r
+ 爱 v
+@@ -512,7 +515,7 @@
+ ```python
+ result = jieba.tokenize(u'永和服装饰品有限公司')
+ for tk in result:
+-    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
++    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+ ```
+ 
+ ```
+@@ -528,7 +531,7 @@
+ ```python
+ result = jieba.tokenize(u'永和服装饰品有限公司',mode='search')
+ for tk in result:
+-    print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
++    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+ ```
+ 
+ ```
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./setup.py ../jieba/setup.py
+--- ./setup.py	2014-11-29 15:46:46.379925565 +0800
++++ ../jieba/setup.py	2014-11-29 15:42:20.263928103 +0800
+@@ -11,7 +11,7 @@
+ 
+ 完整文档见 ``README.md``
+ 
+-GitHub: https://github.com/fxsjy/jieba
++GitHub: https://github.com/fxsjy/jieba/tree/jieba3k
+ 
+ 特点
+ ====
+@@ -34,17 +34,11 @@
+ Python 2.x
+ ----------
+ 
+--  全自动安装： ``easy_install jieba`` 或者 ``pip install jieba``
+--  半自动安装：先下载 https://pypi.python.org/pypi/jieba/ ，解压后运行
+-   python setup.py install
+--  手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
+--  通过 ``import jieba`` 来引用
++见 https://pypi.python.org/pypi/jieba/
+ 
+ Python 3.x
+ ----------
+ 
+-见 https://pypi.python.org/pypi/jieba3k/
+-
+ -  目前 master 分支是只支持 Python 2.x 的
+ -  Python 3.x 版本的分支也已经基本可用：
+    https://github.com/fxsjy/jieba/tree/jieba3k
+@@ -59,13 +53,13 @@
+ 
+ """
+ 
+-setup(name='jieba',
++setup(name='jieba3k',
+       version='0.35.1',
+       description='Chinese Words Segementation Utilities',
+       long_description=LONGDOC,
+       author='Sun, Junyi',
+       author_email='ccnusjy@gmail.com',
+-      url='https://github.com/fxsjy/jieba',
++      url='https://github.com/fxsjy/jieba/tree/jieba3k',
+       license="MIT",
+       classifiers=[
+         'Intended Audience :: Developers',
+@@ -73,9 +67,8 @@
+         'Operating System :: OS Independent',
+         'Natural Language :: Chinese (Simplified)',
+         'Natural Language :: Chinese (Traditional)',
+         'Programming Language :: Python',
+-        'Programming Language :: Python :: 2',
++        'Programming Language :: Python :: 3',
+         'Topic :: Text Processing',
+         'Topic :: Text Processing :: Indexing',
+         'Topic :: Text Processing :: Linguistic',
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/extract_topic.py ../jieba/test/extract_topic.py
+--- ./test/extract_topic.py	2014-11-29 15:46:47.003925559 +0800
++++ ../jieba/test/extract_topic.py	2014-11-29 15:34:42.919932464 +0800
+@@ -51,13 +51,13 @@
+ print("training...")
+ 
+ nmf = decomposition.NMF(n_components=n_topic).fit(tfidf)
+-print(("done in %0.3fs." % (time.time() - t0)))
++print("done in %0.3fs." % (time.time() - t0))
+ 
+ # Inverse the vectorizer vocabulary to be able
+ feature_names = count_vect.get_feature_names()
+ 
+ for topic_idx, topic in enumerate(nmf.components_):
+-    print(("Topic #%d:" % topic_idx))
+-    print((" ".join([feature_names[i]
+-                    for i in topic.argsort()[:-n_top_words - 1:-1]])))
++    print("Topic #%d:" % topic_idx)
++    print(" ".join([feature_names[i]
++                    for i in topic.argsort()[:-n_top_words - 1:-1]]))
+     print("")
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/jiebacmd.py ../jieba/test/jiebacmd.py
+--- ./test/jiebacmd.py	2014-11-29 15:46:46.443925564 +0800
++++ ../jieba/test/jiebacmd.py	2014-11-29 15:34:42.919932464 +0800
+@@ -23,6 +23,6 @@
+         break
+     line = line.strip()
+     for word in jieba.cut(line):
+-        print(word.encode(default_encoding))
++        print(word)
+ 
+ 
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/jieba_test.py ../jieba/test/jieba_test.py
+--- ./test/jieba_test.py	2014-11-29 15:46:47.271925556 +0800
++++ ../jieba/test/jieba_test.py	2014-11-29 15:34:42.919932464 +0800
+@@ -152,7 +152,7 @@
+ #-*-coding: utf-8 -*-
+ import sys
++import imp
+ sys.path.append("../")
+ import unittest
+ import types
+@@ -97,7 +98,7 @@
+ 
+ class JiebaTestCase(unittest.TestCase):
+     def setUp(self):
+-        reload(jieba)
++        imp.reload(jieba)
+ 
+     def tearDown(self):
+         pass
+@@ -151,7 +152,7 @@
+ 
+     def testTokenize(self):
+         for content in test_contents:
+-            result = jieba.tokenize(content.decode('utf-8'))
++            result = jieba.tokenize(content)
+             assert isinstance(result, types.GeneratorType), "Test Tokenize Generator error"
+             result = list(result)
+             assert isinstance(result, list), "Test Tokenize error on content: %s" % content
+@@ -181,7 +181,7 @@
+ 
+     def testTokenize_NOHMM(self):
+         for content in test_contents:
+-            result = jieba.tokenize(content.decode('utf-8'),HMM=False)
++            result = jieba.tokenize(content,HMM=False)
+             assert isinstance(result, types.GeneratorType), "Test Tokenize Generator error"
+             result = list(result)
+             assert isinstance(result, list), "Test Tokenize error on content: %s" % content
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/test_tokenize_no_hmm.py ../jieba/test/test_tokenize_no_hmm.py
+--- ./test/test_tokenize_no_hmm.py	2014-11-29 15:46:47.355925556 +0800
++++ ../jieba/test/test_tokenize_no_hmm.py	2014-11-29 15:34:42.919932464 +0800
+@@ -7,7 +7,6 @@
+ 
+ def cuttest(test_sent):
+     global g_mode
+-    test_sent = test_sent.decode('utf-8')
+     result = jieba.tokenize(test_sent,mode=g_mode,HMM=False)
+     for tk in result:
+         print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+diff -d -r -u '--exclude=.git' '--exclude=prob_*.py' '--exclude=char_state_tab.py' ./test/test_tokenize.py ../jieba/test/test_tokenize.py
+--- ./test/test_tokenize.py	2014-11-29 15:46:47.403925555 +0800
++++ ../jieba/test/test_tokenize.py	2014-11-29 15:34:42.919932464 +0800
+@@ -7,7 +7,6 @@
+ 
+ def cuttest(test_sent):
+     global g_mode
+-    test_sent = test_sent.decode('utf-8')
+     result = jieba.tokenize(test_sent,mode=g_mode)
+     for tk in result:
+         print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))

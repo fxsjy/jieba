@@ -1,5 +1,5 @@
 from __future__ import with_statement
-__version__ = '0.34'
+__version__ = '0.35'
 __license__ = 'MIT'
 
 import re
@@ -78,7 +78,8 @@ def initialize(dictionary=None):
         if os.path.exists(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
             logger.debug("Loading model from cache %s" % cache_file)
             try:
-                pfdict,FREQ,total,min_freq = marshal.load(open(cache_file,'rb'))
+                with open(cache_file, 'rb') as cf:
+                    pfdict,FREQ,total,min_freq = marshal.load(cf)
                 # prevent conflict with old version
                 load_from_cache_fail = not isinstance(pfdict, set)
             except:

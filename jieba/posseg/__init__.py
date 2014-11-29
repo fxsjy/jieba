@@ -125,7 +125,7 @@ def __cut_detail(sentence):
 def __cut_DAG_NO_HMM(sentence):
     DAG = jieba.get_DAG(sentence)
     route = {}
-    jieba.calc(sentence, DAG, 0, route=route)
+    jieba.calc(sentence, DAG, route)
     x = 0
     N = len(sentence)
     buf = ''
@@ -150,7 +150,7 @@ def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
     route = {}
 
-    jieba.calc(sentence,DAG,0,route=route)
+    jieba.calc(sentence, DAG, route)
 
     x = 0
     buf = ''

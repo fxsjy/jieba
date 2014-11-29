@@ -1,4 +1,4 @@
-__version__ = '0.34'
+__version__ = '0.35'
 __license__ = 'MIT'
 
 import re
@@ -135,7 +135,7 @@ def __cut_all(sentence):
                     old_j = j
 
 
-def calc(sentence, DAG, idx, route):
+def calc(sentence, DAG, route):
     N = len(sentence)
     route[N] = (0.0, '')
     for idx in range(N-1, -1, -1):
@@ -164,7 +164,7 @@ def __cut_DAG_NO_HMM(sentence):
     re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
     DAG = get_DAG(sentence)
     route = {}
-    calc(sentence, DAG, 0, route)
+    calc(sentence, DAG, route)
     x = 0
     N = len(sentence)
     buf = ''
@@ -187,7 +187,7 @@ def __cut_DAG_NO_HMM(sentence):
 def __cut_DAG(sentence):
     DAG = get_DAG(sentence)
     route = {}
-    calc(sentence, DAG, 0, route=route)
+    calc(sentence, DAG, route=route)
     x = 0
     buf = ''
     N = len(sentence)

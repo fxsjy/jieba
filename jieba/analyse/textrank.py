@@ -21,7 +21,7 @@ class UndirectWeightedGraph:
         ws = collections.defaultdict(float)
         outSum = collections.defaultdict(float)
 
-        wsdef = 1.0 / len(self.graph)
+        wsdef = 1.0 / (len(self.graph) or 1.0)
         for n, out in self.graph.items():
             ws[n] = wsdef
             outSum[n] = sum((e[2] for e in out), 0.0)

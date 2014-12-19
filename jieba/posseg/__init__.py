@@ -81,7 +81,7 @@ class pair(object):
         return self.__str__()
 
     def __str__(self):
-        return self.__unicode__().encode(default_encoding)
+        return self.__unicode__()
 
     def encode(self,arg):
         return self.__unicode__().encode(arg)

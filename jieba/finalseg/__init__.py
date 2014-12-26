@@ -48,7 +48,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular
     path = {}
     for y in states: #init
-        V[0][y] = start_p[y] + emit_p[y].get(obs[0],MIN_FLOAT)
+        V[0][y] = start_p[y] * emit_p[y].get(obs[0],MIN_FLOAT)
         path[y] = [y]
     for t in xrange(1,len(obs)):
         V.append({})

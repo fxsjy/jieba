@@ -129,7 +129,7 @@ def init_sqlite(cache_file) :
 
 # 'sqlite' can be True or '/path/to/jieba{hash}.db' as cache
 # if True, then use /tmp as usual
-def initialize(dictionary=None, sqlite = False):
+def initialize(dictionary=None, sqlite = False, check_age = True):
     global pfdict, FREQ, total, min_freq, initialized, DICTIONARY, DICT_LOCK
     if not dictionary:
         dictionary = DICTIONARY
@@ -141,8 +141,9 @@ def initialize(dictionary=None, sqlite = False):
             pfdict = None
         _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-        abs_path = os.path.join(_curpath, dictionary)
-        logger.debug("Building prefix dict from %s ..." % abs_path)
+        if check_age :
+            abs_path = os.path.join(_curpath, dictionary)
+            logger.debug("Building prefix dict from %s ..." % abs_path)
         t1 = time.time()
 
         load_from_cache_fail = True
@@ -164,19 +165,22 @@ def initialize(dictionary=None, sqlite = False):
 
             init_sqlite(cache_file)
 
-        if os.path.exists(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
-            logger.debug("Using model from cache %s" % cache_file)
-            if not sqlite :
-                try:
-                    with open(cache_file, 'rb') as cf:
-                        pfdict,FREQ,total,min_freq = marshal.load(cf)
-                    # prevent conflict with old version
-                    load_from_cache_fail = not isinstance(pfdict, set)
-                except:
-                    load_from_cache_fail = True
+        if os.path.exists(cache_file) :
+            if check_age and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
+                logger.debug("Using model from cache %s" % cache_file)
+                if not sqlite :
+                    try:
+                        with open(cache_file, 'rb') as cf:
+                            pfdict,FREQ,total,min_freq = marshal.load(cf)
+                        # prevent conflict with old version
+                        load_from_cache_fail = not isinstance(pfdict, set)
+                    except:
+                        load_from_cache_fail = True
+                else :
+                    if in_FREQ("total") and in_FREQ("min_freq") :
+                        load_from_cache_fail = False
             else :
-                if in_FREQ("total") and in_FREQ("min_freq") :
-                    load_from_cache_fail = False
+                load_from_cache_fail = False
         else :
             # Throw old one if stale. In-memory version can just over-write on open('wb')
             if sqlite and os.path.exists(cache_file) :
@@ -184,7 +188,7 @@ def initialize(dictionary=None, sqlite = False):
                 os.unlink(cache_file)
                 init_sqlite(cache_file)
 
-        if load_from_cache_fail:
+        if load_from_cache_fail :
             pfdict,FREQ,total,min_freq = gen_pfdict(abs_path)
             if not sqlite :
                 logger.debug("Dumping model to file cache %s" % cache_file)

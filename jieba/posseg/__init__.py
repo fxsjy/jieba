@@ -55,8 +55,11 @@ def load_model(f_name, isJython=True):
 if sys.platform.startswith("java"):
     char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
 else:
-    import char_state_tab, prob_start, prob_trans, prob_emit
-    char_state_tab_P, start_P, trans_P, emit_P = char_state_tab.P, prob_start.P, prob_trans.P, prob_emit.P
+    from char_state_tab import P as char_state_tab_P
+    from prob_start import P as start_P
+    from prob_trans import P as trans_P
+    from prob_emit  import P as emit_P
+
     word_tag_tab = load_model(jieba.get_abs_path_dict(), isJython=False)
 
 def makesure_userdict_loaded(fn):
@@ -165,16 +168,14 @@ def __cut_DAG(sentence):
             if buf:
                 if len(buf) == 1:
                     yield pair(buf, word_tag_tab.get(buf, 'x'))
-                    buf = u''
+                elif buf not in jieba.FREQ:
+                    recognized = __cut_detail(buf)
+                    for t in recognized:
+                        yield t
                 else:
-                    if (buf not in jieba.FREQ):
-                        recognized = __cut_detail(buf)
-                        for t in recognized:
-                            yield t
-                    else:
-                        for elem in buf:
-                            yield pair(elem, word_tag_tab.get(elem, 'x'))
-                    buf = u''
+                    for elem in buf:
+                        yield pair(elem, word_tag_tab.get(elem, 'x'))
+                buf = u''
             yield pair(l_word, word_tag_tab.get(l_word, 'x'))
         x = y
 
@@ -229,7 +230,7 @@ def __lcut_internal_no_hmm(sentence):
 
 @makesure_userdict_loaded
 def cut(sentence, HMM=True):
-    if (not hasattr(jieba, 'pool')) or (jieba.pool is None):
+    if jieba.pool is None:
         for w in __cut_internal(sentence, HMM=HMM):
             yield w
     else:

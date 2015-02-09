@@ -41,8 +41,9 @@ def load_model():
 if sys.platform.startswith("java"):
     start_P, trans_P, emit_P = load_model()
 else:
-    import prob_start,prob_trans,prob_emit
-    start_P, trans_P, emit_P = prob_start.P, prob_trans.P, prob_emit.P
+    from prob_start import P as start_P
+    from prob_trans import P as trans_P
+    from prob_emit  import P as emit_P
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular
@@ -50,7 +51,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
     for y in states: #init
         V[0][y] = start_p[y] + emit_p[y].get(obs[0],MIN_FLOAT)
         path[y] = [y]
-    for t in xrange(1,len(obs)):
+    for t in xrange(1, len(obs)):
         V.append({})
         newpath = {}
         for y in states:
@@ -68,7 +69,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 def __cut(sentence):
     global emit_P
     prob, pos_list =  viterbi(sentence, ('B','M','E','S'), start_P, trans_P, emit_P)
-    begin, next = 0,0
+    begin, nexti = 0, 0
     #print pos_list, sentence
     for i,char in enumerate(sentence):
         pos = pos_list[i]
@@ -76,12 +77,12 @@ def __cut(sentence):
             begin = i
         elif pos == 'E':
             yield sentence[begin:i+1]
-            next = i+1
+            nexti = i+1
         elif pos == 'S':
             yield char
-            next = i+1
-    if next < len(sentence):
-        yield sentence[next:]
+            nexti = i+1
+    if nexti < len(sentence):
+        yield sentence[nexti:]
 
 def cut(sentence):
     if not isinstance(sentence, unicode):

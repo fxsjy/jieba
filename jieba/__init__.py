@@ -19,10 +19,12 @@ DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
 pfdict = None # to be initialized
 FREQ = {}
-min_freq = 0.0
-total = 0.0
+total = 0
 user_word_tag_tab = {}
 initialized = False
+pool = None
+
+_curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 log_console = logging.StreamHandler(sys.stderr)
 logger = logging.getLogger(__name__)
@@ -36,14 +38,14 @@ def setLogLevel(log_level):
 def gen_pfdict(f_name):
     lfreq = {}
     pfdict = set()
-    ltotal = 0.0
+    ltotal = 0
     with open(f_name, 'rb') as f:
         lineno = 0
         for line in f.read().rstrip().decode('utf-8').split('\n'):
             lineno += 1
             try:
-                word,freq = line.split(' ')[:2]
-                freq = float(freq)
+                word, freq = line.split(' ')[:2]
+                freq = int(freq)
                 lfreq[word] = freq
                 ltotal += freq
                 for ch in range(len(word)):
@@ -60,10 +62,6 @@ def initialize(dictionary=None):
     with DICT_LOCK:
         if initialized:
             return
-        if pfdict:
-            del pfdict
-            pfdict = None
-        _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
         abs_path = os.path.join(_curpath, dictionary)
         logger.debug("Building prefix dict from %s ..." % abs_path)
@@ -74,31 +72,29 @@ def initialize(dictionary=None):
             cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
 
         load_from_cache_fail = True
-        if os.path.exists(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
+        if os.path.isfile(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
             logger.debug("Loading model from cache %s" % cache_file)
             try:
                 with open(cache_file, 'rb') as cf:
-                    pfdict,FREQ,total,min_freq = marshal.load(cf)
+                    pfdict, FREQ, total = marshal.load(cf)
                 # prevent conflict with old version
                 load_from_cache_fail = not isinstance(pfdict, set)
-            except:
+            except Exception:
                 load_from_cache_fail = True
 
         if load_from_cache_fail:
-            pfdict,FREQ,total = gen_pfdict(abs_path)
-            FREQ = dict((k,log(float(v)/total)) for k,v in FREQ.items()) #normalize
-            min_freq = min(FREQ.values())
+            pfdict, FREQ, total = gen_pfdict(abs_path)
             logger.debug("Dumping model to file cache %s" % cache_file)
             try:
                 fd, fpath = tempfile.mkstemp()
                 with os.fdopen(fd, 'wb') as temp_cache_file:
-                    marshal.dump((pfdict,FREQ,total,min_freq), temp_cache_file)
+                    marshal.dump((pfdict, FREQ, total), temp_cache_file)
                 if os.name == 'nt':
                     from shutil import move as replace_file
                 else:
                     replace_file = os.rename
                 replace_file(fpath, cache_file)
-            except:
+            except Exception:
                 logger.exception("Dump cache file failed.")
 
         initialized = True
@@ -139,7 +135,7 @@ def calc(sentence, DAG, route):
     N = len(sentence)
     route[N] = (0.0, '')
     for idx in range(N-1, -1, -1):
-        route[idx] = max((FREQ.get(sentence[idx:x+1],min_freq) + route[x+1][0], x) for x in DAG[idx])
+        route[idx] = max((log(FREQ.get(sentence[idx:x+1], 1)) - log(total) + route[x+1][0], x) for x in DAG[idx])
 
 @require_initialized
 def get_DAG(sentence):
@@ -202,7 +198,7 @@ def __cut_DAG(sentence):
                     yield buf
                     buf = ''
                 else:
-                    if (buf not in FREQ):
+                    if buf not in FREQ:
                         recognized = finalseg.cut(buf)
                         for t in recognized:
                             yield t
@@ -216,7 +212,7 @@ def __cut_DAG(sentence):
     if buf:
         if len(buf) == 1:
             yield buf
-        elif (buf not in FREQ):
+        elif buf not in FREQ:
             recognized = finalseg.cut(buf)
             for t in recognized:
                 yield t
@@ -297,26 +293,24 @@ def load_userdict(f):
     '''
     if isinstance(f, str):
         f = open(f, 'rb')
-    content = f.read().decode('utf-8')
+    content = f.read().decode('utf-8').lstrip('\ufeff')
     line_no = 0
     for line in content.split("\n"):
         line_no += 1
         if not line.rstrip():
             continue
-        tup = line.split(" ")
-        word, freq = tup[0], tup[1]
-        if freq.isdigit() is False:
-            continue
-        if line_no == 1:
-            word = word.replace('\ufeff',"") #remove bom flag if it exists
-        add_word(*tup)
+        tup = line.strip().split(" ")
+        if tup[1].isdigit():
+            add_word(*tup)
 
 @require_initialized
 def add_word(word, freq, tag=None):
     global FREQ, pfdict, total, user_word_tag_tab
-    FREQ[word] = log(float(freq) / total)
+    freq = int(freq)
+    FREQ[word] = freq
+    total += freq
     if tag is not None:
-        user_word_tag_tab[word] = tag.strip()
+        user_word_tag_tab[word] = tag
     for ch in range(len(word)):
         pfdict.add(word[:ch+1])
 
@@ -366,8 +360,8 @@ def enable_parallel(processnum=None):
     cut_for_search = pcut_for_search
 
 def disable_parallel():
-    global pool,cut,cut_for_search
-    if 'pool' in globals():
+    global pool, cut, cut_for_search
+    if pool:
         pool.close()
         pool = None
     cut = __ref_cut
@@ -383,9 +377,7 @@ def set_dictionary(dictionary_path):
         initialized = False
 
 def get_abs_path_dict():
-    _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    abs_path = os.path.join(_curpath,DICTIONARY)
-    return abs_path
+    return os.path.join(_curpath, DICTIONARY)
 
 def tokenize(unicode_sentence, mode="default", HMM=True):
     """Tokenize a sentence and yields tuples of (word, start, end)

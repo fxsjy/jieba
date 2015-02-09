@@ -330,12 +330,12 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
 结巴分词 C++ 版本
 ----------------
-作者：Aszxqw
+作者：yanyiwu
 地址：https://github.com/aszxqw/cppjieba
 
 结巴分词 Node.js 版本
 ----------------
-作者：Aszxqw
+作者：yanyiwu
 地址：https://github.com/aszxqw/nodejieba
 
 结巴分词 Erlang 版本
@@ -347,6 +347,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 ----------------
 作者：qinwf
 地址：https://github.com/qinwf/jiebaR
+
+结巴分词 iOS 版本
+----------------
+作者：yanyiwu
+地址：https://github.com/aszxqw/iosjieba
 
 系统集成
 ========

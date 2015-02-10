@@ -18,23 +18,26 @@ from . import finalseg
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
-pfdict = None # to be initialized
+pfdict = None  # to be initialized
 FREQ = {}
 total = 0
 user_word_tag_tab = {}
 initialized = False
 pool = None
 
-_curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+_curpath = os.path.normpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 log_console = logging.StreamHandler(sys.stderr)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(log_console)
 
+
 def setLogLevel(log_level):
     global logger
     logger.setLevel(log_level)
+
 
 def gen_pfdict(f_name):
     lfreq = {}
@@ -50,11 +53,12 @@ def gen_pfdict(f_name):
                 lfreq[word] = freq
                 ltotal += freq
                 for ch in xrange(len(word)):
-                    pfdict.add(word[:ch+1])
+                    pfdict.add(word[:ch + 1])
             except ValueError as e:
                 logger.debug('%s at line %s %s' % (f_name, lineno, line))
                 raise e
     return pfdict, lfreq, ltotal
+
 
 def initialize(dictionary=None):
     global pfdict, FREQ, total, initialized, DICTIONARY, DICT_LOCK
@@ -67,10 +71,12 @@ def initialize(dictionary=None):
         abs_path = os.path.join(_curpath, dictionary)
         logger.debug("Building prefix dict from %s ..." % abs_path)
         t1 = time.time()
-        if abs_path == os.path.join(_curpath, "dict.txt"): #default dictionary
+        # default dictionary
+        if abs_path == os.path.join(_curpath, "dict.txt"):
             cache_file = os.path.join(tempfile.gettempdir(), "jieba.cache")
-        else: #custom dictionary
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
+        else:  # custom dictionary
+            cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(
+                abs_path.encode('utf-8', 'replace')).hexdigest())
 
         load_from_cache_fail = True
         if os.path.isfile(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
@@ -121,22 +127,24 @@ def require_initialized(fn):
 def __cut_all(sentence):
     dag = get_DAG(sentence)
     old_j = -1
-    for k,L in iteritems(dag):
+    for k, L in iteritems(dag):
         if len(L) == 1 and k > old_j:
-            yield sentence[k:L[0]+1]
+            yield sentence[k:L[0] + 1]
             old_j = L[0]
         else:
             for j in L:
                 if j > k:
-                    yield sentence[k:j+1]
+                    yield sentence[k:j + 1]
                     old_j = j
 
 
 def calc(sentence, DAG, route):
     N = len(sentence)
     route[N] = (0.0, '')
-    for idx in xrange(N-1, -1, -1):
-        route[idx] = max((log(FREQ.get(sentence[idx:x+1], 1)) - log(total) + route[x+1][0], x) for x in DAG[idx])
+    for idx in xrange(N - 1, -1, -1):
+        route[idx] = max((log(FREQ.get(sentence[idx:x + 1], 1)) -
+                          log(total) + route[x + 1][0], x) for x in DAG[idx])
+
 
 @require_initialized
 def get_DAG(sentence):
@@ -151,14 +159,16 @@ def get_DAG(sentence):
             if frag in FREQ:
                 tmplist.append(i)
             i += 1
-            frag = sentence[k:i+1]
+            frag = sentence[k:i + 1]
         if not tmplist:
             tmplist.append(k)
         DAG[k] = tmplist
     return DAG
 
+re_eng = re.compile(r'[a-zA-Z0-9]', re.U)
+
+
 def __cut_DAG_NO_HMM(sentence):
-    re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
     DAG = get_DAG(sentence)
     route = {}
     calc(sentence, DAG, route)
@@ -181,6 +191,7 @@ def __cut_DAG_NO_HMM(sentence):
         yield buf
         buf = ''
 
+
 def __cut_DAG(sentence):
     DAG = get_DAG(sentence)
     route = {}
@@ -189,9 +200,9 @@ def __cut_DAG(sentence):
     buf = ''
     N = len(sentence)
     while x < N:
-        y = route[x][1]+1
+        y = route[x][1] + 1
         l_word = sentence[x:y]
-        if y-x == 1:
+        if y - x == 1:
             buf += l_word
         else:
             if buf:
@@ -221,6 +232,12 @@ def __cut_DAG(sentence):
             for elem in buf:
                 yield elem
 
+re_han_default = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U)
+re_skip_default = re.compile("(\r\n|\s)", re.U)
+re_han_cut_all = re.compile("([\u4E00-\u9FA5]+)", re.U)
+re_skip_cut_all = re.compile("[^a-zA-Z0-9+#\n]", re.U)
+
+
 def cut(sentence, cut_all=False, HMM=True):
     '''The main function that segments an entire sentence that contains
     Chinese characters into seperated words.
@@ -235,9 +252,11 @@ def cut(sentence, cut_all=False, HMM=True):
     # \r\n|\s : whitespace characters. Will not be handled.
 
     if cut_all:
-        re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)", re.U), re.compile("[^a-zA-Z0-9+#\n]", re.U)
+        re_han = re_han_cut_all
+        re_skip = re_skip_cut_all
     else:
-        re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile("(\r\n|\s)", re.U)
+        re_han = re_han_default
+        re_skip = re_skip_default
     blocks = re_han.split(sentence)
     if cut_all:
         cut_block = __cut_all
@@ -262,20 +281,22 @@ def cut(sentence, cut_all=False, HMM=True):
                 else:
                     yield x
 
+
 def cut_for_search(sentence, HMM=True):
     words = cut(sentence, HMM=HMM)
     for w in words:
         if len(w) > 2:
-            for i in xrange(len(w)-1):
-                gram2 = w[i:i+2]
+            for i in xrange(len(w) - 1):
+                gram2 = w[i:i + 2]
                 if gram2 in FREQ:
                     yield gram2
         if len(w) > 3:
-            for i in xrange(len(w)-2):
-                gram3 = w[i:i+3]
+            for i in xrange(len(w) - 2):
+                gram3 = w[i:i + 3]
                 if gram3 in FREQ:
                     yield gram3
         yield w
+
 
 @require_initialized
 def load_userdict(f):
@@ -300,6 +321,7 @@ def load_userdict(f):
         if tup[1].isdigit():
             add_word(*tup)
 
+
 @require_initialized
 def add_word(word, freq, tag=None):
     global FREQ, pfdict, total, user_word_tag_tab
@@ -309,17 +331,24 @@ def add_word(word, freq, tag=None):
     if tag is not None:
         user_word_tag_tab[word] = tag
     for ch in xrange(len(word)):
-        pfdict.add(word[:ch+1])
+        pfdict.add(word[:ch + 1])
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
 
+
 def __lcut(sentence):
     return list(__ref_cut(sentence, False))
+
+
 def __lcut_no_hmm(sentence):
     return list(__ref_cut(sentence, False, False))
+
+
 def __lcut_all(sentence):
     return list(__ref_cut(sentence, True))
+
+
 def __lcut_for_search(sentence):
     return list(__ref_cut_for_search(sentence))
 
@@ -334,7 +363,7 @@ def enable_parallel(processnum=None):
         processnum = cpu_count()
     pool = Pool(processnum)
 
-    def pcut(sentence,cut_all=False,HMM=True):
+    def pcut(sentence, cut_all=False, HMM=True):
         parts = strdecode(sentence).split('\n')
         if cut_all:
             result = pool.map(__lcut_all, parts)
@@ -356,6 +385,7 @@ def enable_parallel(processnum=None):
     cut = pcut
     cut_for_search = pcut_for_search
 
+
 def disable_parallel():
     global pool, cut, cut_for_search
     if pool:
@@ -363,6 +393,7 @@ def disable_parallel():
         pool = None
     cut = __ref_cut
     cut_for_search = __ref_cut_for_search
+
 
 def set_dictionary(dictionary_path):
     global initialized, DICTIONARY
@@ -373,8 +404,10 @@ def set_dictionary(dictionary_path):
         DICTIONARY = abs_path
         initialized = False
 
+
 def get_abs_path_dict():
     return os.path.join(_curpath, DICTIONARY)
+
 
 def tokenize(unicode_sentence, mode="default", HMM=True):
     """Tokenize a sentence and yields tuples of (word, start, end)
@@ -389,20 +422,20 @@ def tokenize(unicode_sentence, mode="default", HMM=True):
     if mode == 'default':
         for w in cut(unicode_sentence, HMM=HMM):
             width = len(w)
-            yield (w, start, start+width)
+            yield (w, start, start + width)
             start += width
     else:
         for w in cut(unicode_sentence, HMM=HMM):
             width = len(w)
             if len(w) > 2:
-                for i in xrange(len(w)-1):
-                    gram2 = w[i:i+2]
+                for i in xrange(len(w) - 1):
+                    gram2 = w[i:i + 2]
                     if gram2 in FREQ:
-                        yield (gram2, start+i, start+i+2)
+                        yield (gram2, start + i, start + i + 2)
             if len(w) > 3:
-                for i in xrange(len(w)-2):
-                    gram3 = w[i:i+3]
+                for i in xrange(len(w) - 2):
+                    gram3 = w[i:i + 3]
                     if gram3 in FREQ:
-                        yield (gram3, start+i, start+i+3)
-            yield (w, start, start+width)
+                        yield (gram3, start + i, start + i + 3)
+            yield (w, start, start + width)
             start += width

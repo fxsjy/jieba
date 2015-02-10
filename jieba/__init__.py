@@ -1,20 +1,20 @@
-from __future__ import with_statement
+from __future__ import absolute_import, unicode_literals
 __version__ = '0.35'
 __license__ = 'MIT'
 
 import re
 import os
 import sys
-import finalseg
 import time
 import tempfile
 import marshal
 from math import log
-import random
 import threading
 from functools import wraps
 import logging
 from hashlib import md5
+from ._compat import *
+from . import finalseg
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -51,13 +51,13 @@ def gen_pfdict(f_name):
                 ltotal += freq
                 for ch in xrange(len(word)):
                     pfdict.add(word[:ch+1])
-            except ValueError, e:
+            except ValueError as e:
                 logger.debug('%s at line %s %s' % (f_name, lineno, line))
-                raise ValueError, e
+                raise e
     return pfdict, lfreq, ltotal
 
 def initialize(dictionary=None):
-    global pfdict, FREQ, total, min_freq, initialized, DICTIONARY, DICT_LOCK
+    global pfdict, FREQ, total, initialized, DICTIONARY, DICT_LOCK
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
@@ -121,7 +121,7 @@ def require_initialized(fn):
 def __cut_all(sentence):
     dag = get_DAG(sentence)
     old_j = -1
-    for k,L in dag.iteritems():
+    for k,L in iteritems(dag):
         if len(L) == 1 and k > old_j:
             yield sentence[k:L[0]+1]
             old_j = L[0]
@@ -158,13 +158,13 @@ def get_DAG(sentence):
     return DAG
 
 def __cut_DAG_NO_HMM(sentence):
-    re_eng = re.compile(ur'[a-zA-Z0-9]',re.U)
+    re_eng = re.compile(r'[a-zA-Z0-9]',re.U)
     DAG = get_DAG(sentence)
     route = {}
     calc(sentence, DAG, route)
     x = 0
     N = len(sentence)
-    buf = u''
+    buf = ''
     while x < N:
         y = route[x][1] + 1
         l_word = sentence[x:y]
@@ -174,19 +174,19 @@ def __cut_DAG_NO_HMM(sentence):
         else:
             if buf:
                 yield buf
-                buf = u''
+                buf = ''
             yield l_word
             x = y
     if buf:
         yield buf
-        buf = u''
+        buf = ''
 
 def __cut_DAG(sentence):
     DAG = get_DAG(sentence)
     route = {}
     calc(sentence, DAG, route=route)
     x = 0
-    buf = u''
+    buf = ''
     N = len(sentence)
     while x < N:
         y = route[x][1]+1
@@ -197,7 +197,7 @@ def __cut_DAG(sentence):
             if buf:
                 if len(buf) == 1:
                     yield buf
-                    buf = u''
+                    buf = ''
                 else:
                     if buf not in FREQ:
                         recognized = finalseg.cut(buf)
@@ -206,7 +206,7 @@ def __cut_DAG(sentence):
                     else:
                         for elem in buf:
                             yield elem
-                    buf = u''
+                    buf = ''
             yield l_word
         x = y
 
@@ -225,23 +225,19 @@ def cut(sentence, cut_all=False, HMM=True):
     '''The main function that segments an entire sentence that contains
     Chinese characters into seperated words.
     Parameter:
-        - sentence: The str/unicode to be segmented.
+        - sentence: The str(unicode) to be segmented.
         - cut_all: Model type. True for full pattern, False for accurate pattern.
         - HMM: Whether to use the Hidden Markov Model.
     '''
-    if not isinstance(sentence, unicode):
-        try:
-            sentence = sentence.decode('utf-8')
-        except UnicodeDecodeError:
-            sentence = sentence.decode('gbk', 'ignore')
+    sentence = strdecode(sentence)
 
     # \u4E00-\u9FA5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
     # \r\n|\s : whitespace characters. Will not be handled.
 
     if cut_all:
-        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)", re.U), re.compile(ur"[^a-zA-Z0-9+#\n]", re.U)
+        re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)", re.U), re.compile("[^a-zA-Z0-9+#\n]", re.U)
     else:
-        re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile(ur"(\r\n|\s)", re.U)
+        re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", re.U), re.compile("(\r\n|\s)", re.U)
     blocks = re_han.split(sentence)
     if cut_all:
         cut_block = __cut_all
@@ -292,9 +288,9 @@ def load_userdict(f):
     ...
     Word type may be ignored
     '''
-    if isinstance(f, (str, unicode)):
+    if isinstance(f, string_types):
         f = open(f, 'rb')
-    content = f.read().decode('utf-8').lstrip(u'\ufeff')
+    content = f.read().decode('utf-8').lstrip('\ufeff')
     line_no = 0
     for line in content.split("\n"):
         line_no += 1
@@ -333,15 +329,13 @@ def enable_parallel(processnum=None):
     global pool, cut, cut_for_search
     if os.name == 'nt':
         raise Exception("jieba: parallel mode only supports posix system")
-    if sys.version_info[0]==2 and sys.version_info[1]<6:
-        raise Exception("jieba: the parallel feature needs Python version>2.5")
     from multiprocessing import Pool, cpu_count
     if processnum is None:
         processnum = cpu_count()
     pool = Pool(processnum)
 
     def pcut(sentence,cut_all=False,HMM=True):
-        parts = re.compile('([\r\n]+)').split(sentence)
+        parts = strdecode(sentence).split('\n')
         if cut_all:
             result = pool.map(__lcut_all, parts)
         elif HMM:
@@ -353,7 +347,7 @@ def enable_parallel(processnum=None):
                 yield w
 
     def pcut_for_search(sentence):
-        parts = re.compile('([\r\n]+)').split(sentence)
+        parts = strdecode(sentence).split('\n')
         result = pool.map(__lcut_for_search, parts)
         for r in result:
             for w in r:
@@ -385,11 +379,11 @@ def get_abs_path_dict():
 def tokenize(unicode_sentence, mode="default", HMM=True):
     """Tokenize a sentence and yields tuples of (word, start, end)
     Parameter:
-        - sentence: the unicode to be segmented.
+        - sentence: the str(unicode) to be segmented.
         - mode: "default" or "search", "search" is for finer segmentation.
         - HMM: whether to use the Hidden Markov Model.
     """
-    if not isinstance(unicode_sentence, unicode):
+    if not isinstance(unicode_sentence, text_type):
         raise Exception("jieba: the input parameter should be unicode.")
     start = 0
     if mode == 'default':

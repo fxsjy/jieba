@@ -25,7 +25,7 @@ args = parser.parse_args()
 
 if args.quiet:
     jieba.setLogLevel(60)
-delim = unicode(args.delimiter)
+delim = text_type(args.delimiter)
 cutall = args.cutall
 hmm = args.hmm
 fp = open(args.filename, 'r') if args.filename else sys.stdin
@@ -40,7 +40,10 @@ if args.user_dict:
 ln = fp.readline()
 while ln:
     l = ln.rstrip('\r\n')
-    print(delim.join(jieba.cut(ln.rstrip('\r\n'), cutall, hmm)).encode('utf-8'))
+    result = delim.join(jieba.cut(ln.rstrip('\r\n'), cutall, hmm))
+    if PY2:
+        result = result.encode(default_encoding)
+    print(result)
     ln = fp.readline()
 
 fp.close()

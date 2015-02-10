@@ -1,13 +1,12 @@
-from __future__ import with_statement
+from __future__ import absolute_import, unicode_literals
 import re
 import os
-import viterbi
 import jieba
 import sys
 import marshal
 from functools import wraps
-
-default_encoding = sys.getfilesystemencoding()
+from .._compat import *
+from .viterbi import viterbi
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
@@ -18,13 +17,14 @@ def load_model(f_name, isJython=True):
     _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     result = {}
-    with open(f_name, "r") as f:
+    with open(f_name, "rb") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
-            word, _, tag = line.split(' ')
-            result[word.decode('utf-8')] = tag
+            line = line.decode("utf-8")
+            word, _, tag = line.split(" ")
+            result[word] = tag
 
     if not isJython:
         return result
@@ -55,10 +55,10 @@ def load_model(f_name, isJython=True):
 if sys.platform.startswith("java"):
     char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(jieba.get_abs_path_dict())
 else:
-    from char_state_tab import P as char_state_tab_P
-    from prob_start import P as start_P
-    from prob_trans import P as trans_P
-    from prob_emit  import P as emit_P
+    from .char_state_tab import P as char_state_tab_P
+    from .prob_start import P as start_P
+    from .prob_trans import P as trans_P
+    from .prob_emit  import P as emit_P
 
     word_tag_tab = load_model(jieba.get_abs_path_dict(), isJython=False)
 
@@ -79,20 +79,23 @@ class pair(object):
         self.flag = flag
 
     def __unicode__(self):
-        return u'%s/%s' % (self.word, self.flag)
+        return '%s/%s' % (self.word, self.flag)
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return self.__unicode__().encode(default_encoding)
+        if PY2:
+            return self.__unicode__().encode(default_encoding)
+        else:
+            return self.__unicode__()
 
     def encode(self,arg):
         return self.__unicode__().encode(arg)
 
 def __cut(sentence):
-    prob, pos_list = viterbi.viterbi(sentence, char_state_tab_P, start_P, trans_P, emit_P)
-    begin, next = 0, 0
+    prob, pos_list = viterbi(sentence, char_state_tab_P, start_P, trans_P, emit_P)
+    begin, nexti = 0, 0
 
     for i,char in enumerate(sentence):
         pos = pos_list[i][0]
@@ -100,16 +103,16 @@ def __cut(sentence):
             begin = i
         elif pos == 'E':
             yield pair(sentence[begin:i+1], pos_list[i][1])
-            next = i+1
+            nexti = i+1
         elif pos == 'S':
             yield pair(char, pos_list[i][1])
-            next = i+1
-    if next < len(sentence):
-        yield pair(sentence[next:], pos_list[next][1])
+            nexti = i+1
+    if nexti < len(sentence):
+        yield pair(sentence[nexti:], pos_list[nexti][1])
 
 def __cut_detail(sentence):
-    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"([\.0-9]+|[a-zA-Z0-9]+)")
-    re_eng, re_num = re.compile(ur"[a-zA-Z0-9]+"), re.compile(ur"[\.0-9]+")
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
+    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):
@@ -132,8 +135,8 @@ def __cut_DAG_NO_HMM(sentence):
     jieba.calc(sentence, DAG, route)
     x = 0
     N = len(sentence)
-    buf = u''
-    re_eng = re.compile(ur'[a-zA-Z0-9]',re.U)
+    buf = ''
+    re_eng = re.compile('[a-zA-Z0-9]',re.U)
     while x < N:
         y = route[x][1]+1
         l_word = sentence[x:y]
@@ -143,12 +146,12 @@ def __cut_DAG_NO_HMM(sentence):
         else:
             if buf:
                 yield pair(buf,'eng')
-                buf = u''
+                buf = ''
             yield pair(l_word, word_tag_tab.get(l_word, 'x'))
             x = y
     if buf:
         yield pair(buf,'eng')
-        buf = u''
+        buf = ''
 
 def __cut_DAG(sentence):
     DAG = jieba.get_DAG(sentence)
@@ -157,7 +160,7 @@ def __cut_DAG(sentence):
     jieba.calc(sentence, DAG, route)
 
     x = 0
-    buf = u''
+    buf = ''
     N = len(sentence)
     while x < N:
         y = route[x][1]+1
@@ -175,7 +178,7 @@ def __cut_DAG(sentence):
                 else:
                     for elem in buf:
                         yield pair(elem, word_tag_tab.get(elem, 'x'))
-                buf = u''
+                buf = ''
             yield pair(l_word, word_tag_tab.get(l_word, 'x'))
         x = y
 
@@ -191,13 +194,9 @@ def __cut_DAG(sentence):
                 yield pair(elem, word_tag_tab.get(elem, 'x'))
 
 def __cut_internal(sentence, HMM=True):
-    if not isinstance(sentence, unicode):
-        try:
-            sentence = sentence.decode('utf-8')
-        except UnicodeDecodeError:
-            sentence = sentence.decode('gbk', 'ignore')
-    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile(ur"(\r\n|\s)")
-    re_eng, re_num = re.compile(ur"[a-zA-Z0-9]+"), re.compile(ur"[\.0-9]+")
+    sentence = strdecode(sentence)
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)"), re.compile("(\r\n|\s)")
+    re_eng, re_num = re.compile("[a-zA-Z0-9]+"), re.compile("[\.0-9]+")
     blocks = re_han.split(sentence)
     if HMM:
         __cut_blk = __cut_DAG
@@ -234,7 +233,7 @@ def cut(sentence, HMM=True):
         for w in __cut_internal(sentence, HMM=HMM):
             yield w
     else:
-        parts = re.compile('([\r\n]+)').split(sentence)
+        parts = strdecode(sentence).split('\n')
         if HMM:
             result = jieba.pool.map(__lcut_internal, parts)
         else:

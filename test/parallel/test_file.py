@@ -1,6 +1,5 @@
-import urllib2
-import sys,time
 import sys
+import time
 sys.path.append("../../")
 import jieba
 
@@ -17,5 +16,5 @@ tm_cost = t2-t1
 log_f = open("1.log","wb")
 log_f.write(words.encode('utf-8'))
 
-print 'speed' , len(content)/tm_cost, " bytes/second"
+print('speed %s bytes/second' % (len(content)/tm_cost))
 

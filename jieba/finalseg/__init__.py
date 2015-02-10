@@ -1,8 +1,9 @@
-from __future__ import with_statement
+from __future__ import absolute_import, unicode_literals
 import re
 import os
 import marshal
 import sys
+from .._compat import *
 
 MIN_FLOAT = -3.14e100
 
@@ -41,9 +42,9 @@ def load_model():
 if sys.platform.startswith("java"):
     start_P, trans_P, emit_P = load_model()
 else:
-    from prob_start import P as start_P
-    from prob_trans import P as trans_P
-    from prob_emit  import P as emit_P
+    from .prob_start import P as start_P
+    from .prob_trans import P as trans_P
+    from .prob_emit  import P as emit_P
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
     V = [{}] #tabular
@@ -85,12 +86,8 @@ def __cut(sentence):
         yield sentence[nexti:]
 
 def cut(sentence):
-    if not isinstance(sentence, unicode):
-        try:
-            sentence = sentence.decode('utf-8')
-        except UnicodeDecodeError:
-            sentence = sentence.decode('gbk', 'ignore')
-    re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"(\d+\.\d+|[a-zA-Z0-9]+)")
+    sentence = strdecode(sentence)
+    re_han, re_skip = re.compile("([\u4E00-\u9FA5]+)"), re.compile("(\d+\.\d+|[a-zA-Z0-9]+)")
     blocks = re_han.split(sentence)
     for blk in blocks:
         if re_han.match(blk):

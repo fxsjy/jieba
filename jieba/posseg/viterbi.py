@@ -1,6 +1,10 @@
+import sys
 import operator
 MIN_FLOAT = -3.14e100
 MIN_INF = float("-inf")
+
+if sys.version_info[0] > 2:
+    xrange = range
 
 def get_top_states(t_state_v, K=4):
     return sorted(t_state_v, key=t_state_v.__getitem__, reverse=True)[:K]

@@ -16,6 +16,13 @@ from functools import wraps
 import logging
 from hashlib import md5
 
+sqlite_available = False
+try :
+    import sqlite3
+    sqlite_available = True
+except ImportError, e :
+    pass
+
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
 pfdict = None # to be initialized
@@ -23,6 +30,7 @@ FREQ = {}
 total = 0
 user_word_tag_tab = {}
 initialized = False
+use_sqlite = False
 pool = None
 
 _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -37,26 +45,83 @@ def setLogLevel(log_level):
     logger.setLevel(log_level)
 
 def gen_pfdict(f_name):
-    lfreq = {}
-    pfdict = set()
+    if not use_sqlite :
+        lfreq = {}
+        pfdict = set()
+    else :
+        use_sqlite["db"].isolation_level = None
+        # Optimal sqlite memory cache size seems to be '30'
+        # after doing a binary search between 1 and 2000
+        use_sqlite["conn"].execute('PRAGMA cache_size=30')
+        use_sqlite["conn"].execute("begin")
+        logger.debug("Making first-pass over sqlite cache...")
+
     ltotal = 0
-    with open(f_name, 'rb') as f:
+    with open(f_name, 'rb', 0) as f:
         lineno = 0
-        for line in f.read().rstrip().decode('utf-8').split('\n'):
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            line = line.rstrip().decode('utf-8')
             lineno += 1
             try:
                 word, freq = line.split(' ')[:2]
-                freq = int(freq)
-                lfreq[word] = freq
+                freq = float(freq)
+                if not use_sqlite :
+                    lfreq[word] = freq
+                else :
+                    use_sqlite["conn"].execute("replace into FREQ values (?, ?)", (word, freq))
+
                 ltotal += freq
                 for ch in xrange(len(word)):
-                    pfdict.add(word[:ch+1])
+                    sub_word = word[:ch+1]
+                    if not use_sqlite :
+                        pfdict.add(sub_word)
+                    else :
+                        use_sqlite["conn"].execute("replace into pfdict values (?)", (sub_word,))
+
             except ValueError, e:
                 logger.debug('%s at line %s %s' % (f_name, lineno, line))
                 raise ValueError, e
-    return pfdict, lfreq, ltotal
 
-def initialize(dictionary=None):
+    if not use_sqlite :
+        return pfdict, FREQ, ltotal
+    else :
+        use_sqlite["conn"].execute("commit")
+        use_sqlite["conn"].execute("begin")
+        tmp_cursor = use_sqlite["db"].cursor()
+        logger.debug("Normalizing sqlite frequencies...")
+        rs = tmp_cursor.execute("select * from FREQ")
+        ncount = 0
+        while True :
+            result = rs.fetchone()
+            if result is None :
+                break
+            ncount += 1
+            word = result[0]
+            freq = result[1]
+            use_sqlite["conn"].execute("update FREQ set freq = ? where word = ?", (word, norm_freq))
+
+        use_sqlite["conn"].execute("replace into FREQ values (?, ?)", ("total", ltotal))
+        use_sqlite["conn"].execute("commit")
+        use_sqlite["conn"].execute("vacuum")
+        use_sqlite["conn"].execute('PRAGMA cache_size=2000') # default
+        return False, False, ltotal
+
+def init_sqlite(cache_file) :
+    global use_sqlite
+    db = sqlite3.connect(cache_file)
+    conn = db.cursor()
+    conn.execute('pragma journal_mode=OFF')
+    conn.execute('PRAGMA synchronous=OFF')
+    use_sqlite = {"conn" : conn, "db" : db}
+    conn.execute("create table if not exists pfdict (word text primary key)")
+    conn.execute("create table if not exists FREQ (word text primary key, freq int)")
+
+# 'sqlite' can be True or '/path/to/jieba{hash}.db' as cache
+# if True, then use /tmp as usual
+def initialize(dictionary=None, sqlite = False, check_age = True):
     global pfdict, FREQ, total, min_freq, initialized, DICTIONARY, DICT_LOCK
     if not dictionary:
         dictionary = DICTIONARY
@@ -67,41 +132,72 @@ def initialize(dictionary=None):
         abs_path = os.path.join(_curpath, dictionary)
         logger.debug("Building prefix dict from %s ..." % abs_path)
         t1 = time.time()
-        if abs_path == os.path.join(_curpath, "dict.txt"): #default dictionary
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.cache")
-        else: #custom dictionary
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
 
         load_from_cache_fail = True
-        if os.path.isfile(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
-            logger.debug("Loading model from cache %s" % cache_file)
-            try:
-                with open(cache_file, 'rb') as cf:
-                    pfdict, FREQ, total = marshal.load(cf)
-                # prevent conflict with old version
-                load_from_cache_fail = not isinstance(pfdict, set)
-            except Exception:
-                load_from_cache_fail = True
 
-        if load_from_cache_fail:
-            pfdict, FREQ, total = gen_pfdict(abs_path)
-            logger.debug("Dumping model to file cache %s" % cache_file)
-            try:
-                fd, fpath = tempfile.mkstemp()
-                with os.fdopen(fd, 'wb') as temp_cache_file:
-                    marshal.dump((pfdict, FREQ, total), temp_cache_file)
-                if os.name == 'nt':
-                    from shutil import move as replace_file
-                else:
-                    replace_file = os.rename
-                replace_file(fpath, cache_file)
-            except Exception:
-                logger.exception("Dump cache file failed.")
+        if sqlite and not sqlite_available :
+            logger.warn("sqlite3 cannot be found. Falling back to default cache.")
+            sqlite = False
+
+        if not sqlite :
+            if abs_path == os.path.join(_curpath, "dict.txt"): #default dictionary
+                cache_file = os.path.join(tempfile.gettempdir(), "jieba.cache")
+            else: #custom dictionary
+                cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
+        else :
+            if isinstance(sqlite, str) :
+                cache_file = sqlite
+            else :
+                cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.db" % md5(abs_path.encode('utf-8', 'replace')).hexdigest())
+
+            init_sqlite(cache_file)
+
+        if os.path.exists(cache_file) :
+            if check_age and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
+                logger.debug("Using model from cache %s" % cache_file)
+                if not sqlite :
+                    try:
+                        with open(cache_file, 'rb') as cf:
+                            pfdict,FREQ,total = marshal.load(cf)
+                        # prevent conflict with old version
+                        load_from_cache_fail = not isinstance(pfdict, set)
+                    except:
+                        load_from_cache_fail = True
+                else :
+                    if in_FREQ("total"):
+                        load_from_cache_fail = False
+            else :
+                load_from_cache_fail = False
+        else :
+            # Throw old one if stale. In-memory version can just over-write on open('wb')
+            if sqlite and os.path.exists(cache_file) :
+                logger.debug("Throwing away old sqlite cache %s" % cache_file)
+                os.unlink(cache_file)
+                init_sqlite(cache_file)
+
+        if load_from_cache_fail :
+            pfdict,FREQ,total = gen_pfdict(abs_path)
+            if not sqlite :
+                logger.debug("Dumping model to file cache %s" % cache_file)
+                try:
+                    fd, fpath = tempfile.mkstemp()
+                    with os.fdopen(fd, 'wb') as temp_cache_file:
+                        marshal.dump((pfdict, FREQ, total), temp_cache_file)
+                    if os.name == 'nt':
+                        from shutil import move as replace_file
+                    else:
+                        replace_file = os.rename
+                    replace_file(fpath, cache_file)
+                except:
+                    logger.exception("Dump cache file failed.")
 
         initialized = True
 
-        logger.debug("Loading model cost %s seconds." % (time.time() - t1))
-        logger.debug("Prefix dict has been built succesfully.")
+        if load_from_cache_fail or not sqlite :
+            logger.debug("Loading model cost %s seconds." % (time.time() - t1))
+
+        if not sqlite :
+            logger.debug("Prefix dict has been built succesfully.")
 
 
 def require_initialized(fn):
@@ -136,7 +232,14 @@ def calc(sentence, DAG, route):
     N = len(sentence)
     route[N] = (0.0, '')
     for idx in xrange(N-1, -1, -1):
-        route[idx] = max((log(FREQ.get(sentence[idx:x+1], 1)) - log(total) + route[x+1][0], x) for x in DAG[idx])
+        route[idx] = max((in_FREQ(sentence[idx:x+1], 1) - log(total) + route[x+1][0], x) for x in DAG[idx])
+
+def in_FREQ(word, default = False) :
+    if not use_sqlite :
+        return FREQ[word] if word in FREQ else default 
+    else :
+        result = use_sqlite["conn"].execute("select * from FREQ where word = ?", (word,)).fetchone()
+        return result[1] if result is not None else default 
 
 @require_initialized
 def get_DAG(sentence):
@@ -147,9 +250,18 @@ def get_DAG(sentence):
         tmplist = []
         i = k
         frag = sentence[k]
-        while i < N and frag in pfdict:
-            if frag in FREQ:
-                tmplist.append(i)
+        while i < N :
+            if not use_sqlite :
+                if frag not in pfdict:
+                    break
+            else :
+                result = use_sqlite["conn"].execute("select * from pfdict where word = ?", (frag,)).fetchone()
+                if result is None :
+                    break
+
+            if in_FREQ(frag) :
+               tmplist.append(i)
+
             i += 1
             frag = sentence[k:i+1]
         if not tmplist:
@@ -199,7 +311,7 @@ def __cut_DAG(sentence):
                     yield buf
                     buf = u''
                 else:
-                    if buf not in FREQ:
+                    if not in_FREQ(buf):
                         recognized = finalseg.cut(buf)
                         for t in recognized:
                             yield t
@@ -213,7 +325,7 @@ def __cut_DAG(sentence):
     if buf:
         if len(buf) == 1:
             yield buf
-        elif buf not in FREQ:
+        elif not in_FREQ(buf):
             recognized = finalseg.cut(buf)
             for t in recognized:
                 yield t
@@ -272,12 +384,12 @@ def cut_for_search(sentence, HMM=True):
         if len(w) > 2:
             for i in xrange(len(w)-1):
                 gram2 = w[i:i+2]
-                if gram2 in FREQ:
+                if in_FREQ(gram2):
                     yield gram2
         if len(w) > 3:
             for i in xrange(len(w)-2):
                 gram3 = w[i:i+3]
-                if gram3 in FREQ:
+                if in_FREQ(gram3):
                     yield gram3
         yield w
 
@@ -307,9 +419,12 @@ def load_userdict(f):
 @require_initialized
 def add_word(word, freq, tag=None):
     global FREQ, pfdict, total, user_word_tag_tab
-    freq = int(freq)
-    FREQ[word] = freq
-    total += freq
+    f = int(freq)
+    if not use_sqlite :
+        FREQ[word] = f 
+    else :
+        use_sqlite["conn"].execute("replace into FREQ values (?, ?)", (word, f))
+
     if tag is not None:
         user_word_tag_tab[word] = tag
     for ch in xrange(len(word)):

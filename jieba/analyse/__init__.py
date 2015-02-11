@@ -1,13 +1,14 @@
 #encoding=utf-8
+from __future__ import absolute_import
 import jieba
 import jieba.posseg
 import os
 from operator import itemgetter
 try:
-    from analyzer import ChineseAnalyzer
+    from .analyzer import ChineseAnalyzer
 except ImportError:
     pass
-from textrank import textrank
+from .textrank import textrank
 
 _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 abs_path = os.path.join(_curpath, "idf.txt")

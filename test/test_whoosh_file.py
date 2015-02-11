@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from __future__ import unicode_literals
 import sys
 import os
 sys.path.append("../")
@@ -23,8 +24,8 @@ with open(file_name,"rb") as inf:
     for line in inf:
         i+=1
         writer.add_document(
-            title=u"line"+str(i),
-            path=u"/a",
+            title="line"+str(i),
+            path="/a",
             content=line.decode('gbk','ignore')
         )
 writer.commit()
@@ -32,10 +33,10 @@ writer.commit()
 searcher = ix.searcher()
 parser = QueryParser("content", schema=ix.schema)
 
-for keyword in (u"水果小姐",u"你",u"first",u"中文",u"交换机",u"交换"):
-    print "result of ",keyword
+for keyword in ("水果小姐","你","first","中文","交换机","交换"):
+    print("result of " + keyword)
     q = parser.parse(keyword)
     results = searcher.search(q)
     for hit in results:
-        print hit.highlights("content")
-    print "="*10
+        print(hit.highlights("content"))
+    print("="*10)

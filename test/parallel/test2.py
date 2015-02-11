@@ -1,4 +1,5 @@
 #encoding=utf-8
+from __future__ import print_function
 import sys
 sys.path.append("../../")
 import jieba
@@ -7,8 +8,8 @@ jieba.enable_parallel(4)
 def cuttest(test_sent):
     result = jieba.cut(test_sent,cut_all=True)
     for word in result:
-        print word, "/", 
-    print ""
+        print(word, "/", end=' ') 
+    print("")
 
 
 if __name__ == "__main__":

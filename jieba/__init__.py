@@ -64,11 +64,11 @@ def gen_pfdict(f_name):
 
 def initialize(dictionary=None, sqlite=False, check_age=True):
     global FREQ, total, initialized, DICTIONARY, DICT_LOCK
-    global gen_pfdict, add_word
+    global use_sqlite, gen_pfdict, add_word
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
-        if initialized:
+        if initialized and use_sqlite == sqlite:
             return
 
         abs_path = os.path.join(_curpath, dictionary)
@@ -90,10 +90,10 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
             cache_file = sqlite
 
         if sqlite:
-            gen_pfdict = sqlitecache.gen_cachedb
+            use_sqlite = True
             add_word = sqlitecache.add_word
         else:
-            gen_pfdict = __ref_gen_pfdict
+            use_sqlite = False
             add_word = __ref_add_word
 
         load_from_cache_fail = True
@@ -112,8 +112,8 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
                 load_from_cache_fail = True
 
         if load_from_cache_fail:
-            FREQ, total = gen_pfdict(abs_path)
             if not sqlite:
+                FREQ, total = gen_pfdict(abs_path)
                 logger.debug("Dumping model to file cache %s" % cache_file)
                 try:
                     fd, fpath = tempfile.mkstemp()
@@ -126,6 +126,8 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
                     replace_file(fpath, cache_file)
                 except Exception:
                     logger.exception("Dump cache file failed.")
+            else:
+                FREQ, total = sqlitecache.gen_cachedb(abs_path, cache_file)
 
         initialized = True
 
@@ -362,7 +364,6 @@ def add_word(word, freq, tag=None):
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
 __ref_add_word = add_word
-__ref_gen_pfdict = gen_pfdict
 
 
 def __lcut(sentence):

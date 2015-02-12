@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-import collections
+import os
 from ._compat import *
 
 available = False
@@ -11,7 +11,7 @@ except ImportError:
     pass
 
 
-class SQLiteCacheDict(collections.UserDict):
+class SQLiteCacheDict:
 
     def __init__(self, filename=None):
         self.db = sqlite3.connect(filename)
@@ -36,7 +36,7 @@ class SQLiteCacheDict(collections.UserDict):
         self.conn.execute('REPLACE INTO wordlist (word, freq) VALUES (?,?)',
                           (key, value))
 
-    def addword(self, key, value)
+    def addword(self, key, value):
         self.conn.execute('REPLACE INTO wordlist (word, freq) VALUES (?,?)',
                           (key, value))
         for ch in xrange(len(key)):
@@ -47,17 +47,21 @@ class SQLiteCacheDict(collections.UserDict):
     def get(self, key, default=None):
         item = self.conn.execute('SELECT freq FROM wordlist WHERE word = ?',
                                  (key,)).fetchone()
-        if result is None:
+        if item is None:
             return default
         else:
-            return result[0]
+            return item[0]
 
     def execute(self, sql, parameters=None):
         return self.conn.execute(sql, parameters)
 
 
-def gen_cachedb(f_name):
-    lfreq = SQLiteCacheDict()
+def gen_cachedb(f_name, cache_file):
+    try:
+        lfreq = SQLiteCacheDict(cache_file)
+    except Exception:
+        os.unlink(cache_file)
+        lfreq = SQLiteCacheDict(cache_file)
     lfreq.db.isolation_level = None
     # Optimal sqlite memory cache size seems to be '30'
     # after doing a binary search between 1 and 2000
@@ -118,45 +122,3 @@ def add_word(word, freq, tag=None):
     total += freq
     if tag is not None:
         user_word_tag_tab[word] = tag
-
-
-def _______________():
-    init_sqlite('/tmp/jieba.sqlcache')
-    pfdict, FREQ, totala = gen_pfdict(
-        '/home/gumble/github/jieba/jieba/dict.txt')
-    a, FREQ1, totala = gen_pfidict('/home/gumble/github/jieba/jieba/dict.txt')
-    a, b, totalb = gen_cache('/home/gumble/github/jieba/jieba/dict.txt')
-
-    #assert totala == totalb
-
-    total = totala
-    merge = lambda dag: '\n'.join(
-        ' '.join(s[i:j + 1] for j in dag[i]) for i in sorted(dag.keys()))
-
-    dag1 = get_DAG(s)
-    dag2 = get_DAGsql(s)
-    dag3 = get_DAGi(s)
-    print(merge(dag1))
-    print(merge(dag2))
-    print(merge(dag3))
-    assert dag1 == dag2 == dag3
-
-    st = time.clock()
-    for i in range(20000):
-        get_DAG(s)
-    print("get_DAG(s) " + str(time.clock() - st))
-
-    st = time.clock()
-    for i in range(20000):
-        get_DAGi(s)
-    print("get_DAGi(s) " + str(time.clock() - st))
-
-    st = time.clock()
-    for i in range(20000):
-        get_DAGi2(s)
-    print("get_DAGi2(s) " + str(time.clock() - st))
-
-    st = time.clock()
-    for i in range(1000):
-        get_DAGsql(s)
-    print("get_DAGsql(s) " + str(time.clock() - st))

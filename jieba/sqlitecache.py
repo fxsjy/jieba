@@ -91,34 +91,3 @@ def gen_cachedb(f_name, cache_file):
     lfreq.conn.execute("VACUUM")
     lfreq.conn.execute('PRAGMA cache_size=2000')  # default
     return lfreq, ltotal
-
-
-def get_DAG(sentence):
-    global FREQ
-    DAG = {}
-    N = len(sentence)
-    for k in xrange(N):
-        tmplist = []
-        i = k
-        frag = sentence[k]
-        while i < N:
-            result = FREQ.get(frag)
-            if result is None:
-                break
-            elif result:
-                tmplist.append(i)
-            i += 1
-            frag = sentence[k:i + 1]
-        if not tmplist:
-            tmplist.append(k)
-        DAG[k] = tmplist
-    return DAG
-
-
-def add_word(word, freq, tag=None):
-    global FREQ, total, user_word_tag_tab
-    freq = int(freq)
-    FREQ.addword(word, freq)
-    total += freq
-    if tag is not None:
-        user_word_tag_tab[word] = tag

@@ -91,8 +91,8 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
 
         if sqlite:
             use_sqlite = True
-            add_word = sqlitecache.add_word
-            get_DAG = sqlitecache.get_DAG
+            add_word = sqlcache_add_word
+            get_DAG = sqlcache_get_DAG
         else:
             use_sqlite = False
             add_word = __ref_add_word
@@ -129,6 +129,7 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
                 except Exception:
                     logger.exception("Dump cache file failed.")
             else:
+                logger.debug("Creating SQLite cache %s" % cache_file)
                 FREQ, total = sqlitecache.gen_cachedb(abs_path, cache_file)
 
         initialized = True
@@ -471,3 +472,34 @@ def tokenize(unicode_sentence, mode="default", HMM=True):
                         yield (gram3, start + i, start + i + 3)
             yield (w, start, start + width)
             start += width
+
+
+def sqlcache_get_DAG(sentence):
+    global FREQ
+    DAG = {}
+    N = len(sentence)
+    for k in xrange(N):
+        tmplist = []
+        i = k
+        frag = sentence[k]
+        while i < N:
+            result = FREQ.get(frag)
+            if result is None:
+                break
+            elif result:
+                tmplist.append(i)
+            i += 1
+            frag = sentence[k:i + 1]
+        if not tmplist:
+            tmplist.append(k)
+        DAG[k] = tmplist
+    return DAG
+
+
+def sqlcache_add_word(word, freq, tag=None):
+    global FREQ, total, user_word_tag_tab
+    freq = int(freq)
+    FREQ.addword(word, freq)
+    total += freq
+    if tag is not None:
+        user_word_tag_tab[word] = tag

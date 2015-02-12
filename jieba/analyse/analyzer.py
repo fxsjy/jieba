@@ -1,4 +1,5 @@
-##encoding=utf-8
+#encoding=utf-8
+from __future__ import unicode_literals
 from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter,StemFilter
 from whoosh.analysis import Tokenizer,Token
 from whoosh.lang.porter import stem
@@ -10,9 +11,9 @@ STOP_WORDS = frozenset(('a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'can',
                         'for', 'from', 'have', 'if', 'in', 'is', 'it', 'may',
                         'not', 'of', 'on', 'or', 'tbd', 'that', 'the', 'this',
                         'to', 'us', 'we', 'when', 'will', 'with', 'yet',
-                        'you', 'your', u'的', u'了', u'和'))
+                        'you', 'your', '的', '了', '和'))
 
-accepted_chars = re.compile(ur"[\u4E00-\u9FA5]+")
+accepted_chars = re.compile(r"[\u4E00-\u9FA5]+")
 
 class ChineseTokenizer(Tokenizer):
     def __call__(self, text, **kargs):

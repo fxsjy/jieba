@@ -6,7 +6,7 @@ import jieba
 
 def cuttest(test_sent):
     result = jieba.cut(test_sent,HMM=False)
-    print " / ".join(result)
+    print(" / ".join(result))
 
 
 if __name__ == "__main__":

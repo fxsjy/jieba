@@ -13,7 +13,7 @@ opt, args = parser.parse_args()
 
 
 if len(args) < 1:
-    print USAGE
+    print(USAGE)
     sys.exit(1)
 
 file_name = args[0]
@@ -27,4 +27,4 @@ content = open(file_name, 'rb').read()
 
 tags = jieba.analyse.extract_tags(content, topK=topK)
 
-print ",".join(tags)
+print(",".join(tags))

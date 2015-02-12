@@ -64,7 +64,7 @@ def gen_pfdict(f_name):
 
 def initialize(dictionary=None, sqlite=False, check_age=True):
     global FREQ, total, initialized, DICTIONARY, DICT_LOCK
-    global use_sqlite, gen_pfdict, add_word
+    global use_sqlite, gen_pfdict, add_word, get_DAG
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
@@ -92,9 +92,11 @@ def initialize(dictionary=None, sqlite=False, check_age=True):
         if sqlite:
             use_sqlite = True
             add_word = sqlitecache.add_word
+            get_DAG = sqlitecache.get_DAG
         else:
             use_sqlite = False
             add_word = __ref_add_word
+            get_DAG = __ref_get_DAG
 
         load_from_cache_fail = True
 
@@ -364,6 +366,7 @@ def add_word(word, freq, tag=None):
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
 __ref_add_word = add_word
+__ref_get_DAG = get_DAG
 
 
 def __lcut(sentence):

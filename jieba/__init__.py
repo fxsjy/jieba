@@ -18,8 +18,7 @@ from . import finalseg
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
-pfdict = None  # to be initialized
-FREQ = {}
+FREQ = {}  # to be initialized
 total = 0
 user_word_tag_tab = {}
 initialized = False
@@ -41,7 +40,6 @@ def setLogLevel(log_level):
 
 def gen_pfdict(f_name):
     lfreq = {}
-    pfdict = set()
     ltotal = 0
     with open(f_name, 'rb') as f:
         lineno = 0
@@ -53,15 +51,17 @@ def gen_pfdict(f_name):
                 lfreq[word] = freq
                 ltotal += freq
                 for ch in xrange(len(word)):
-                    pfdict.add(word[:ch + 1])
+                    wfrag = word[:ch + 1]
+                    if wfrag not in lfreq:
+                        lfreq[wfrag] = 0
             except ValueError as e:
                 logger.debug('%s at line %s %s' % (f_name, lineno, line))
                 raise e
-    return pfdict, lfreq, ltotal
+    return lfreq, ltotal
 
 
 def initialize(dictionary=None):
-    global pfdict, FREQ, total, initialized, DICTIONARY, DICT_LOCK
+    global FREQ, total, initialized, DICTIONARY, DICT_LOCK
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
@@ -83,19 +83,18 @@ def initialize(dictionary=None):
             logger.debug("Loading model from cache %s" % cache_file)
             try:
                 with open(cache_file, 'rb') as cf:
-                    pfdict, FREQ, total = marshal.load(cf)
-                # prevent conflict with old version
-                load_from_cache_fail = not isinstance(pfdict, set)
+                    FREQ, total = marshal.load(cf)
+                load_from_cache_fail = False
             except Exception:
                 load_from_cache_fail = True
 
         if load_from_cache_fail:
-            pfdict, FREQ, total = gen_pfdict(abs_path)
+            FREQ, total = gen_pfdict(abs_path)
             logger.debug("Dumping model to file cache %s" % cache_file)
             try:
                 fd, fpath = tempfile.mkstemp()
                 with os.fdopen(fd, 'wb') as temp_cache_file:
-                    marshal.dump((pfdict, FREQ, total), temp_cache_file)
+                    marshal.dump((FREQ, total), temp_cache_file)
                 if os.name == 'nt':
                     from shutil import move as replace_file
                 else:
@@ -140,23 +139,24 @@ def __cut_all(sentence):
 
 def calc(sentence, DAG, route):
     N = len(sentence)
-    route[N] = (0.0, '')
+    route[N] = (0, 0)
+    logtotal = log(total)
     for idx in xrange(N - 1, -1, -1):
-        route[idx] = max((log(FREQ.get(sentence[idx:x + 1], 1)) -
-                          log(total) + route[x + 1][0], x) for x in DAG[idx])
+        route[idx] = max((log(FREQ.get(sentence[idx:x + 1]) or 1) -
+                          logtotal + route[x + 1][0], x) for x in DAG[idx])
 
 
 @require_initialized
 def get_DAG(sentence):
-    global pfdict, FREQ
+    global FREQ
     DAG = {}
     N = len(sentence)
     for k in xrange(N):
         tmplist = []
         i = k
         frag = sentence[k]
-        while i < N and frag in pfdict:
-            if frag in FREQ:
+        while i < N and frag in FREQ:
+            if FREQ[frag]:
                 tmplist.append(i)
             i += 1
             frag = sentence[k:i + 1]
@@ -165,7 +165,7 @@ def get_DAG(sentence):
         DAG[k] = tmplist
     return DAG
 
-re_eng = re.compile(r'[a-zA-Z0-9]', re.U)
+re_eng = re.compile('[a-zA-Z0-9]', re.U)
 
 
 def __cut_DAG_NO_HMM(sentence):
@@ -210,7 +210,7 @@ def __cut_DAG(sentence):
                     yield buf
                     buf = ''
                 else:
-                    if buf not in FREQ:
+                    if not FREQ.get(buf):
                         recognized = finalseg.cut(buf)
                         for t in recognized:
                             yield t
@@ -224,7 +224,7 @@ def __cut_DAG(sentence):
     if buf:
         if len(buf) == 1:
             yield buf
-        elif buf not in FREQ:
+        elif not FREQ.get(buf):
             recognized = finalseg.cut(buf)
             for t in recognized:
                 yield t
@@ -288,12 +288,12 @@ def cut_for_search(sentence, HMM=True):
         if len(w) > 2:
             for i in xrange(len(w) - 1):
                 gram2 = w[i:i + 2]
-                if gram2 in FREQ:
+                if FREQ.get(gram2):
                     yield gram2
         if len(w) > 3:
             for i in xrange(len(w) - 2):
                 gram3 = w[i:i + 3]
-                if gram3 in FREQ:
+                if FREQ.get(gram3):
                     yield gram3
         yield w
 
@@ -324,14 +324,16 @@ def load_userdict(f):
 
 @require_initialized
 def add_word(word, freq, tag=None):
-    global FREQ, pfdict, total, user_word_tag_tab
+    global FREQ, total, user_word_tag_tab
     freq = int(freq)
     FREQ[word] = freq
     total += freq
     if tag is not None:
         user_word_tag_tab[word] = tag
     for ch in xrange(len(word)):
-        pfdict.add(word[:ch + 1])
+        wfrag = word[:ch + 1]
+        if wfrag not in lfreq:
+            lfreq[wfrag] = 0
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
@@ -430,12 +432,12 @@ def tokenize(unicode_sentence, mode="default", HMM=True):
             if len(w) > 2:
                 for i in xrange(len(w) - 1):
                     gram2 = w[i:i + 2]
-                    if gram2 in FREQ:
+                    if FREQ.get(gram2):
                         yield (gram2, start + i, start + i + 2)
             if len(w) > 3:
                 for i in xrange(len(w) - 2):
                     gram3 = w[i:i + 3]
-                    if gram3 in FREQ:
+                    if FREQ.get(gram3):
                         yield (gram3, start + i, start + i + 3)
             yield (w, start, start + width)
             start += width

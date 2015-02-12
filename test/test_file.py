@@ -1,4 +1,4 @@
-import sys,time
+import time
 import sys
 sys.path.append("../")
 import jieba

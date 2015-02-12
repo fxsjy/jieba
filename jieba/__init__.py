@@ -43,7 +43,7 @@ def gen_pfdict(f_name):
     ltotal = 0
     with open(f_name, 'rb') as f:
         lineno = 0
-        for line in f.read().rstrip().decode('utf-8').split('\n'):
+        for line in f.read().rstrip().decode('utf-8').splitlines():
             lineno += 1
             try:
                 word, freq = line.split(' ')[:2]
@@ -313,7 +313,7 @@ def load_userdict(f):
         f = open(f, 'rb')
     content = f.read().decode('utf-8').lstrip('\ufeff')
     line_no = 0
-    for line in content.split("\n"):
+    for line in content.splitlines():
         line_no += 1
         if not line.rstrip():
             continue
@@ -366,7 +366,7 @@ def enable_parallel(processnum=None):
     pool = Pool(processnum)
 
     def pcut(sentence, cut_all=False, HMM=True):
-        parts = strdecode(sentence).split('\n')
+        parts = strdecode(sentence).splitlines(True)
         if cut_all:
             result = pool.map(__lcut_all, parts)
         elif HMM:
@@ -378,7 +378,7 @@ def enable_parallel(processnum=None):
                 yield w
 
     def pcut_for_search(sentence):
-        parts = strdecode(sentence).split('\n')
+        parts = strdecode(sentence).splitlines(True)
         result = pool.map(__lcut_for_search, parts)
         for r in result:
             for w in r:

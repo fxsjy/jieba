@@ -253,7 +253,7 @@ def cut(sentence, HMM=True):
         for w in __cut_internal(sentence, HMM=HMM):
             yield w
     else:
-        parts = strdecode(sentence).split('\n')
+        parts = strdecode(sentence).splitlines(True)
         if HMM:
             result = jieba.pool.map(__lcut_internal, parts)
         else:

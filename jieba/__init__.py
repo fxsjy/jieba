@@ -332,8 +332,8 @@ def add_word(word, freq, tag=None):
         user_word_tag_tab[word] = tag
     for ch in xrange(len(word)):
         wfrag = word[:ch + 1]
-        if wfrag not in lfreq:
-            lfreq[wfrag] = 0
+        if wfrag not in FREQ:
+            FREQ[wfrag] = 0
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search

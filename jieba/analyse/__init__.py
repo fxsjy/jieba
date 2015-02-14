@@ -60,14 +60,14 @@ def set_stop_words(stop_words_path):
     for line in lines:
         STOP_WORDS.add(line)
 
-def extract_tags(sentence, topK=20, withWeight=False, allowPOS=['ns', 'n', 'vn', 'v']):
+def extract_tags(sentence, topK=20, withWeight=False, allowPOS=[]):
     """
     Extract keywords from sentence using TF-IDF algorithm.
     Parameter:
         - topK: return how many top keywords. `None` for all possible words.
         - withWeight: if True, return a list of (word, weight);
                       if False, return a list of words.
-        - allowPOS: the allowed POS list eg. ['ns', 'n', 'vn', 'v'].
+        - allowPOS: the allowed POS list eg. ['ns', 'n', 'vn', 'v','nr'].
                     if the POS of w is not in this list,it will be filtered.
     """
     global STOP_WORDS, idf_loader

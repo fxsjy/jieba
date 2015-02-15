@@ -14,7 +14,7 @@ opt, args = parser.parse_args()
 
 
 if len(args) < 1:
-    print USAGE
+    print(USAGE)
     sys.exit(1)
 
 file_name = args[0]
@@ -38,6 +38,6 @@ tags = jieba.analyse.extract_tags(content, topK=topK, withWeight=withWeight)
 
 if withWeight is True:
     for tag in tags:
-        print "tag: %s\t\t weight: %f" % (tag[0],tag[1])
+        print("tag: %s\t\t weight: %f" % (tag[0],tag[1]))
 else:
-    print ",".join(tags)
+    print(",".join(tags))

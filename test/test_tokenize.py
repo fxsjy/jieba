@@ -1,4 +1,5 @@
 #encoding=utf-8
+from __future__ import print_function,unicode_literals
 import sys
 sys.path.append("../")
 import jieba
@@ -7,10 +8,9 @@ g_mode="default"
 
 def cuttest(test_sent):
     global g_mode
-    test_sent = test_sent.decode('utf-8')
     result = jieba.tokenize(test_sent,mode=g_mode)
     for tk in result:
-        print "word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2])
+        print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
 
 
 if __name__ == "__main__":

@@ -3,9 +3,11 @@
 
 from __future__ import unicode_literals
 import sys
+import json
 import collections
 from operator import itemgetter
 import jieba.posseg as pseg
+
 
 class UndirectWeightedGraph:
     d = 0.85
@@ -18,17 +20,23 @@ class UndirectWeightedGraph:
         self.graph[start].append((start, end, weight))
         self.graph[end].append((end, start, weight))
 
+    def refactor(self):
+        for n, _ in self.graph.items():
+            self.graph[n].sort()
+
     def rank(self):
         ws = collections.defaultdict(float)
         outSum = collections.defaultdict(float)
 
+        giter = list(self.graph.items())  # these two lines for build stable iteration
+        giter.sort()
         wsdef = 1.0 / (len(self.graph) or 1.0)
-        for n, out in self.graph.items():
+        for n, out in giter:
             ws[n] = wsdef
             outSum[n] = sum((e[2] for e in out), 0.0)
 
-        for x in xrange(10):  # 10 iters
-            for n, inedges in self.graph.items():
+        for x in range(10):  # 10 iters
+            for n, inedges in giter:
                 s = 0
                 for e in inedges:
                     s += e[2] / outSum[e[1]] * ws[e[1]]
@@ -36,7 +44,7 @@ class UndirectWeightedGraph:
 
         (min_rank, max_rank) = (sys.float_info[0], sys.float_info[3])
 
-        for w in itervalues(ws):
+        for _, w in ws.items():
             if w < min_rank:
                 min_rank = w
             elif w > max_rank:
@@ -64,9 +72,9 @@ def textrank(sentence, topK=10, withWeight=False, allowPOS=['ns', 'n', 'vn', 'v'
     cm = collections.defaultdict(int)
     span = 5
     words = list(pseg.cut(sentence))
-    for i in xrange(len(words)):
+    for i in range(len(words)):
         if words[i].flag in pos_filt:
-            for j in xrange(i + 1, i + span):
+            for j in range(i + 1, i + span):
                 if j >= len(words):
                     break
                 if words[j].flag not in pos_filt:
@@ -75,7 +83,6 @@ def textrank(sentence, topK=10, withWeight=False, allowPOS=['ns', 'n', 'vn', 'v'
 
     for terms, w in cm.items():
         g.addEdge(terms[0], terms[1], w)
-
     nodes_rank = g.rank()
     if withWeight:
         tags = sorted(nodes_rank.items(), key=itemgetter(1), reverse=True)

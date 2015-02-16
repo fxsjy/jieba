@@ -20,10 +20,6 @@ class UndirectWeightedGraph:
         self.graph[start].append((start, end, weight))
         self.graph[end].append((end, start, weight))
 
-    def refactor(self):
-        for n, _ in self.graph.items():
-            self.graph[n].sort()
-
     def rank(self):
         ws = collections.defaultdict(float)
         outSum = collections.defaultdict(float)

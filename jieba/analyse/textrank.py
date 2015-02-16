@@ -23,17 +23,16 @@ class UndirectWeightedGraph:
         ws = collections.defaultdict(float)
         outSum = collections.defaultdict(float)
 
-        giter = list(self.graph.items())  # these two lines for build stable iteration
-        giter.sort()
         wsdef = 1.0 / (len(self.graph) or 1.0)
-        for n, out in giter:
+        for n, out in self.graph.items():
             ws[n] = wsdef
             outSum[n] = sum((e[2] for e in out), 0.0)
 
+        sorted_keys = sorted(self.graph.keys())  # this line for build stable iteration
         for x in range(10):  # 10 iters
-            for n, inedges in giter:
+            for n in sorted_keys:
                 s = 0
-                for e in inedges:
+                for e in self.graph[n]:
                     s += e[2] / outSum[e[1]] * ws[e[1]]
                 ws[n] = (1 - self.d) + self.d * s
 

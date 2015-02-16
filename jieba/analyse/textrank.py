@@ -3,7 +3,6 @@
 
 from __future__ import unicode_literals
 import sys
-import json
 import collections
 from operator import itemgetter
 import jieba.posseg as pseg

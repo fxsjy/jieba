@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 import sys
 import collections
 from operator import itemgetter
 import jieba.posseg as pseg
+from .._compat import *
 
 
 class UndirectWeightedGraph:
@@ -28,8 +29,9 @@ class UndirectWeightedGraph:
             ws[n] = wsdef
             outSum[n] = sum((e[2] for e in out), 0.0)
 
-        sorted_keys = sorted(self.graph.keys())  # this line for build stable iteration
-        for x in range(10):  # 10 iters
+        # this line for build stable iteration
+        sorted_keys = sorted(self.graph.keys())
+        for x in xrange(10):  # 10 iters
             for n in sorted_keys:
                 s = 0
                 for e in self.graph[n]:
@@ -38,7 +40,7 @@ class UndirectWeightedGraph:
 
         (min_rank, max_rank) = (sys.float_info[0], sys.float_info[3])
 
-        for _, w in ws.items():
+        for w in itervalues(ws):
             if w < min_rank:
                 min_rank = w
             elif w > max_rank:
@@ -66,9 +68,9 @@ def textrank(sentence, topK=10, withWeight=False, allowPOS=['ns', 'n', 'vn', 'v'
     cm = collections.defaultdict(int)
     span = 5
     words = list(pseg.cut(sentence))
-    for i in range(len(words)):
+    for i in xrange(len(words)):
         if words[i].flag in pos_filt:
-            for j in range(i + 1, i + span):
+            for j in xrange(i + 1, i + span):
                 if j >= len(words):
                     break
                 if words[j].flag not in pos_filt:

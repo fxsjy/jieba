@@ -1,7 +1,9 @@
 jieba
 ========
-"结巴"中文分词：做最好的 Python 中文分词组件
+“结巴”中文分词：做最好的 Python 中文分词组件
+
 "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+
 - _Scroll down for English documentation._
 
 
@@ -29,22 +31,20 @@ http://jiebademo.ap01.aws.af.cm/
 Python 2.x
 -----------
 * 全自动安装：`easy_install jieba` 或者 `pip install jieba`
-* 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 python setup.py install
+* 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 `python setup.py install`
 * 手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
 * 通过 `import jieba` 来引用
 
 Python 3.x
 -----------
-* 目前 master 分支是只支持 Python2.x 的
-* Python 3.x 版本的分支也已经基本可用： https://github.com/fxsjy/jieba/tree/jieba3k
+* 目前 master 分支对 Python 2/3 兼容
 
 ```shell
 git clone https://github.com/fxsjy/jieba.git
-git checkout jieba3k
-python setup.py install
+python3 setup.py install
 ```
 
-* 或使用pip3安装： pip3 install jieba3k
+* 或使用pip3安装旧版本： pip3 install jieba3k
 
 算法
 ========
@@ -58,7 +58,7 @@ python setup.py install
 --------
 * `jieba.cut` 方法接受三个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型
 * `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
-* 注意：待分词的字符串可以是 GBK 字符串、UTF-8 字符串或者 unicode
+* 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
 * `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，也可以用 list(jieba.cut(...)) 转化为 list
 
 代码示例( 分词 )
@@ -384,6 +384,12 @@ Features
 * 2) Full Mode gets all the possible words from the sentence. Fast but not accurate.
 * 3) Search Engine Mode, based on the Accurate Mode, attempts to cut long words into several short words, which can raise the recall rate. Suitable for search engines.
 
+Online demo
+=========
+http://jiebademo.ap01.aws.af.cm/
+
+(Powered by Appfog)
+
 Usage
 ========
 * Fully automatic installation: `easy_install jieba` or `pip install jieba`
@@ -403,8 +409,9 @@ Main Functions
 1) : Cut
 --------
 * The `jieba.cut` function accepts three input parameters: the first parameter is the string to be cut; the second parameter is `cut_all`, controlling the cut mode; the third parameter is to control whether to use the Hidden Markov Model.
-* `jieba.cut` returns an generator, from which you can use a `for` loop to get the segmentation result (in unicode), or `list(jieba.cut( ... ))` to create a list.
 * `jieba.cut_for_search` accepts two parameter: the string to be cut; whether to use the Hidden Markov Model. This will cut the sentence into short words suitable for search engines.
+* The input string can be an unicode/str object, or a str/bytes object which is encoded in UTF-8 or GBK. Note that using GBK encoding is not recommended because it may be unexpectly decoded as UTF-8.
+* `jieba.cut` and `jieba.cut_for_search` returns an generator, from which you can use a `for` loop to get the segmentation result (in unicode), or `list(jieba.cut( ... ))` to create a list.
 
 **Code example: segmentation**
 
@@ -610,8 +617,3 @@ Segmentation speed
 * 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
-Online demo
-=========
-http://jiebademo.ap01.aws.af.cm/
-
-(Powered by Appfog)

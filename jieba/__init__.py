@@ -15,6 +15,7 @@ import logging
 from hashlib import md5
 from ._compat import *
 from . import finalseg
+from . import sqlitecache
 
 DICTIONARY = "dict.txt"
 DICT_LOCK = threading.RLock()
@@ -22,6 +23,7 @@ FREQ = {}  # to be initialized
 total = 0
 user_word_tag_tab = {}
 initialized = False
+use_sqlite = False
 pool = None
 
 _curpath = os.path.normpath(
@@ -60,12 +62,13 @@ def gen_pfdict(f_name):
     return lfreq, ltotal
 
 
-def initialize(dictionary=None):
+def initialize(dictionary=None, sqlite=False, check_age=True):
     global FREQ, total, initialized, DICTIONARY, DICT_LOCK
+    global use_sqlite, gen_pfdict, add_word, get_DAG
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
-        if initialized:
+        if initialized and use_sqlite == sqlite:
             return
 
         abs_path = os.path.join(_curpath, dictionary)
@@ -78,30 +81,56 @@ def initialize(dictionary=None):
             cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(
                 abs_path.encode('utf-8', 'replace')).hexdigest())
 
+        if sqlite and not sqlitecache.available:
+            logger.warn(
+                "sqlite3 cannot be found. Falling back to default cache.")
+            sqlite = False
+
+        if isinstance(sqlite, string_types):
+            cache_file = sqlite
+
+        if sqlite:
+            use_sqlite = True
+            add_word = sqlcache_add_word
+            get_DAG = sqlcache_get_DAG
+        else:
+            use_sqlite = False
+            add_word = __ref_add_word
+            get_DAG = __ref_get_DAG
+
         load_from_cache_fail = True
-        if os.path.isfile(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
+
+        if os.path.isfile(cache_file) and not (check_age and os.path.getmtime(cache_file) < os.path.getmtime(abs_path)):
             logger.debug("Loading model from cache %s" % cache_file)
             try:
-                with open(cache_file, 'rb') as cf:
-                    FREQ, total = marshal.load(cf)
+                if sqlite:
+                    FREQ = sqlitecache.SQLiteCacheDict(cache_file)
+                    total = FREQ['#TOTAL#']
+                else:
+                    with open(cache_file, 'rb') as cf:
+                        FREQ, total = marshal.load(cf)
                 load_from_cache_fail = False
             except Exception:
                 load_from_cache_fail = True
 
         if load_from_cache_fail:
-            FREQ, total = gen_pfdict(abs_path)
-            logger.debug("Dumping model to file cache %s" % cache_file)
-            try:
-                fd, fpath = tempfile.mkstemp()
-                with os.fdopen(fd, 'wb') as temp_cache_file:
-                    marshal.dump((FREQ, total), temp_cache_file)
-                if os.name == 'nt':
-                    from shutil import move as replace_file
-                else:
-                    replace_file = os.rename
-                replace_file(fpath, cache_file)
-            except Exception:
-                logger.exception("Dump cache file failed.")
+            if not sqlite:
+                FREQ, total = gen_pfdict(abs_path)
+                logger.debug("Dumping model to file cache %s" % cache_file)
+                try:
+                    fd, fpath = tempfile.mkstemp()
+                    with os.fdopen(fd, 'wb') as temp_cache_file:
+                        marshal.dump((FREQ, total), temp_cache_file)
+                    if os.name == 'nt':
+                        from shutil import move as replace_file
+                    else:
+                        replace_file = os.rename
+                    replace_file(fpath, cache_file)
+                except Exception:
+                    logger.exception("Dump cache file failed.")
+            else:
+                logger.debug("Creating SQLite cache %s" % cache_file)
+                FREQ, total = sqlitecache.gen_cachedb(abs_path, cache_file)
 
         initialized = True
 
@@ -337,6 +366,8 @@ def add_word(word, freq, tag=None):
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
+__ref_add_word = add_word
+__ref_get_DAG = get_DAG
 
 
 def __lcut(sentence):
@@ -441,3 +472,34 @@ def tokenize(unicode_sentence, mode="default", HMM=True):
                         yield (gram3, start + i, start + i + 3)
             yield (w, start, start + width)
             start += width
+
+
+def sqlcache_get_DAG(sentence):
+    global FREQ
+    DAG = {}
+    N = len(sentence)
+    for k in xrange(N):
+        tmplist = []
+        i = k
+        frag = sentence[k]
+        while i < N:
+            result = FREQ.get(frag)
+            if result is None:
+                break
+            elif result:
+                tmplist.append(i)
+            i += 1
+            frag = sentence[k:i + 1]
+        if not tmplist:
+            tmplist.append(k)
+        DAG[k] = tmplist
+    return DAG
+
+
+def sqlcache_add_word(word, freq, tag=None):
+    global FREQ, total, user_word_tag_tab
+    freq = int(freq)
+    FREQ.addword(word, freq)
+    total += freq
+    if tag is not None:
+        user_word_tag_tab[word] = tag

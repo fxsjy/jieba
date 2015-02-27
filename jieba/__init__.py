@@ -23,6 +23,7 @@ total = 0
 user_word_tag_tab = {}
 initialized = False
 pool = None
+tmp_dir = None
 
 _curpath = os.path.normpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -61,7 +62,7 @@ def gen_pfdict(f_name):
 
 
 def initialize(dictionary=None):
-    global FREQ, total, initialized, DICTIONARY, DICT_LOCK
+    global FREQ, total, initialized, DICTIONARY, DICT_LOCK, tmp_dir
     if not dictionary:
         dictionary = DICTIONARY
     with DICT_LOCK:
@@ -73,9 +74,9 @@ def initialize(dictionary=None):
         t1 = time.time()
         # default dictionary
         if abs_path == os.path.join(_curpath, "dict.txt"):
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.cache")
+            cache_file = os.path.join(tmp_dir if tmp_dir else tempfile.gettempdir(),"jieba.cache")
         else:  # custom dictionary
-            cache_file = os.path.join(tempfile.gettempdir(), "jieba.u%s.cache" % md5(
+            cache_file = os.path.join(tmp_dir if tmp_dir else tempfile.gettempdir(),"jieba.u%s.cache" % md5(
                 abs_path.encode('utf-8', 'replace')).hexdigest())
 
         load_from_cache_fail = True

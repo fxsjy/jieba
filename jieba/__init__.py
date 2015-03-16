@@ -240,8 +240,10 @@ re_skip_cut_all = re.compile("[^a-zA-Z0-9+#\n]", re.U)
 
 
 def cut(sentence, cut_all=False, HMM=True):
-    '''The main function that segments an entire sentence that contains
+    '''
+    The main function that segments an entire sentence that contains
     Chinese characters into seperated words.
+
     Parameter:
         - sentence: The str(unicode) to be segmented.
         - cut_all: Model type. True for full pattern, False for accurate pattern.
@@ -284,6 +286,9 @@ def cut(sentence, cut_all=False, HMM=True):
 
 
 def cut_for_search(sentence, HMM=True):
+    """
+    Finer segmentation for search engines.
+    """
     words = cut(sentence, HMM=HMM)
     for w in words:
         if len(w) > 2:
@@ -301,9 +306,12 @@ def cut_for_search(sentence, HMM=True):
 
 @require_initialized
 def load_userdict(f):
-    ''' Load personalized dict to improve detect rate.
+    '''
+    Load personalized dict to improve detect rate.
+
     Parameter:
         - f : A plain text file contains words and their ocurrences.
+
     Structure of dict file:
     word1 freq1 word_type1
     word2 freq2 word_type2
@@ -315,18 +323,32 @@ def load_userdict(f):
     content = f.read().decode('utf-8').lstrip('\ufeff')
     line_no = 0
     for line in content.splitlines():
-        line_no += 1
-        if not line.rstrip():
-            continue
-        tup = line.strip().split(" ")
-        if tup[1].isdigit():
+        try:
+            line_no += 1
+            line = line.strip()
+            if not line:
+                continue
+            tup = line.split(" ")
             add_word(*tup)
+        except Exception as e:
+            logger.debug('%s at line %s %s' % (f_name, lineno, line))
+            raise e
 
 
 @require_initialized
-def add_word(word, freq, tag=None):
+def add_word(word, freq=None, tag=None):
+    """
+    Add a word to dictionary.
+
+    freq and tag can be omitted, freq defaults to be a calculated value
+    that ensures the word can be cut out.
+    """
     global FREQ, total, user_word_tag_tab
-    freq = int(freq)
+    word = strdecode(word)
+    if freq is None:
+        freq = suggest_freq(word, False)
+    else:
+        freq = int(freq)
     FREQ[word] = freq
     total += freq
     if tag is not None:
@@ -335,6 +357,46 @@ def add_word(word, freq, tag=None):
         wfrag = word[:ch + 1]
         if wfrag not in FREQ:
             FREQ[wfrag] = 0
+
+
+def del_word(word):
+    """
+    Convenient function for deleting a word.
+    """
+    add_word(word, 0)
+
+
+@require_initialized
+def suggest_freq(segment, tune=False):
+    """
+    Suggest word frequency to force the characters in a word to be
+    joined or splitted.
+
+    Parameter:
+        - segment : The segments that the word is expected to be cut into,
+                    If the word should be treated as a whole, use a str.
+        - tune : If True, tune the word frequency.
+
+    Note that HMM may affect the final result. If the result doesn't change,
+    set HMM=False.
+    """
+    ftotal = float(total)
+    freq = 1
+    if isinstance(segment, string_types):
+        word = segment
+        for seg in cut(word, HMM=False):
+            freq *= FREQ.get(seg, 1) / ftotal
+        freq = max(int(freq*total) + 1, FREQ.get(word, 1))
+    else:
+        segment = tuple(map(strdecode, segment))
+        word = ''.join(segment)
+        for seg in segment:
+            freq *= FREQ.get(seg, 1) / ftotal
+        freq = min(int(freq*total), FREQ.get(word, 0))
+    if tune:
+        add_word(word, freq)
+    return freq
+
 
 __ref_cut = cut
 __ref_cut_for_search = cut_for_search
@@ -402,8 +464,8 @@ def set_dictionary(dictionary_path):
     global initialized, DICTIONARY
     with DICT_LOCK:
         abs_path = os.path.normpath(os.path.join(os.getcwd(), dictionary_path))
-        if not os.path.exists(abs_path):
-            raise Exception("jieba: path does not exist: " + abs_path)
+        if not os.path.isfile(abs_path):
+            raise Exception("jieba: file does not exist: " + abs_path)
         DICTIONARY = abs_path
         initialized = False
 
@@ -413,7 +475,9 @@ def get_abs_path_dict():
 
 
 def tokenize(unicode_sentence, mode="default", HMM=True):
-    """Tokenize a sentence and yields tuples of (word, start, end)
+    """
+    Tokenize a sentence and yields tuples of (word, start, end)
+
     Parameter:
         - sentence: the str(unicode) to be segmented.
         - mode: "default" or "search", "search" is for finer segmentation.

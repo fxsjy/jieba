@@ -16,6 +16,7 @@ jieba
 
 * 支持繁体分词
 * 支持自定义词典
+* MIT 授权协议
 
 在线演示
 =========
@@ -93,9 +94,13 @@ print(", ".join(seg_list))
 2) ：添加自定义词典
 ----------------
 
+### 载入词典
+
 * 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
 * 用法： jieba.load_userdict(file_name) # file_name 为自定义词典的路径
-* 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频，最后为词性（可省略），用空格隔开
+* 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频（可省略），最后为词性（可省略），用空格隔开
+* 词频可省略，使用计算出的能保证分出该词的词频
+
 * 范例：
 
     * 自定义词典：https://github.com/fxsjy/jieba/blob/master/test/userdict.txt
@@ -107,6 +112,29 @@ print(", ".join(seg_list))
 
         * 加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
 
+### 调整词典
+
+* 使用 `add_word(word, freq=None, tag=None)` 和 `del_word(word)` 可在程序中动态修改词典。
+* 使用 `suggest_freq(segment, tune=True)` 可调节单个词语的词频，使其能（或不能）被分出来。
+
+* 注意：自动计算的词频在使用 HMM 新词发现功能时可能无效。
+
+代码示例：
+
+```pycon
+>>> print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+如果/放到/post/中将/出错/。
+>>> jieba.suggest_freq(('中', '将'), True)
+494
+>>> print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+如果/放到/post/中/将/出错/。
+>>> print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+「/台/中/」/正确/应该/不会/被/切开
+>>> jieba.suggest_freq('台中', True)
+69
+>>> print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+「/台中/」/正确/应该/不会/被/切开
+```
 
 * "通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
@@ -362,10 +390,35 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
 常见问题
 =========
-1. 模型的数据是如何生成的？https://github.com/fxsjy/jieba/issues/7
-2. 这个库的授权是? https://github.com/fxsjy/jieba/issues/2
 
-* 更多问题请点击：https://github.com/fxsjy/jieba/issues?sort=updated&state=closed
+## 1. 模型的数据是如何生成的？
+
+详见： https://github.com/fxsjy/jieba/issues/7
+
+## 2. “台中”总是被切成“台 中”？（以及类似情况）
+
+P(台中) ＜ P(台)×P(中)，“台中”词频不够导致其成词概率较低
+
+解决方法：强制调高词频
+
+`jieba.add_word('台中')` 或者 `jieba.suggest_freq('台中', True)`
+
+## 3. “今天天气 不错”应该被切成“今天 天气 不错”？（以及类似情况）
+
+解决方法：强制调低词频
+
+`jieba.suggest_freq(('今天', '天气'), True)`
+
+或者直接删除该词 `jieba.del_word('今天天气')`
+
+## 4. 切出了词典中没有的词语，效果不理想？
+
+解决方法：关闭新词发现
+
+`jieba.cut('丰田太省了', HMM=False)`
+`jieba.cut('我们中出了一个叛徒', HMM=False)`
+
+**更多问题请点击**：https://github.com/fxsjy/jieba/issues?sort=updated&state=closed
 
 修订历史
 ==========
@@ -380,9 +433,15 @@ jieba
 Features
 ========
 * Support three types of segmentation mode:
-* 1) Accurate Mode attempts to cut the sentence into the most accurate segmentations, which is suitable for text analysis.
-* 2) Full Mode gets all the possible words from the sentence. Fast but not accurate.
-* 3) Search Engine Mode, based on the Accurate Mode, attempts to cut long words into several short words, which can raise the recall rate. Suitable for search engines.
+
+1. Accurate Mode attempts to cut the sentence into the most accurate segmentations, which is suitable for text analysis.
+2. Full Mode gets all the possible words from the sentence. Fast but not accurate.
+3. Search Engine Mode, based on the Accurate Mode, attempts to cut long words into several short words, which can raise the recall rate. Suitable for search engines.
+
+* Supports Traditional Chinese
+* Supports customized dictionaries
+* MIT License
+
 
 Online demo
 =========
@@ -446,6 +505,8 @@ Output:
 2) : Add a custom dictionary
 ----------------------------
 
+###　Load dictionary
+
 * Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but adding your own new words can ensure a higher accuracy.
 * Usage： `jieba.load_userdict(file_name) # file_name is the path of the custom dictionary`
 * The dictionary format is the same as that of `analyse/idf.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
@@ -458,6 +519,31 @@ Output:
         [Before]： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /
 
         [After]：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /
+
+
+### Modify dictionary
+
+* Use `add_word(word, freq=None, tag=None)` and `del_word(word)` to modify the dictionary dynamically in programs.
+* Use `suggest_freq(segment, tune=True)` to adjust the frequency of a single word so that it can (or cannot) be segmented.
+
+* Note that HMM may affect the final result.
+
+Example:
+
+```pycon
+>>> print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+如果/放到/post/中将/出错/。
+>>> jieba.suggest_freq(('中', '将'), True)
+494
+>>> print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+如果/放到/post/中/将/出错/。
+>>> print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+「/台/中/」/正确/应该/不会/被/切开
+>>> jieba.suggest_freq('台中', True)
+69
+>>> print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+「/台中/」/正确/应该/不会/被/切开
+```
 
 3) : Keyword Extraction
 -----------------------

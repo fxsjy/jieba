@@ -1,3 +1,9 @@
+2015-03-20: version 0.36
+1. 代码同时兼容python2与python3, 若干性能优化; by @gumblex 
+2. 解决用户添加词的概率自动计算问题，分词更加准确；by @gumblex 
+3. 可自定义cache_file的文件系统路径; by @changyy
+4. TextRank算法实现完善; by @sing1ee，@walkskyer
+
 2014-11-15: version 0.35.1
 1. 修复 Python 3.2 的兼容性问题
 

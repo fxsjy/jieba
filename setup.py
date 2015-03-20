@@ -60,7 +60,7 @@ Python 3.x
 """
 
 setup(name='jieba',
-      version='0.35',
+      version='0.36',
       description='Chinese Words Segementation Utilities',
       long_description=LONGDOC,
       author='Sun, Junyi',

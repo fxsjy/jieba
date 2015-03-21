@@ -25,37 +25,20 @@ GitHub: https://github.com/fxsjy/jieba
 
 -  支持繁体分词
 -  支持自定义词典
+-  MIT 授权协议
 
 在线演示： http://jiebademo.ap01.aws.af.cm/
 
 安装说明
 ========
 
-Python 2.x
-----------
+代码对 Python 2/3 均兼容
 
--  全自动安装： ``easy_install jieba`` 或者 ``pip install jieba``
+-  全自动安装： ``easy_install jieba`` 或者 ``pip install jieba`` / ``pip3 install jieba``
 -  半自动安装：先下载 https://pypi.python.org/pypi/jieba/ ，解压后运行
    python setup.py install
 -  手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
 -  通过 ``import jieba`` 来引用
-
-Python 3.x
-----------
-
-见 https://pypi.python.org/pypi/jieba3k/
-
--  目前 master 分支是只支持 Python 2.x 的
--  Python 3.x 版本的分支也已经基本可用：
-   https://github.com/fxsjy/jieba/tree/jieba3k
-
-.. code:: bash
-
-    git clone https://github.com/fxsjy/jieba.git
-    git checkout jieba3k
-    python setup.py install
-
--  或使用pip3安装： pip3 install jieba3k
 
 """
 

@@ -29,23 +29,13 @@ http://jiebademo.ap01.aws.af.cm/
 
 安装说明
 =======
-Python 2.x
------------
-* 全自动安装：`easy_install jieba` 或者 `pip install jieba`
+
+代码对 Python 2/3 均兼容
+
+* 全自动安装：`easy_install jieba` 或者 `pip install jieba` / `pip3 install jieba`
 * 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 `python setup.py install`
 * 手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
 * 通过 `import jieba` 来引用
-
-Python 3.x
------------
-* 目前 master 分支对 Python 2/3 兼容
-
-```shell
-git clone https://github.com/fxsjy/jieba.git
-python3 setup.py install
-```
-
-* 或使用pip3安装旧版本： pip3 install jieba3k
 
 算法
 ========

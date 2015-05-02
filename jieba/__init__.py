@@ -331,7 +331,7 @@ def load_userdict(f):
             tup = line.split(" ")
             add_word(*tup)
         except Exception as e:
-            logger.debug('%s at line %s %s' % (f_name, lineno, line))
+            logger.debug('%s at line %s %s' % (f.name, line_no, line))
             raise e
 
 

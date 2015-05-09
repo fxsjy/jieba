@@ -1,7 +1,7 @@
-#encoding=utf-8
+# encoding=utf-8
 from __future__ import unicode_literals
-from whoosh.analysis import RegexAnalyzer,LowercaseFilter,StopFilter,StemFilter
-from whoosh.analysis import Tokenizer,Token
+from whoosh.analysis import RegexAnalyzer, LowercaseFilter, StopFilter, StemFilter
+from whoosh.analysis import Tokenizer, Token
 from whoosh.lang.porter import stem
 
 import jieba
@@ -15,12 +15,14 @@ STOP_WORDS = frozenset(('a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'can',
 
 accepted_chars = re.compile(r"[\u4E00-\u9FA5]+")
 
+
 class ChineseTokenizer(Tokenizer):
+
     def __call__(self, text, **kargs):
         words = jieba.tokenize(text, mode="search")
         token = Token()
-        for (w,start_pos,stop_pos) in words:
-            if not accepted_chars.match(w) and len(w)<=1:
+        for (w, start_pos, stop_pos) in words:
+            if not accepted_chars.match(w) and len(w) <= 1:
                 continue
             token.original = token.text = w
             token.pos = start_pos
@@ -28,7 +30,8 @@ class ChineseTokenizer(Tokenizer):
             token.endchar = stop_pos
             yield token
 
+
 def ChineseAnalyzer(stoplist=STOP_WORDS, minsize=1, stemfn=stem, cachesize=50000):
     return (ChineseTokenizer() | LowercaseFilter() |
-            StopFilter(stoplist=stoplist,minsize=minsize) |
-            StemFilter(stemfn=stemfn, ignore=None,cachesize=cachesize))
+            StopFilter(stoplist=stoplist, minsize=minsize) |
+            StemFilter(stemfn=stemfn, ignore=None, cachesize=cachesize))

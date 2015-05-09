@@ -45,17 +45,19 @@ http://jiebademo.ap01.aws.af.cm/
 
 主要功能
 =======
-1) ：分词
+1. 分词
 --------
 * `jieba.cut` 方法接受三个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型
 * `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
 * 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
-* `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，也可以用 list(jieba.cut(...)) 转化为 list
+* `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，或者用
+* `jieba.lcut` 以及 `jieba.lcut_for_search` 直接返回 list
+* `jieba.Tokenizer(dictionary=DEFAULT_DICT)` 新建自定义分词器，可用于同时使用不同词典。`jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
 
-代码示例( 分词 )
+代码示例
 
 ```python
-#encoding=utf-8
+# encoding=utf-8
 import jieba
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
@@ -81,7 +83,7 @@ print(", ".join(seg_list))
 
     【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
-2) ：添加自定义词典
+2. 添加自定义词典
 ----------------
 
 ### 载入词典
@@ -90,6 +92,8 @@ print(", ".join(seg_list))
 * 用法： jieba.load_userdict(file_name) # file_name 为自定义词典的路径
 * 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频（可省略），最后为词性（可省略），用空格隔开
 * 词频可省略，使用计算出的能保证分出该词的词频
+
+* 更改分词器的 tmp_dir 和 cache_file 属性，可指定缓存文件位置，用于受限的文件系统。
 
 * 范例：
 
@@ -128,12 +132,18 @@ print(", ".join(seg_list))
 
 * "通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
-3) ：关键词提取
+3. 关键词提取
 -------------
-* jieba.analyse.extract_tags(sentence,topK,withWeight) #需要先 `import jieba.analyse`
-* sentence 为待提取的文本
-* topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
-* withWeight 为是否一并返回关键词权重值，默认值为 False
+### 基于 TF-IDF 算法的关键词抽取
+
+`import jieba.analyse`
+
+* jieba.analyse.extract_tags(sentence, topK=20, withWeight=False, allowPOS=())
+  * sentence 为待提取的文本
+  * topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
+  * withWeight 为是否一并返回关键词权重值，默认值为 False
+  * allowPOS 仅包括指定词性的词，默认值为空，即不筛选
+* jieba.analyse.TFIDF(idf_path=None) 新建 TFIDF 实例，idf_path 为 IDF 频率文件
 
 代码示例 （关键词提取）
 
@@ -155,37 +165,27 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py
 
-#### 基于TextRank算法的关键词抽取实现
+### 基于 TextRank 算法的关键词抽取
+
+* jieba.analyse.textrank(sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v')) 直接使用，接口相同，注意默认过滤词性。
+* jieba.analyse.TextRank() 新建自定义 TextRank 实例
+
 算法论文： [TextRank: Bringing Order into Texts](http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf)
 
-##### 基本思想:
+#### 基本思想:
 
 1. 将待抽取关键词的文本进行分词
-2. 以固定窗口大小(我选的5，可适当调整)，词之间的共现关系，构建图
+2. 以固定窗口大小(默认为5，通过span属性调整)，词之间的共现关系，构建图
 3. 计算图中节点的PageRank，注意是无向带权图
 
-##### 基本使用:
-jieba.analyse.textrank(raw_text)
+#### 使用示例:
 
-##### 示例结果:
-来自`__main__`的示例结果：
+见 [test/demo.py](https://github.com/fxsjy/jieba/blob/master/test/demo.py)
 
-```
-吉林 1.0
-欧亚 0.864834432786
-置业 0.553465925497
-实现 0.520660869531
-收入 0.379699688954
-增资 0.355086023683
-子公司 0.349758490263
-全资 0.308537396283
-城市 0.306103738053
-商业 0.304837414946
-```
-
-4) : 词性标注
+4. 词性标注
 -----------
-* 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法
+* `jieba.posseg.POSTokenizer(tokenizer=None)` 新建自定义分词器，`tokenizer` 参数可指定内部使用的 `jieba.Tokenizer` 分词器。`jieba.posseg.dt` 为默认词性标注分词器。
+* 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法。
 * 用法示例
 
 ```pycon
@@ -200,10 +200,10 @@ jieba.analyse.textrank(raw_text)
 天安门 ns
 ```
 
-5) : 并行分词
+5. 并行分词
 -----------
-* 原理：将目标文本按行分隔后，把各行文本分配到多个 python 进程并行分词，然后归并结果，从而获得分词速度的可观提升
-* 基于 python 自带的 multiprocessing 模块，目前暂不支持 windows
+* 原理：将目标文本按行分隔后，把各行文本分配到多个 Python 进程并行分词，然后归并结果，从而获得分词速度的可观提升
+* 基于 python 自带的 multiprocessing 模块，目前暂不支持 Windows
 * 用法：
     * `jieba.enable_parallel(4)` # 开启并行分词模式，参数为并行进程数
     * `jieba.disable_parallel()` # 关闭并行分词模式
@@ -212,8 +212,9 @@ jieba.analyse.textrank(raw_text)
 
 * 实验结果：在 4 核 3.4GHz Linux 机器上，对金庸全集进行精确分词，获得了 1MB/s 的速度，是单进程版的 3.3 倍。
 
+* **注意**：并行分词仅支持默认分词器 `jieba.dt` 和 `jieba.posseg.dt`。
 
-6) : Tokenize：返回词语在原文的起始位置
+6. Tokenize：返回词语在原文的起止位置
 ----------------------------------
 * 注意，输入参数只接受 unicode
 * 默认模式
@@ -235,7 +236,7 @@ word 有限公司            start: 6                end:10
 * 搜索模式
 
 ```python
-result = jieba.tokenize(u'永和服装饰品有限公司',mode='search')
+result = jieba.tokenize(u'永和服装饰品有限公司', mode='search')
 for tk in result:
     print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
 ```
@@ -250,15 +251,15 @@ word 有限公司            start: 6                end:10
 ```
 
 
-7) : ChineseAnalyzer for Whoosh 搜索引擎
+7. ChineseAnalyzer for Whoosh 搜索引擎
 --------------------------------------------
 * 引用： `from jieba.analyse import ChineseAnalyzer`
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
 
-8) : 命令行分词
+8. 命令行分词
 -------------------
 
-使用示例：`cat news.txt | python -m jieba > cut_result.txt`
+使用示例：`python -m jieba news.txt > cut_result.txt`
 
 命令行选项（翻译）：
 
@@ -310,10 +311,10 @@ word 有限公司            start: 6                end:10
 
     If no filename specified, use STDIN instead.
 
-模块初始化机制的改变:lazy load （从0.28版本开始）
--------------------------------------------
+延迟加载机制
+------------
 
-jieba 采用延迟加载，"import jieba" 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。
+jieba 采用延迟加载，`import jieba` 和 `jieba.Tokenizer()` 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。
 
     import jieba
     jieba.initialize()  # 手动初始化（可选）
@@ -460,12 +461,15 @@ Algorithm
 Main Functions
 ==============
 
-1) : Cut
+1. Cut
 --------
 * The `jieba.cut` function accepts three input parameters: the first parameter is the string to be cut; the second parameter is `cut_all`, controlling the cut mode; the third parameter is to control whether to use the Hidden Markov Model.
 * `jieba.cut_for_search` accepts two parameter: the string to be cut; whether to use the Hidden Markov Model. This will cut the sentence into short words suitable for search engines.
 * The input string can be an unicode/str object, or a str/bytes object which is encoded in UTF-8 or GBK. Note that using GBK encoding is not recommended because it may be unexpectly decoded as UTF-8.
-* `jieba.cut` and `jieba.cut_for_search` returns an generator, from which you can use a `for` loop to get the segmentation result (in unicode), or `list(jieba.cut( ... ))` to create a list.
+* `jieba.cut` and `jieba.cut_for_search` returns an generator, from which you can use a `for` loop to get the segmentation result (in unicode).
+* `jieba.lcut` and `jieba.lcut_for_search` returns a list.
+* `jieba.Tokenizer(dictionary=DEFAULT_DICT)` creates a new customized Tokenizer, which enables you to use different dictionaries at the same time. `jieba.dt` is the default Tokenizer, to which almost all global functions are mapped.
+
 
 **Code example: segmentation**
 
@@ -497,7 +501,7 @@ Output:
     [Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
 
-2) : Add a custom dictionary
+2. Add a custom dictionary
 ----------------------------
 
 ###　Load dictionary
@@ -505,6 +509,9 @@ Output:
 * Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but adding your own new words can ensure a higher accuracy.
 * Usage： `jieba.load_userdict(file_name) # file_name is the path of the custom dictionary`
 * The dictionary format is the same as that of `analyse/idf.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
+* The word frequency can be omitted, then a calculated value will be used.
+* Change a Tokenizer's `tmp_dir` and `cache_file` to specify the path of the cache file, for using on a restricted file system.
+
 * Example：
 
         云计算 5
@@ -540,12 +547,16 @@ Example:
 「/台中/」/正确/应该/不会/被/切开
 ```
 
-3) : Keyword Extraction
+3. Keyword Extraction
 -----------------------
-* `jieba.analyse.extract_tags(sentence,topK,withWeight) # needs to first import jieba.analyse`
-* `sentence`: the text to be extracted
-* `topK`: return how many keywords with the highest TF/IDF weights. The default value is 20
-* `withWeight`: whether return TF/IDF weights with the keywords. The default value is False
+`import jieba.analyse`
+
+* `jieba.analyse.extract_tags(sentence, topK=20, withWeight=False, allowPOS=())`
+  * `sentence`: the text to be extracted
+  * `topK`: return how many keywords with the highest TF/IDF weights. The default value is 20
+  * `withWeight`: whether return TF/IDF weights with the keywords. The default value is False
+  * `allowPOS`: filter words with which POSs are included. Empty for no filtering.
+* `jieba.analyse.TFIDF(idf_path=None)` creates a new TFIDF instance, `idf_path` specifies IDF file path.
 
 Example (keyword extraction)
 
@@ -565,10 +576,15 @@ Developers can specify their own custom stop words corpus in jieba keyword extra
 
 There's also a [TextRank](http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf) implementation available.
 
-Use: `jieba.analyse.textrank(raw_text)`.
+Use: `jieba.analyse.textrank(sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v'))`
 
-4) : Part of Speech Tagging
------------
+Note that it filters POS by default.
+
+`jieba.analyse.TextRank()` creates a new TextRank instance.
+
+4. Part of Speech Tagging
+-------------------------
+* `jieba.posseg.POSTokenizer(tokenizer=None)` creates a new customized Tokenizer. `tokenizer` specifies the jieba.Tokenizer to internally use. `jieba.posseg.dt` is the default POSTokenizer.
 * Tags the POS of each word after segmentation, using labels compatible with ictclas.
 * Example:
 
@@ -584,8 +600,8 @@ Use: `jieba.analyse.textrank(raw_text)`.
 天安门 ns
 ```
 
-5) : Parallel Processing
------------
+5. Parallel Processing
+----------------------
 * Principle: Split target text by line, assign the lines into multiple Python processes, and then merge the results, which is considerably faster.
 * Based on the multiprocessing module of Python.
 * Usage:
@@ -597,8 +613,10 @@ Use: `jieba.analyse.textrank(raw_text)`.
 
 * Result: On a four-core 3.4GHz Linux machine, do accurate word segmentation on Complete Works of Jin Yong, and the speed reaches 1MB/s, which is 3.3 times faster than the single-process version.
 
-6) : Tokenize: return words with position
-----------------------------------
+* **Note** that parallel processing supports only default tokenizers, `jieba.dt` and `jieba.posseg.dt`.
+
+6. Tokenize: return words with position
+----------------------------------------
 * The input must be unicode
 * Default mode
 
@@ -634,13 +652,13 @@ word 有限公司            start: 6                end:10
 ```
 
 
-7) : ChineseAnalyzer for Whoosh
---------------------------------------------
+7. ChineseAnalyzer for Whoosh
+-------------------------------
 * `from jieba.analyse import ChineseAnalyzer`
 * Example: https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
 
-8) : Command Line Interface
--------------------
+8. Command Line Interface
+--------------------------------
 
     $> python -m jieba --help
     usage: python -m jieba [options] filename
@@ -679,7 +697,8 @@ You can also specify the dictionary (not supported before version 0.28) :
 
 
 Using Other Dictionaries
-========
+===========================
+
 It is possible to use your own dictionary with Jieba, and there are also two dictionaries ready for download:
 
 1. A smaller dictionary for a smaller memory footprint:

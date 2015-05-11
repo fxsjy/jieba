@@ -1,10 +1,9 @@
 from __future__ import absolute_import, unicode_literals
-import re
 import os
-import jieba
+import re
 import sys
+import jieba
 import marshal
-from functools import wraps
 from .._compat import *
 from .viterbi import viterbi
 
@@ -24,23 +23,10 @@ re_num = re.compile("[\.0-9]+")
 re_eng1 = re.compile('^[a-zA-Z0-9]$', re.U)
 
 
-def load_model(f_name, isJython=True):
+def load_model(f_name):
     _curpath = os.path.normpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-    result = {}
-    with open(f_name, "rb") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            line = line.decode("utf-8")
-            word, _, tag = line.split(" ")
-            result[word] = tag
-
-    if not isJython:
-        return result
-
+    # For Jython
     start_p = {}
     abs_path = os.path.join(_curpath, PROB_START_P)
     with open(abs_path, 'rb') as f:
@@ -64,28 +50,14 @@ def load_model(f_name, isJython=True):
 
     return state, start_p, trans_p, emit_p, result
 
+
 if sys.platform.startswith("java"):
-    char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model(
-        jieba.get_abs_path_dict())
+    char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model()
 else:
     from .char_state_tab import P as char_state_tab_P
     from .prob_start import P as start_P
     from .prob_trans import P as trans_P
     from .prob_emit import P as emit_P
-
-    word_tag_tab = load_model(jieba.get_abs_path_dict(), isJython=False)
-
-
-def makesure_userdict_loaded(fn):
-
-    @wraps(fn)
-    def wrapped(*args, **kwargs):
-        if jieba.user_word_tag_tab:
-            word_tag_tab.update(jieba.user_word_tag_tab)
-            jieba.user_word_tag_tab = {}
-        return fn(*args, **kwargs)
-
-    return wrapped
 
 
 class pair(object):
@@ -110,154 +82,220 @@ class pair(object):
         return self.__unicode__().encode(arg)
 
 
-def __cut(sentence):
-    prob, pos_list = viterbi(
-        sentence, char_state_tab_P, start_P, trans_P, emit_P)
-    begin, nexti = 0, 0
+class POSTokenizer(object):
 
-    for i, char in enumerate(sentence):
-        pos = pos_list[i][0]
-        if pos == 'B':
-            begin = i
-        elif pos == 'E':
-            yield pair(sentence[begin:i + 1], pos_list[i][1])
-            nexti = i + 1
-        elif pos == 'S':
-            yield pair(char, pos_list[i][1])
-            nexti = i + 1
-    if nexti < len(sentence):
-        yield pair(sentence[nexti:], pos_list[nexti][1])
+    def __init__(self, tokenizer=None):
+        self.tokenizer = tokenizer or jieba.Tokenizer()
+        self.load_word_tag(self.tokenizer.get_abs_path_dict())
 
+    def __repr__(self):
+        return '<POSTokenizer tokenizer=%r>' % self.tokenizer
 
-def __cut_detail(sentence):
-    blocks = re_han_detail.split(sentence)
-    for blk in blocks:
-        if re_han_detail.match(blk):
-            for word in __cut(blk):
-                yield word
-        else:
-            tmp = re_skip_detail.split(blk)
-            for x in tmp:
-                if x:
-                    if re_num.match(x):
-                        yield pair(x, 'm')
-                    elif re_eng.match(x):
-                        yield pair(x, 'eng')
-                    else:
-                        yield pair(x, 'x')
+    def __getattr__(self, name):
+        if name in ('cut_for_search', 'lcut_for_search', 'tokenize'):
+            # may be possible?
+            raise NotImplementedError
+        return getattr(self.tokenizer, name)
 
+    def initialize(self, dictionary=None):
+        self.tokenizer.initialize(dictionary)
+        self.load_word_tag(self.tokenizer.get_abs_path_dict())
 
-def __cut_DAG_NO_HMM(sentence):
-    DAG = jieba.get_DAG(sentence)
-    route = {}
-    jieba.calc(sentence, DAG, route)
-    x = 0
-    N = len(sentence)
-    buf = ''
-    while x < N:
-        y = route[x][1] + 1
-        l_word = sentence[x:y]
-        if re_eng1.match(l_word):
-            buf += l_word
-            x = y
-        else:
-            if buf:
-                yield pair(buf, 'eng')
-                buf = ''
-            yield pair(l_word, word_tag_tab.get(l_word, 'x'))
-            x = y
-    if buf:
-        yield pair(buf, 'eng')
-        buf = ''
+    def load_word_tag(self, f_name):
+        self.word_tag_tab = {}
+        with open(f_name, "rb") as f:
+            for lineno, line in enumerate(f, 1):
+                try:
+                    line = line.strip().decode("utf-8")
+                    if not line:
+                        continue
+                    word, _, tag = line.split(" ")
+                    self.word_tag_tab[word] = tag
+                except Exception:
+                    raise ValueError(
+                        'invalid POS dictionary entry in %s at Line %s: %s' % (f_name, lineno, line))
 
+    def makesure_userdict_loaded(self):
+        if self.tokenizer.user_word_tag_tab:
+            self.word_tag_tab.update(self.tokenizer.user_word_tag_tab)
+            self.tokenizer.user_word_tag_tab = {}
 
-def __cut_DAG(sentence):
-    DAG = jieba.get_DAG(sentence)
-    route = {}
+    def __cut(self, sentence):
+        prob, pos_list = viterbi(
+            sentence, char_state_tab_P, start_P, trans_P, emit_P)
+        begin, nexti = 0, 0
 
-    jieba.calc(sentence, DAG, route)
+        for i, char in enumerate(sentence):
+            pos = pos_list[i][0]
+            if pos == 'B':
+                begin = i
+            elif pos == 'E':
+                yield pair(sentence[begin:i + 1], pos_list[i][1])
+                nexti = i + 1
+            elif pos == 'S':
+                yield pair(char, pos_list[i][1])
+                nexti = i + 1
+        if nexti < len(sentence):
+            yield pair(sentence[nexti:], pos_list[nexti][1])
 
-    x = 0
-    buf = ''
-    N = len(sentence)
-    while x < N:
-        y = route[x][1] + 1
-        l_word = sentence[x:y]
-        if y - x == 1:
-            buf += l_word
-        else:
-            if buf:
-                if len(buf) == 1:
-                    yield pair(buf, word_tag_tab.get(buf, 'x'))
-                elif not jieba.FREQ.get(buf):
-                    recognized = __cut_detail(buf)
-                    for t in recognized:
-                        yield t
-                else:
-                    for elem in buf:
-                        yield pair(elem, word_tag_tab.get(elem, 'x'))
-                buf = ''
-            yield pair(l_word, word_tag_tab.get(l_word, 'x'))
-        x = y
-
-    if buf:
-        if len(buf) == 1:
-            yield pair(buf, word_tag_tab.get(buf, 'x'))
-        elif not jieba.FREQ.get(buf):
-            recognized = __cut_detail(buf)
-            for t in recognized:
-                yield t
-        else:
-            for elem in buf:
-                yield pair(elem, word_tag_tab.get(elem, 'x'))
-
-
-def __cut_internal(sentence, HMM=True):
-    sentence = strdecode(sentence)
-    blocks = re_han_internal.split(sentence)
-    if HMM:
-        __cut_blk = __cut_DAG
-    else:
-        __cut_blk = __cut_DAG_NO_HMM
-
-    for blk in blocks:
-        if re_han_internal.match(blk):
-            for word in __cut_blk(blk):
-                yield word
-        else:
-            tmp = re_skip_internal.split(blk)
-            for x in tmp:
-                if re_skip_internal.match(x):
-                    yield pair(x, 'x')
-                else:
-                    for xx in x:
-                        if re_num.match(xx):
-                            yield pair(xx, 'm')
+    def __cut_detail(self, sentence):
+        blocks = re_han_detail.split(sentence)
+        for blk in blocks:
+            if re_han_detail.match(blk):
+                for word in self.__cut(blk):
+                    yield word
+            else:
+                tmp = re_skip_detail.split(blk)
+                for x in tmp:
+                    if x:
+                        if re_num.match(x):
+                            yield pair(x, 'm')
                         elif re_eng.match(x):
-                            yield pair(xx, 'eng')
+                            yield pair(x, 'eng')
                         else:
-                            yield pair(xx, 'x')
+                            yield pair(x, 'x')
+
+    def __cut_DAG_NO_HMM(self, sentence):
+        DAG = self.tokenizer.get_DAG(sentence)
+        route = {}
+        self.tokenizer.calc(sentence, DAG, route)
+        x = 0
+        N = len(sentence)
+        buf = ''
+        while x < N:
+            y = route[x][1] + 1
+            l_word = sentence[x:y]
+            if re_eng1.match(l_word):
+                buf += l_word
+                x = y
+            else:
+                if buf:
+                    yield pair(buf, 'eng')
+                    buf = ''
+                yield pair(l_word, self.word_tag_tab.get(l_word, 'x'))
+                x = y
+        if buf:
+            yield pair(buf, 'eng')
+            buf = ''
+
+    def __cut_DAG(self, sentence):
+        DAG = self.tokenizer.get_DAG(sentence)
+        route = {}
+
+        self.tokenizer.calc(sentence, DAG, route)
+
+        x = 0
+        buf = ''
+        N = len(sentence)
+        while x < N:
+            y = route[x][1] + 1
+            l_word = sentence[x:y]
+            if y - x == 1:
+                buf += l_word
+            else:
+                if buf:
+                    if len(buf) == 1:
+                        yield pair(buf, self.word_tag_tab.get(buf, 'x'))
+                    elif not self.tokenizer.FREQ.get(buf):
+                        recognized = self.__cut_detail(buf)
+                        for t in recognized:
+                            yield t
+                    else:
+                        for elem in buf:
+                            yield pair(elem, self.word_tag_tab.get(elem, 'x'))
+                    buf = ''
+                yield pair(l_word, self.word_tag_tab.get(l_word, 'x'))
+            x = y
+
+        if buf:
+            if len(buf) == 1:
+                yield pair(buf, self.word_tag_tab.get(buf, 'x'))
+            elif not self.tokenizer.FREQ.get(buf):
+                recognized = self.__cut_detail(buf)
+                for t in recognized:
+                    yield t
+            else:
+                for elem in buf:
+                    yield pair(elem, self.word_tag_tab.get(elem, 'x'))
+
+    def __cut_internal(self, sentence, HMM=True):
+        self.makesure_userdict_loaded()
+        sentence = strdecode(sentence)
+        blocks = re_han_internal.split(sentence)
+        if HMM:
+            cut_blk = self.__cut_DAG
+        else:
+            cut_blk = self.__cut_DAG_NO_HMM
+
+        for blk in blocks:
+            if re_han_internal.match(blk):
+                for word in cut_blk(blk):
+                    yield word
+            else:
+                tmp = re_skip_internal.split(blk)
+                for x in tmp:
+                    if re_skip_internal.match(x):
+                        yield pair(x, 'x')
+                    else:
+                        for xx in x:
+                            if re_num.match(xx):
+                                yield pair(xx, 'm')
+                            elif re_eng.match(x):
+                                yield pair(xx, 'eng')
+                            else:
+                                yield pair(xx, 'x')
+
+    def _lcut_internal(self, sentence):
+        return list(self.__cut_internal(sentence))
+
+    def _lcut_internal_no_hmm(self, sentence):
+        return list(self.__cut_internal(sentence, False))
+
+    def cut(self, sentence, HMM=True):
+        for w in self.__cut_internal(sentence, HMM=HMM):
+            yield w
+
+    def lcut(self, *args, **kwargs):
+        return list(self.cut(*args, **kwargs))
+
+# default Tokenizer instance
+
+dt = POSTokenizer(jieba.dt)
+
+# global functions
+
+initialize = dt.initialize
 
 
-def __lcut_internal(sentence):
-    return list(__cut_internal(sentence))
+def _lcut_internal(s):
+    return dt._lcut_internal(s)
 
 
-def __lcut_internal_no_hmm(sentence):
-    return list(__cut_internal(sentence, False))
+def _lcut_internal_no_hmm(s):
+    return dt._lcut_internal_no_hmm(s)
 
 
-@makesure_userdict_loaded
 def cut(sentence, HMM=True):
+    """
+    Global `cut` function that supports parallel processing.
+
+    Note that this only works using dt, custom POSTokenizer
+    instances are not supported.
+    """
+    global dt
     if jieba.pool is None:
-        for w in __cut_internal(sentence, HMM=HMM):
+        for w in dt.cut(sentence, HMM=HMM):
             yield w
     else:
         parts = strdecode(sentence).splitlines(True)
         if HMM:
-            result = jieba.pool.map(__lcut_internal, parts)
+            result = jieba.pool.map(_lcut_internal, parts)
         else:
-            result = jieba.pool.map(__lcut_internal_no_hmm, parts)
+            result = jieba.pool.map(_lcut_internal_no_hmm, parts)
         for r in result:
             for w in r:
                 yield w
+
+
+def lcut(sentence, HMM=True):
+    return list(cut(sentence, HMM))

@@ -90,10 +90,19 @@ print(", ".join(seg_list))
 
 * 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
 * 用法： jieba.load_userdict(file_name) # file_name 为自定义词典的路径
-* 词典格式和`dict.txt`一样，一个词占一行；每一行分三部分，一部分为词语，另一部分为词频（可省略），最后为词性（可省略），用空格隔开
-* 词频可省略，使用计算出的能保证分出该词的词频
+* 词典格式和 `dict.txt` 一样，一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒。
+* 词频省略时使用自动计算的能保证分出该词的词频。
 
-* 更改分词器的 tmp_dir 和 cache_file 属性，可指定缓存文件位置，用于受限的文件系统。
+**例如：**
+
+```
+创新办 3 i
+云计算 5
+凱特琳 nz
+台中
+```
+
+* 更改分词器（默认为 jieba.dt）的 tmp_dir 和 cache_file 属性，可指定缓存文件位置，用于受限的文件系统。
 
 * 范例：
 
@@ -506,13 +515,24 @@ Output:
 
 ###　Load dictionary
 
-* Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but adding your own new words can ensure a higher accuracy.
+* Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but you can add your own new words can ensure a higher accuracy.
 * Usage： `jieba.load_userdict(file_name) # file_name is the path of the custom dictionary`
-* The dictionary format is the same as that of `analyse/idf.txt`: one word per line; each line is divided into two parts, the first is the word itself, the other is the word frequency, separated by a space
-* The word frequency can be omitted, then a calculated value will be used.
+* The dictionary format is the same as that of `dict.txt`: one word per line; each line is divided into three parts separated by a space: word, word frequency, POS tag.
+* The word frequency and POS tag can be omitted respectively. The word frequency will be filled with a suitable value if omitted.
+
+**For example:**
+
+```
+创新办 3 i
+云计算 5
+凱特琳 nz
+台中
+```
+
+
 * Change a Tokenizer's `tmp_dir` and `cache_file` to specify the path of the cache file, for using on a restricted file system.
 
-* Example：
+* Example:
 
         云计算 5
         李小福 2

@@ -43,6 +43,6 @@ testlist = [
 for sent, seg in testlist:
     print('/'.join(jieba.cut(sent, HMM=False)))
     word = ''.join(seg)
-    print('%s Before: %s, After: %s' % (word, jieba.FREQ[word], jieba.suggest_freq(seg, True)))
+    print('%s Before: %s, After: %s' % (word, jieba.get_FREQ(word), jieba.suggest_freq(seg, True)))
     print('/'.join(jieba.cut(sent, HMM=False)))
     print("-"*40)

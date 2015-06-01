@@ -70,13 +70,16 @@ class pair(object):
         return '%s/%s' % (self.word, self.flag)
 
     def __repr__(self):
-        return self.__str__()
+        return 'pair(%r, %r)' % (self.word, self.flag)
 
     def __str__(self):
         if PY2:
             return self.__unicode__().encode(default_encoding)
         else:
             return self.__unicode__()
+
+    def __iter__(self):
+        return iter((self.word, self.flag))
 
     def encode(self, arg):
         return self.__unicode__().encode(arg)

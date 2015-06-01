@@ -310,12 +310,12 @@ class Tokenizer(object):
             if len(w) > 2:
                 for i in xrange(len(w) - 1):
                     gram2 = w[i:i + 2]
-                    if FREQ.get(gram2):
+                    if self.FREQ.get(gram2):
                         yield gram2
             if len(w) > 3:
                 for i in xrange(len(w) - 2):
                     gram3 = w[i:i + 3]
-                    if FREQ.get(gram3):
+                    if self.FREQ.get(gram3):
                         yield gram3
             yield w
 

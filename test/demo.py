@@ -62,8 +62,8 @@ print('4. 词性标注')
 print('-'*40)
 
 words = jieba.posseg.cut("我爱北京天安门")
-for w in words:
-    print('%s %s' % (w.word, w.flag))
+for word, flag in words:
+    print('%s %s' % (word, flag))
 
 print('='*40)
 print('6. Tokenize: 返回词语在原文的起止位置')

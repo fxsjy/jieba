@@ -102,7 +102,7 @@ print(", ".join(seg_list))
 台中
 ```
 
-* 更改分词器（默认为 jieba.dt）的 tmp_dir 和 cache_file 属性，可指定缓存文件位置，用于受限的文件系统。
+* 更改分词器（默认为 `jieba.dt`）的 `tmp_dir` 和 `cache_file` 属性，可分别指定缓存文件所在的文件夹及其文件名，用于受限的文件系统。
 
 * 范例：
 

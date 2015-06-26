@@ -110,11 +110,14 @@ class Tokenizer(object):
             # default dictionary
             elif abs_path == DEFAULT_DICT:
                 cache_file = "jieba.cache"
-            else:  # custom dictionary
+            # custom dictionary
+            else:
                 cache_file = "jieba.u%s.cache" % md5(
                     abs_path.encode('utf-8', 'replace')).hexdigest()
             cache_file = os.path.join(
                 self.tmp_dir or tempfile.gettempdir(), cache_file)
+            # prevent absolute path in self.cache_file
+            tmpdir = os.path.dirname(cache_file)
 
             load_from_cache_fail = True
             if os.path.isfile(cache_file) and os.path.getmtime(cache_file) > os.path.getmtime(abs_path):
@@ -135,7 +138,8 @@ class Tokenizer(object):
                     default_logger.debug(
                         "Dumping model to file cache %s" % cache_file)
                     try:
-                        fd, fpath = tempfile.mkstemp()
+                        # prevent moving across different filesystems
+                        fd, fpath = tempfile.mkstemp(dir=tmpdir)
                         with os.fdopen(fd, 'wb') as temp_cache_file:
                             marshal.dump(
                                 (self.FREQ, self.total), temp_cache_file)

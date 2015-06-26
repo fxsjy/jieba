@@ -15,10 +15,7 @@ from hashlib import md5
 from ._compat import *
 from . import finalseg
 
-if os.name == 'nt':
-    from shutil import move as _replace_file
-else:
-    _replace_file = os.rename
+from shutil import move as _replace_file
 
 _get_module_path = lambda path: os.path.normpath(os.path.join(os.getcwd(),
                                                  os.path.dirname(__file__), path))

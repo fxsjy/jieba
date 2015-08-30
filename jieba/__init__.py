@@ -59,6 +59,7 @@ class Tokenizer(object):
         self.initialized = False
         self.tmp_dir = None
         self.cache_file = None
+        self.stop_words = None
 
     def __repr__(self):
         return '<Tokenizer dictionary=%r>' % self.dictionary
@@ -263,6 +264,15 @@ class Tokenizer(object):
                 for elem in buf:
                     yield elem
 
+    def set_stop_words(self, stop_words_path):
+        abs_path = _get_abs_path(stop_words_path)
+        if not os.path.isfile(abs_path):
+            raise Exception("jieba: file does not exist: " + abs_path)
+        content = open(abs_path, 'rb').read().decode('utf-8')
+        self.stop_words = set()
+        for line in content.splitlines():
+            self.stop_words.add(line)
+                    
     def cut(self, sentence, cut_all=False, HMM=True):
         '''
         The main function that segments an entire sentence that contains
@@ -304,6 +314,19 @@ class Tokenizer(object):
                             yield xx
                     else:
                         yield x
+
+    def cut_with_filter(self, sentence, HMM=True):
+        """
+        Segmentation without special stop word
+        """
+        words = self.cut(sentence, HMM=HMM)
+        if self.stop_words is None:
+            for w in words:
+                yield w
+        for w in words:
+            if w not in self.stop_words:
+                yield w 
+    
 
     def cut_for_search(self, sentence, HMM=True):
         """
@@ -500,7 +523,8 @@ set_dictionary = dt.set_dictionary
 suggest_freq = dt.suggest_freq
 tokenize = dt.tokenize
 user_word_tag_tab = dt.user_word_tag_tab
-
+set_stop_words = dt.set_stop_words
+cut_with_filter = dt.cut_with_filter
 
 def _lcut_all(s):
     return dt._lcut_all(s)
@@ -576,3 +600,4 @@ def disable_parallel():
         pool = None
     cut = dt.cut
     cut_for_search = dt.cut_for_search
+    set_stop_words = dt.set_stop_words

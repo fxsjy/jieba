@@ -383,6 +383,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：fukuball
 地址：https://github.com/fukuball/jieba-php
 
+结巴分词 .NET(C#) 版本
+----------------
+作者：anderscui
+地址：https://github.com/anderscui/jieba.NET/
+
 系统集成
 ========
 1. Solr: https://github.com/sing1ee/jieba-solr

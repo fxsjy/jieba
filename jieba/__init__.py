@@ -436,7 +436,7 @@ class Tokenizer(object):
             add_word(word, freq)
         return freq
 
-    def tokenize(self, unicode_sentence, mode="default", HMM=True):
+    def tokenize(self, unicode_sentence, mode="default", cut_all=False, HMM=True):
         """
         Tokenize a sentence and yields tuples of (word, start, end)
 
@@ -449,7 +449,7 @@ class Tokenizer(object):
             raise ValueError("jieba: the input parameter should be unicode.")
         start = 0
         if mode == 'default':
-            for w in self.cut(unicode_sentence, HMM=HMM):
+            for w in self.cut(unicode_sentence, cut_all=cut_all, HMM=HMM):
                 width = len(w)
                 yield (w, start, start + width)
                 start += width

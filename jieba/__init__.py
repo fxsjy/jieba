@@ -451,6 +451,9 @@ class Tokenizer(object):
         if mode == 'default':
             for w in self.cut(unicode_sentence, cut_all=cut_all, HMM=HMM):
                 width = len(w)
+                if cut_all:
+                    start = unicode_sentence.index(w)
+
                 yield (w, start, start + width)
                 start += width
         else:

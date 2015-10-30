@@ -81,6 +81,9 @@ class pair(object):
     def __iter__(self):
         return iter((self.word, self.flag))
 
+    def __lt__(self, other):
+        return self.word < other.word
+
     def encode(self, arg):
         return self.__unicode__().encode(arg)
 

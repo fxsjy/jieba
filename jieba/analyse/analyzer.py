@@ -13,7 +13,7 @@ STOP_WORDS = frozenset(('a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'can',
                         'to', 'us', 'we', 'when', 'will', 'with', 'yet',
                         'you', 'your', '的', '了', '和'))
 
-accepted_chars = re.compile(r"[\u4E00-\u9FA5]+")
+accepted_chars = re.compile(r"[\u4E00-\u9FD5]+")
 
 
 class ChineseTokenizer(Tokenizer):

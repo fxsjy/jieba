@@ -366,7 +366,7 @@ class Tokenizer(object):
             f = open(f, 'rb')
         for lineno, ln in enumerate(f, 1):
             line = ln.strip()
-            if not isinstance(f, text_type):
+            if not isinstance(line, text_type):
                 try:
                     line = line.decode('utf-8').lstrip('\ufeff')
                 except UnicodeDecodeError:

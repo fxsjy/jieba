@@ -35,6 +35,8 @@ DICT_WRITING = {}
 
 pool = None
 
+re_userdict = re.compile('^(.+?)( [0-9]+)?( [a-z]+)?$', re.U)
+
 re_eng = re.compile('[a-zA-Z0-9]', re.U)
 
 # \u4E00-\u9FD5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
@@ -350,6 +352,8 @@ class Tokenizer(object):
 
         Parameter:
             - f : A plain text file contains words and their ocurrences.
+                  Can be a file-like object, or the path of the dictionary file,
+                  whose encoding must be utf-8.
 
         Structure of dict file:
         word1 freq1 word_type1
@@ -361,24 +365,21 @@ class Tokenizer(object):
         if isinstance(f, string_types):
             f = open(f, 'rb')
         for lineno, ln in enumerate(f, 1):
-            try:
-                line = ln.strip().decode('utf-8').lstrip('\ufeff')
-                if not line:
-                    continue
-                tup = line.split(" ")
-                freq, tag = None, None
-                if len(tup) == 2:
-                    if tup[1].isdigit():
-                        freq = tup[1]
-                    else:
-                        tag = tup[1]
-                elif len(tup) > 2:
-                    freq, tag = tup[1], tup[2]
-                self.add_word(tup[0], freq, tag)
-            except Exception:
-                raise ValueError(
-                    'invalid dictionary entry in %s at Line %s: %s' % (
-                    f.name, lineno, line))
+            line = ln.strip()
+            if not isinstance(f, text_type):
+                try:
+                    line = line.decode('utf-8').lstrip('\ufeff')
+                except UnicodeDecodeError:
+                    raise ValueError('dictionary file %s must be utf-8' % f.name)
+            if not line:
+                continue
+            # match won't be None because there's at least one character
+            word, freq, tag = re_userdict.match(line).groups()
+            if freq is not None:
+                freq = freq.strip()
+            if tag is not None:
+                tag = tag.strip()
+            self.add_word(word, freq, tag)
 
     def add_word(self, word, freq=None, tag=None):
         """

@@ -89,8 +89,8 @@ print(", ".join(seg_list))
 ### 载入词典
 
 * 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
-* 用法： jieba.load_userdict(file_name) # file_name 为自定义词典的路径
-* 词典格式和 `dict.txt` 一样，一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒。
+* 用法： jieba.load_userdict(file_name) # file_name 为文件类对象或自定义词典的路径
+* 词典格式和 `dict.txt` 一样，一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒。`file_name` 若为路径或二进制方式打开的文件，则文件必须为 UTF-8 编码。
 * 词频省略时使用自动计算的能保证分出该词的词频。
 
 **例如：**
@@ -521,8 +521,8 @@ Output:
 ###　Load dictionary
 
 * Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but you can add your own new words can ensure a higher accuracy.
-* Usage： `jieba.load_userdict(file_name) # file_name is the path of the custom dictionary`
-* The dictionary format is the same as that of `dict.txt`: one word per line; each line is divided into three parts separated by a space: word, word frequency, POS tag.
+* Usage： `jieba.load_userdict(file_name)` # file_name is a file-like object or the path of the custom dictionary
+* The dictionary format is the same as that of `dict.txt`: one word per line; each line is divided into three parts separated by a space: word, word frequency, POS tag. If `file_name` is a path or a file opened in binary mode, the dictionary must be UTF-8 encoded.
 * The word frequency and POS tag can be omitted respectively. The word frequency will be filled with a suitable value if omitted.
 
 **For example:**

@@ -89,7 +89,7 @@ def __cut(sentence):
     if nexti < len(sentence):
         yield sentence[nexti:]
 
-re_han = re.compile("([\u4E00-\u9FA5]+)")
+re_han = re.compile("([\u4E00-\u9FD5]+)")
 re_skip = re.compile("(\d+\.\d+|[a-zA-Z0-9]+)")
 
 

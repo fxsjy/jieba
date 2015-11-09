@@ -12,9 +12,9 @@ PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
 
-re_han_detail = re.compile("([\u4E00-\u9FA5]+)")
+re_han_detail = re.compile("([\u4E00-\u9FD5]+)")
 re_skip_detail = re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
-re_han_internal = re.compile("([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)")
+re_han_internal = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._]+)")
 re_skip_internal = re.compile("(\r\n|\s)")
 
 re_eng = re.compile("[a-zA-Z0-9]+")

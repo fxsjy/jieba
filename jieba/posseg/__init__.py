@@ -3,7 +3,7 @@ import os
 import re
 import sys
 import jieba
-import marshal
+import pickle
 from .._compat import *
 from .viterbi import viterbi
 
@@ -23,36 +23,17 @@ re_num = re.compile("[\.0-9]+")
 re_eng1 = re.compile('^[a-zA-Z0-9]$', re.U)
 
 
-def load_model(f_name):
-    _curpath = os.path.normpath(
-        os.path.join(os.getcwd(), os.path.dirname(__file__)))
+def load_model():
     # For Jython
-    start_p = {}
-    abs_path = os.path.join(_curpath, PROB_START_P)
-    with open(abs_path, 'rb') as f:
-        start_p = marshal.load(f)
-
-    trans_p = {}
-    abs_path = os.path.join(_curpath, PROB_TRANS_P)
-    with open(abs_path, 'rb') as f:
-        trans_p = marshal.load(f)
-
-    emit_p = {}
-    abs_path = os.path.join(_curpath, PROB_EMIT_P)
-    with open(abs_path, 'rb') as f:
-        emit_p = marshal.load(f)
-
-    state = {}
-    abs_path = os.path.join(_curpath, CHAR_STATE_TAB_P)
-    with open(abs_path, 'rb') as f:
-        state = marshal.load(f)
-    f.closed
-
-    return state, start_p, trans_p, emit_p, result
+    start_p = pickle.load(get_module_res("posseg", PROB_START_P))
+    trans_p = pickle.load(get_module_res("posseg", PROB_TRANS_P))
+    emit_p = pickle.load(get_module_res("posseg", PROB_EMIT_P))
+    state = pickle.load(get_module_res("posseg", CHAR_STATE_TAB_P))
+    return state, start_p, trans_p, emit_p
 
 
 if sys.platform.startswith("java"):
-    char_state_tab_P, start_P, trans_P, emit_P, word_tag_tab = load_model()
+    char_state_tab_P, start_P, trans_P, emit_P = load_model()
 else:
     from .char_state_tab import P as char_state_tab_P
     from .prob_start import P as start_P
@@ -89,7 +70,7 @@ class POSTokenizer(object):
 
     def __init__(self, tokenizer=None):
         self.tokenizer = tokenizer or jieba.Tokenizer()
-        self.load_word_tag(self.tokenizer.get_abs_path_dict())
+        self.load_word_tag(self.tokenizer.get_dict_file())
 
     def __repr__(self):
         return '<POSTokenizer tokenizer=%r>' % self.tokenizer
@@ -102,11 +83,12 @@ class POSTokenizer(object):
 
     def initialize(self, dictionary=None):
         self.tokenizer.initialize(dictionary)
-        self.load_word_tag(self.tokenizer.get_abs_path_dict())
+        self.load_word_tag(self.tokenizer.get_dict_file())
 
-    def load_word_tag(self, f_name):
+    def load_word_tag(self, f):
         self.word_tag_tab = {}
-        with open(f_name, "rb") as f:
+        f_name = resolve_filename(f)
+        with f:
             for lineno, line in enumerate(f, 1):
                 try:
                     line = line.strip().decode("utf-8")

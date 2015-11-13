@@ -44,7 +44,7 @@ class UndirectWeightedGraph:
         for w in itervalues(ws):
             if w < min_rank:
                 min_rank = w
-            elif w > max_rank:
+            if w > max_rank:
                 max_rank = w
 
         for n, w in ws.items():
@@ -66,7 +66,7 @@ class TextRank(KeywordExtractor):
         return (wp.flag in self.pos_filt and len(wp.word.strip()) >= 2
                 and wp.word.lower() not in self.stop_words)
 
-    def textrank(self, sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v')):
+    def textrank(self, sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v'), withFlag=False):
         """
         Extract keywords from sentence using TextRank algorithm.
         Parameter:
@@ -75,6 +75,8 @@ class TextRank(KeywordExtractor):
                           if False, return a list of words.
             - allowPOS: the allowed POS list eg. ['ns', 'n', 'vn', 'v'].
                         if the POS of w is not in this list, it will be filtered.
+            - withFlag: if True, return a list of pair(word, weight) like posseg.cut
+                        if False, return a list of words
         """
         self.pos_filt = frozenset(allowPOS)
         g = UndirectWeightedGraph()
@@ -87,7 +89,10 @@ class TextRank(KeywordExtractor):
                         break
                     if not self.pairfilter(words[j]):
                         continue
-                    cm[(wp.word, words[j].word)] += 1
+                    if allowPOS and withFlag:
+                        cm[(wp, words[j])] += 1
+                    else:
+                        cm[(wp.word, words[j].word)] += 1
 
         for terms, w in cm.items():
             g.addEdge(terms[0], terms[1], w)
@@ -96,6 +101,7 @@ class TextRank(KeywordExtractor):
             tags = sorted(nodes_rank.items(), key=itemgetter(1), reverse=True)
         else:
             tags = sorted(nodes_rank, key=nodes_rank.__getitem__, reverse=True)
+
         if topK:
             return tags[:topK]
         else:

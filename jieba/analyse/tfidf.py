@@ -72,7 +72,7 @@ class TFIDF(KeywordExtractor):
         self.idf_loader.set_new_path(new_abs_path)
         self.idf_freq, self.median_idf = self.idf_loader.get_idf()
 
-    def extract_tags(self, sentence, topK=20, withWeight=False, allowPOS=()):
+    def extract_tags(self, sentence, topK=20, withWeight=False, allowPOS=(), withFlag=False):
         """
         Extract keywords from sentence using TF-IDF algorithm.
         Parameter:
@@ -81,6 +81,9 @@ class TFIDF(KeywordExtractor):
                           if False, return a list of words.
             - allowPOS: the allowed POS list eg. ['ns', 'n', 'vn', 'v','nr'].
                         if the POS of w is not in this list,it will be filtered.
+            - withFlag: only work with allowPOS is not empty.
+                        if True, return a list of pair(word, weight) like posseg.cut
+                        if False, return a list of words
         """
         if allowPOS:
             allowPOS = frozenset(allowPOS)
@@ -92,14 +95,16 @@ class TFIDF(KeywordExtractor):
             if allowPOS:
                 if w.flag not in allowPOS:
                     continue
-                else:
+                elif not withFlag:
                     w = w.word
-            if len(w.strip()) < 2 or w.lower() in self.stop_words:
+            wc = w.word if allowPOS and withFlag else w
+            if len(wc.strip()) < 2 or wc.lower() in self.stop_words:
                 continue
             freq[w] = freq.get(w, 0.0) + 1.0
         total = sum(freq.values())
         for k in freq:
-            freq[k] *= self.idf_freq.get(k, self.median_idf) / total
+            kw = k.word if allowPOS and withFlag else k
+            freq[k] *= self.idf_freq.get(kw, self.median_idf) / total
 
         if withWeight:
             tags = sorted(freq.items(), key=itemgetter(1), reverse=True)

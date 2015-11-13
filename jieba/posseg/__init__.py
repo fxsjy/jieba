@@ -88,17 +88,17 @@ class POSTokenizer(object):
     def load_word_tag(self, f):
         self.word_tag_tab = {}
         f_name = resolve_filename(f)
-        with f:
-            for lineno, line in enumerate(f, 1):
-                try:
-                    line = line.strip().decode("utf-8")
-                    if not line:
-                        continue
-                    word, _, tag = line.split(" ")
-                    self.word_tag_tab[word] = tag
-                except Exception:
-                    raise ValueError(
-                        'invalid POS dictionary entry in %s at Line %s: %s' % (f_name, lineno, line))
+        for lineno, line in enumerate(f, 1):
+            try:
+                line = line.strip().decode("utf-8")
+                if not line:
+                    continue
+                word, _, tag = line.split(" ")
+                self.word_tag_tab[word] = tag
+            except Exception:
+                raise ValueError(
+                    'invalid POS dictionary entry in %s at Line %s: %s' % (f_name, lineno, line))
+        f.close()
 
     def makesure_userdict_loaded(self):
         if self.tokenizer.user_word_tag_tab:

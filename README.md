@@ -284,10 +284,13 @@ word 有限公司            start: 6                end:10
       -d [DELIM], --delimiter [DELIM]
                             使用 DELIM 分隔词语，而不是用默认的' / '。
                             若不指定 DELIM，则使用一个空格分隔。
+      -p [DELIM], --pos [DELIM]
+                            启用词性标注；如果指定 DELIM，词语和词性之间
+                            用它分隔，否则用 _ 分隔
       -D DICT, --dict DICT  使用 DICT 代替默认词典
       -u USER_DICT, --user-dict USER_DICT
                             使用 USER_DICT 作为附加词典，与默认词典或自定义词典配合使用
-      -a, --cut-all         全模式分词
+      -a, --cut-all         全模式分词（不支持词性标注）
       -n, --no-hmm          不使用隐含马尔可夫模型
       -q, --quiet           不输出载入信息到 STDERR
       -V, --version         显示版本信息并退出
@@ -297,8 +300,6 @@ word 有限公司            start: 6                end:10
 `--help` 选项输出：
 
     $> python -m jieba --help
-    usage: python -m jieba [options] filename
-
     Jieba command line interface.
 
     positional arguments:
@@ -309,11 +310,14 @@ word 有限公司            start: 6                end:10
       -d [DELIM], --delimiter [DELIM]
                             use DELIM instead of ' / ' for word delimiter; or a
                             space if it is used without DELIM
+      -p [DELIM], --pos [DELIM]
+                            enable POS tagging; if DELIM is specified, use DELIM
+                            instead of '_' for POS delimiter
       -D DICT, --dict DICT  use DICT as dictionary
       -u USER_DICT, --user-dict USER_DICT
                             use USER_DICT together with the default dictionary or
                             DICT (if specified)
-      -a, --cut-all         full pattern cutting
+      -a, --cut-all         full pattern cutting (ignored with POS tagging)
       -n, --no-hmm          don't use the Hidden Markov Model
       -q, --quiet           don't print loading messages to stderr
       -V, --version         show program's version number and exit
@@ -686,8 +690,6 @@ word 有限公司            start: 6                end:10
 --------------------------------
 
     $> python -m jieba --help
-    usage: python -m jieba [options] filename
-
     Jieba command line interface.
 
     positional arguments:
@@ -698,11 +700,14 @@ word 有限公司            start: 6                end:10
       -d [DELIM], --delimiter [DELIM]
                             use DELIM instead of ' / ' for word delimiter; or a
                             space if it is used without DELIM
+      -p [DELIM], --pos [DELIM]
+                            enable POS tagging; if DELIM is specified, use DELIM
+                            instead of '_' for POS delimiter
       -D DICT, --dict DICT  use DICT as dictionary
       -u USER_DICT, --user-dict USER_DICT
                             use USER_DICT together with the default dictionary or
                             DICT (if specified)
-      -a, --cut-all         full pattern cutting
+      -a, --cut-all         full pattern cutting (ignored with POS tagging)
       -n, --no-hmm          don't use the Hidden Markov Model
       -q, --quiet           don't print loading messages to stderr
       -V, --version         show program's version number and exit

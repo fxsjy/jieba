@@ -1,3 +1,10 @@
+2015-12-16: version 0.38
+1. 通过pkg_resources载入默认词典，支持在Spark等平台上运行, by @gumblex;
+2. 扩充识别的汉字unicode范围：[\u4E00-\u9FD5], by @gumblex;
+3. 关键词提取支持返回词性，修复posseg分词得到的pair做dict关键字的问题，by @jerryday；
+4. 修复load_userdict加载用户词典不能识别含有空格等特殊字符的问题， by @gumblex;
+5. 命令行分词支持返回词性， by @gumblex;
+
 2015-06-27: version 0.37
 1. 代码重构，分词器封装为Class，支持实例化，by @gumblex (https://github.com/fxsjy/jieba/commit/94840a734c32cfece05c0c3ec236ffc3d36b4ae6)
 2. 修复cut_for_search的bug，完善posseg； by @gumblex

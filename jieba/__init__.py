@@ -400,7 +400,7 @@ class Tokenizer(object):
         """
         self.check_initialized()
         word = strdecode(word)
-        freq = int(freq) if freq else self.suggest_freq(word, False)
+        freq = int(freq) if freq is not None else self.suggest_freq(word, False)
         self.FREQ[word] = freq
         self.total += freq
         if tag:

@@ -392,6 +392,12 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：anderscui
 地址：https://github.com/anderscui/jieba.NET/
 
+结巴分词 Go 版本
+----------------
+
++ 作者: wangbin 地址: https://github.com/wangbin/jiebago
++ 作者: yanyiwu 地址: https://github.com/yanyiwu/gojieba
+
 系统集成
 ========
 1. Solr: https://github.com/sing1ee/jieba-solr

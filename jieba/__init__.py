@@ -532,6 +532,8 @@ def _lcut_for_search(s):
 def _lcut_for_search_no_hmm(s):
     return dt._lcut_for_search_no_hmm(s)
 
+def _lcut_no_hmm(s):
+    return dt._lcut_no_hmm(s)
 
 def _pcut(sentence, cut_all=False, HMM=True):
     parts = strdecode(sentence).splitlines(True)

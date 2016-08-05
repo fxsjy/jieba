@@ -521,6 +521,10 @@ def _lcut(s):
     return dt._lcut(s)
 
 
+def _lcut_no_hmm(s):
+    return dt._lcut_no_hmm(s)
+
+
 def _lcut_all(s):
     return dt._lcut_all(s)
 

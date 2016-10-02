@@ -317,16 +317,13 @@ class Tokenizer(object):
         """
         words = self.cut(sentence, HMM=HMM)
         for w in words:
-            if len(w) > 2:
-                for i in xrange(len(w) - 1):
-                    gram2 = w[i:i + 2]
-                    if self.FREQ.get(gram2):
-                        yield gram2
-            if len(w) > 3:
-                for i in xrange(len(w) - 2):
-                    gram3 = w[i:i + 3]
-                    if self.FREQ.get(gram3):
-                        yield gram3
+            for n in xrange(2, 4):
+                if len(w) <= n:
+                    continue
+                for i in xrange(len(w) - n + 1):
+                    ngram = w[i:i + n]
+                    if self.FREQ.get(ngram):
+                        yield ngram
             yield w
 
     def lcut(self, *args, **kwargs):
@@ -467,16 +464,13 @@ class Tokenizer(object):
         else:
             for w in self.cut(unicode_sentence, HMM=HMM):
                 width = len(w)
-                if len(w) > 2:
-                    for i in xrange(len(w) - 1):
-                        gram2 = w[i:i + 2]
-                        if self.FREQ.get(gram2):
-                            yield (gram2, start + i, start + i + 2)
-                if len(w) > 3:
-                    for i in xrange(len(w) - 2):
-                        gram3 = w[i:i + 3]
-                        if self.FREQ.get(gram3):
-                            yield (gram3, start + i, start + i + 3)
+                for n in xrange(2, 4):     # 2-gram and 3-gram
+                    if width <= n:
+                        continue
+                    for i in xrange(len(w) - n + 1):
+                        ngram = w[i:i + n]
+                        if self.FREQ.get(ngram):
+                            yield (ngram, start + i, start + i + n)
                 yield (w, start, start + width)
                 start += width
 

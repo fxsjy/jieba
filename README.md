@@ -528,7 +528,7 @@ Output:
 2. Add a custom dictionary
 ----------------------------
 
-###　Load dictionary
+### Load dictionary
 
 * Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but you can add your own new words can ensure a higher accuracy.
 * Usage： `jieba.load_userdict(file_name)` # file_name is a file-like object or the path of the custom dictionary

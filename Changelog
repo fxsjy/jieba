@@ -1,3 +1,8 @@
+2017-08-28: version 0.39
+1. del_word支持强行拆开词语;  by @gumblex,@fxsjy
+2. 修复百分数的切词; by @fxsjy
+3. 修复HMM=False在多进程模式下的bug; by @huntzhan
+
 2015-12-16: version 0.38
 1. 通过pkg_resources载入默认词典，支持在Spark等平台上运行, by @gumblex;
 2. 扩充识别的汉字unicode范围：[\u4E00-\u9FD5], by @gumblex;

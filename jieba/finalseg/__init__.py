@@ -19,7 +19,7 @@ PrevStatus = {
     'E': 'BM'
 }
 
-
+Force_Split_Words = set([])
 def load_model():
     start_p = pickle.load(get_module_res("finalseg", PROB_START_P))
     trans_p = pickle.load(get_module_res("finalseg", PROB_TRANS_P))
@@ -75,8 +75,12 @@ def __cut(sentence):
         yield sentence[nexti:]
 
 re_han = re.compile("([\u4E00-\u9FD5]+)")
-re_skip = re.compile("(\d+\.\d+|[a-zA-Z0-9]+)")
+re_skip = re.compile("([a-zA-Z0-9]+(?:\.\d+)?%?)")
 
+
+def add_force_split(word):
+    global Force_Split_Words
+    Force_Split_Words.add(word)
 
 def cut(sentence):
     sentence = strdecode(sentence)
@@ -84,7 +88,11 @@ def cut(sentence):
     for blk in blocks:
         if re_han.match(blk):
             for word in __cut(blk):
-                yield word
+                if word not in Force_Split_Words:
+                    yield word
+                else:
+                    for c in word:
+                        yield c
         else:
             tmp = re_skip.split(blk)
             for x in tmp:

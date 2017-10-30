@@ -4,13 +4,11 @@ import os
 import jieba
 import jieba.posseg
 from operator import itemgetter
-from ..compat import get_module_res
+from .._compat import get_module_res
 
-_get_module_path = lambda path: os.path.normpath(os.path.join(os.getcwd(),
-                                                 os.path.dirname(__file__), path))
 _get_abs_path = jieba._get_abs_path
 
-DEFAULT_IDF = _get_module_path("idf.txt")
+DEFAULT_IDF = "analyse/idf.txt"
 
 
 class KeywordExtractor(object):

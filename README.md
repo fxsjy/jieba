@@ -398,6 +398,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 + 作者: wangbin 地址: https://github.com/wangbin/jiebago
 + 作者: yanyiwu 地址: https://github.com/yanyiwu/gojieba
 
+结巴分词 Python 加速版本
+----------------
+作者：deepcs233
+地址：https://github.com/deepcs233
+
 系统集成
 ========
 1. Solr: https://github.com/sing1ee/jieba-solr

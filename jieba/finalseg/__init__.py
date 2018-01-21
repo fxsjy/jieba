@@ -20,18 +20,26 @@ PrevStatus = {
 }
 
 Force_Split_Words = set([])
+prob_delay = []
+
+
 def load_model():
     start_p = pickle.load(get_module_res("finalseg", PROB_START_P))
     trans_p = pickle.load(get_module_res("finalseg", PROB_TRANS_P))
     emit_p = pickle.load(get_module_res("finalseg", PROB_EMIT_P))
     return start_p, trans_p, emit_p
 
-if sys.platform.startswith("java"):
-    start_P, trans_P, emit_P = load_model()
-else:
-    from .prob_start import P as start_P
-    from .prob_trans import P as trans_P
-    from .prob_emit import P as emit_P
+
+def verify_load_prob():
+    if not prob_delay:
+        if sys.platform.startswith("java"):
+            prob_delay.extend(load_model())
+        else:
+            from .prob_start import P as START_P
+            from .prob_trans import P as TRANS_P
+            from .prob_emit import P as EMIT_P
+            prob_delay.extend([START_P, TRANS_P, EMIT_P])
+    return prob_delay
 
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
@@ -57,8 +65,8 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 
 
 def __cut(sentence):
-    global emit_P
-    prob, pos_list = viterbi(sentence, 'BMES', start_P, trans_P, emit_P)
+    start_p, trans_p, emit_p = verify_load_prob()
+    prob, pos_list = viterbi(sentence, 'BMES', start_p, trans_p, emit_p)
     begin, nexti = 0, 0
     # print pos_list, sentence
     for i, char in enumerate(sentence):

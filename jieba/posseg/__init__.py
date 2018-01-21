@@ -1,5 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-import os
 import re
 import sys
 import jieba
@@ -84,7 +83,7 @@ class POSTokenizer(object):
 
     def __init__(self, tokenizer=None):
         self.tokenizer = tokenizer or jieba.Tokenizer()
-        self.load_word_tag(self.tokenizer.get_dict_file())
+        # Use makesure_dict_loaded() instead of self.load_word_tag(self.tokenizer.get_dict_file())
 
     def __repr__(self):
         return '<POSTokenizer tokenizer=%r>' % self.tokenizer
@@ -98,6 +97,10 @@ class POSTokenizer(object):
     def initialize(self, dictionary=None):
         self.tokenizer.initialize(dictionary)
         self.load_word_tag(self.tokenizer.get_dict_file())
+
+    def makesure_dict_loaded(self):
+        if 'word_tag_tab' not in self:
+            load_word_tag(self.tokenizer.get_dict_file())
 
     def load_word_tag(self, f):
         self.word_tag_tab = {}
@@ -116,6 +119,7 @@ class POSTokenizer(object):
 
     def makesure_userdict_loaded(self):
         if self.tokenizer.user_word_tag_tab:
+            self.makesure_dict_loaded()
             self.word_tag_tab.update(self.tokenizer.user_word_tag_tab)
             self.tokenizer.user_word_tag_tab = {}
 
@@ -219,6 +223,7 @@ class POSTokenizer(object):
                     yield pair(elem, self.word_tag_tab.get(elem, 'x'))
 
     def __cut_internal(self, sentence, HMM=True):
+        self.makesure_dict_loaded()
         self.makesure_userdict_loaded()
         sentence = strdecode(sentence)
         blocks = re_han_internal.split(sentence)

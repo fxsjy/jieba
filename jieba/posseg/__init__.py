@@ -83,6 +83,7 @@ class POSTokenizer(object):
 
     def __init__(self, tokenizer=None):
         self.tokenizer = tokenizer or jieba.Tokenizer()
+        self.word_tag_tab = None
         # Use makesure_dict_loaded() instead of self.load_word_tag(self.tokenizer.get_dict_file())
 
     def __repr__(self):
@@ -99,8 +100,8 @@ class POSTokenizer(object):
         self.load_word_tag(self.tokenizer.get_dict_file())
 
     def makesure_dict_loaded(self):
-        if 'word_tag_tab' not in self:
-            load_word_tag(self.tokenizer.get_dict_file())
+        if self.word_tag_tab is None:
+            self.load_word_tag(self.tokenizer.get_dict_file())
 
     def load_word_tag(self, f):
         self.word_tag_tab = {}

@@ -18,8 +18,12 @@ accepted_chars = re.compile(r"[\u4E00-\u9FD5]+")
 
 class ChineseTokenizer(Tokenizer):
 
+    def __init__(self, mode, cut_all, **kargs):
+        self.mode = mode
+        self.cut_all = cut_all
+
     def __call__(self, text, **kargs):
-        words = jieba.tokenize(text, mode="search")
+        words = jieba.tokenize(text, mode=self.mode, cut_all=self.cut_all)
         token = Token()
         for (w, start_pos, stop_pos) in words:
             if not accepted_chars.match(w) and len(w) <= 1:
@@ -31,7 +35,7 @@ class ChineseTokenizer(Tokenizer):
             yield token
 
 
-def ChineseAnalyzer(stoplist=STOP_WORDS, minsize=1, stemfn=stem, cachesize=50000):
-    return (ChineseTokenizer() | LowercaseFilter() |
+def ChineseAnalyzer(stoplist=STOP_WORDS, minsize=1, stemfn=stem, cachesize=50000, mode="search", cut_all=False):
+    return (ChineseTokenizer(mode=mode, cut_all=cut_all) | LowercaseFilter() |
             StopFilter(stoplist=stoplist, minsize=minsize) |
             StemFilter(stemfn=stemfn, ignore=None, cachesize=cachesize))

@@ -18,14 +18,11 @@ jieba
 * 支持自定义词典
 * MIT 授权协议
 
-在线演示
+友情链接
 =========
-http://jiebademo.ap01.aws.af.cm/
-
-(Powered by Appfog)
-
-网站代码：https://github.com/fxsjy/jiebademo
-
+* https://github.com/baidu/lac   百度中文词法分析（分词+词性+专名）系统
+* https://github.com/baidu/AnyQ  百度FAQ自动问答系统
+* https://github.com/baidu/Senta 百度情感识别系统
 
 安装说明
 =======

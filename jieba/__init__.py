@@ -164,7 +164,7 @@ class Tokenizer(object):
             self.initialized = True
             default_logger.debug(
                 "Loading model cost %.3f seconds." % (time.time() - t1))
-            default_logger.debug("Prefix dict has been built succesfully.")
+            default_logger.debug("Prefix dict has been built successfully.")
 
     def check_initialized(self):
         if not self.initialized:
@@ -275,7 +275,7 @@ class Tokenizer(object):
     def cut(self, sentence, cut_all=False, HMM=True):
         '''
         The main function that segments an entire sentence that contains
-        Chinese characters into seperated words.
+        Chinese characters into separated words.
 
         Parameter:
             - sentence: The str(unicode) to be segmented.

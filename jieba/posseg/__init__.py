@@ -6,6 +6,7 @@ import jieba
 import pickle
 from .._compat import *
 from .viterbi import viterbi
+from .. import finalseg
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
@@ -136,8 +137,10 @@ class POSTokenizer(object):
         blocks = re_han_detail.split(sentence)
         for blk in blocks:
             if re_han_detail.match(blk):
-                for word in self.__cut(blk):
-                    yield word
+                recognized = finalseg.cut(blk)
+                for t in recognized:
+                    for word in self.__cut(t):
+                        yield word
             else:
                 tmp = re_skip_detail.split(blk)
                 for x in tmp:

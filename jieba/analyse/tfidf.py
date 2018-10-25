@@ -4,6 +4,7 @@ import os
 import jieba
 import jieba.posseg
 from operator import itemgetter
+import re
 
 _get_module_path = lambda path: os.path.normpath(os.path.join(os.getcwd(),
                                                  os.path.dirname(__file__), path))
@@ -42,12 +43,14 @@ class IDFLoader(object):
             self.set_new_path(idf_path)
 
     def set_new_path(self, new_idf_path):
+        re_idf = re.compile('^(.+?)( [0-9,.]+)?$', re.U)
         if self.path != new_idf_path:
             self.path = new_idf_path
             content = open(new_idf_path, 'rb').read().decode('utf-8')
             self.idf_freq = {}
             for line in content.splitlines():
-                word, freq = line.strip().split(' ')
+                word, freq = re_idf.match(line).groups()
+                # word, freq = line.strip().split(' ')
                 self.idf_freq[word] = float(freq)
             self.median_idf = sorted(
                 self.idf_freq.values())[len(self.idf_freq) // 2]

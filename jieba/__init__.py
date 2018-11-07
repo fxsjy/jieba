@@ -152,6 +152,7 @@ class Tokenizer(object):
                         with os.fdopen(fd, 'wb') as temp_cache_file:
                             marshal.dump(
                                 (self.FREQ, self.total), temp_cache_file)
+                        os.chmod(fpath, 0o666)                    
                         _replace_file(fpath, cache_file)
                     except Exception:
                         default_logger.exception("Dump cache file failed.")

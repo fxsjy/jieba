@@ -81,10 +81,6 @@ class Tokenizer(object):
                 freq = int(freq)
                 lfreq[word] = freq
                 ltotal += freq
-                for ch in xrange(len(word)):
-                    wfrag = word[:ch + 1]
-                    if wfrag not in lfreq:
-                        lfreq[wfrag] = 0
             except ValueError:
                 raise ValueError(
                     'invalid dictionary entry in %s at Line %s: %s' % (f_name, lineno, line))
@@ -186,8 +182,8 @@ class Tokenizer(object):
             tmplist = []
             i = k
             frag = sentence[k]
-            while i < N and frag in self.FREQ:
-                if self.FREQ[frag]:
+            while i < N:
+                if self.FREQ.get(frag, 0) > 0:
                     tmplist.append(i)
                 i += 1
                 frag = sentence[k:i + 1]
@@ -195,6 +191,7 @@ class Tokenizer(object):
                 tmplist.append(k)
             DAG[k] = tmplist
         return DAG
+
 
     def __cut_all(self, sentence):
         dag = self.get_DAG(sentence)

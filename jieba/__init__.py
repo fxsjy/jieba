@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import logging
+from logging import NullHandler
 import marshal
 import tempfile
 import threading
@@ -25,10 +26,8 @@ _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 DEFAULT_DICT = None
 DEFAULT_DICT_NAME = "dict.txt"
 
-log_console = logging.StreamHandler(sys.stderr)
 default_logger = logging.getLogger(__name__)
-default_logger.setLevel(logging.DEBUG)
-default_logger.addHandler(log_console)
+default_logger.addHandler(NullHandler())
 
 DICT_WRITING = {}
 
@@ -111,7 +110,10 @@ class Tokenizer(object):
             if self.initialized:
                 return
 
-            default_logger.debug("Building prefix dict from %s ..." % (abs_path or 'the default dictionary'))
+            default_logger.debug(
+                "Building prefix dict from %s ..."
+                % (abs_path or 'the default dictionary')
+            )
             t1 = time.time()
             if self.cache_file:
                 cache_file = self.cache_file

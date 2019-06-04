@@ -42,7 +42,7 @@ re_eng = re.compile('[a-zA-Z0-9]', re.U)
 # \r\n|\s : whitespace characters. Will not be handled.
 # re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
 # Adding "-" symbol in re_han_default
-re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%\-]+)", re.U)
+re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\.·_%\-]+)", re.U)
 
 re_skip_default = re.compile("(\r\n|\s)", re.U)
 re_han_cut_all = re.compile("([\u4E00-\u9FD5]+)", re.U)

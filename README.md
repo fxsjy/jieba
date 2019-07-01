@@ -359,6 +359,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：yanyiwu
 地址：https://github.com/yanyiwu/cppjieba
 
+结巴分词 Rust 版本
+----------------
+作者：messense, MnO2
+地址：https://github.com/messense/jieba-rs
+
 结巴分词 Node.js 版本
 ----------------
 作者：yanyiwu

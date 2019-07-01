@@ -449,7 +449,7 @@ class Tokenizer(object):
                 freq *= self.FREQ.get(seg, 1) / ftotal
             freq = min(int(freq * self.total), self.FREQ.get(word, 0))
         if tune:
-            add_word(word, freq)
+            self.add_word(word, freq)
         return freq
 
     def tokenize(self, unicode_sentence, mode="default", HMM=True):

@@ -40,7 +40,10 @@ re_eng = re.compile('[a-zA-Z0-9]', re.U)
 
 # \u4E00-\u9FD5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
 # \r\n|\s : whitespace characters. Will not be handled.
-re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
+# re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
+# Adding "-" symbol in re_han_default
+re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%\-]+)", re.U)
+
 re_skip_default = re.compile("(\r\n|\s)", re.U)
 re_han_cut_all = re.compile("([\u4E00-\u9FD5]+)", re.U)
 re_skip_cut_all = re.compile("[^a-zA-Z0-9+#\n]", re.U)
@@ -161,7 +164,7 @@ class Tokenizer(object):
             self.initialized = True
             default_logger.debug(
                 "Loading model cost %.3f seconds." % (time.time() - t1))
-            default_logger.debug("Prefix dict has been built succesfully.")
+            default_logger.debug("Prefix dict has been built successfully.")
 
     def check_initialized(self):
         if not self.initialized:
@@ -272,7 +275,7 @@ class Tokenizer(object):
     def cut(self, sentence, cut_all=False, HMM=True):
         '''
         The main function that segments an entire sentence that contains
-        Chinese characters into seperated words.
+        Chinese characters into separated words.
 
         Parameter:
             - sentence: The str(unicode) to be segmented.
@@ -446,7 +449,7 @@ class Tokenizer(object):
                 freq *= self.FREQ.get(seg, 1) / ftotal
             freq = min(int(freq * self.total), self.FREQ.get(word, 0))
         if tune:
-            add_word(word, freq)
+            self.add_word(word, freq)
         return freq
 
     def tokenize(self, unicode_sentence, mode="default", HMM=True):

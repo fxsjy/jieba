@@ -18,14 +18,11 @@ jieba
 * 支持自定义词典
 * MIT 授权协议
 
-在线演示
+友情链接
 =========
-http://jiebademo.ap01.aws.af.cm/
-
-(Powered by Appfog)
-
-网站代码：https://github.com/fxsjy/jiebademo
-
+* https://github.com/baidu/lac   百度中文词法分析（分词+词性+专名）系统
+* https://github.com/baidu/AnyQ  百度FAQ自动问答系统
+* https://github.com/baidu/Senta 百度情感识别系统
 
 安装说明
 =======
@@ -362,6 +359,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 作者：yanyiwu
 地址：https://github.com/yanyiwu/cppjieba
 
+结巴分词 Rust 版本
+----------------
+作者：messense, MnO2
+地址：https://github.com/messense/jieba-rs
+
 结巴分词 Node.js 版本
 ----------------
 作者：yanyiwu
@@ -397,6 +399,11 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 
 + 作者: wangbin 地址: https://github.com/wangbin/jiebago
 + 作者: yanyiwu 地址: https://github.com/yanyiwu/gojieba
+
+结巴分词Android版本
+------------------
++ 作者   Dongliang.W  地址：https://github.com/452896915/jieba-android
+
 
 系统集成
 ========

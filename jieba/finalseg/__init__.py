@@ -57,7 +57,7 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 
 
 def __cut(sentence):
-    global emit_P
+    global emit_P, start_P, trans_P
     prob, pos_list = viterbi(sentence, 'BMES', start_P, trans_P, emit_P)
     begin, nexti = 0, 0
     # print pos_list, sentence

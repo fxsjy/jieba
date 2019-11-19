@@ -22,9 +22,9 @@ import sys
 import paddle.fluid as fluid
 import paddle
 
-import utils
-import creator
-import reader_small
+import jieba.lac_small.utils as utils
+import jieba.lac_small.creator as creator
+import jieba.lac_small.reader_small as reader_small
 import numpy
 
 word_emb_dim=128

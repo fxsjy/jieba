@@ -22,7 +22,7 @@ import math
 import paddle
 import paddle.fluid as fluid
 from paddle.fluid.initializer import NormalInitializer
-import nets
+import jieba.lac_small.nets as nets
 
 
 def create_model(vocab_size, num_labels, mode='train'):

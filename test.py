@@ -1,15 +1,20 @@
 # -*- coding: UTF-8 -*-
 import jieba
+#测试用例..............
+
 def compare(str1):
     print('--------------------------------------------------------')
     print('-----cut_all-------')
     seg_list = jieba.cut(str1, cut_all=True, HMM=False,use_paddle=False)
     print(' '.join(list(seg_list)))
     print('-----use_paddle-------')
-    seg_list = jieba.cut(str1, cut_all=True, HMM=False,use_paddle=True)
+    seg_list = jieba.cut(str1, HMM=False,use_paddle=True)
     print(' '.join(list(seg_list)))
     print('-----not cut all-------')
     seg_list = jieba.cut(str1, cut_all=False, HMM=False,use_paddle=False)
+    print(' '.join(list(seg_list)))
+    print('-----use HMM-------')
+    seg_list = jieba.cut(str1, cut_all=False, HMM=True,use_paddle=False)
     print(' '.join(list(seg_list)))
 str1="我来到北京清华大学"
 str2="乒乓球拍卖完了"

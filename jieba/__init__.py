@@ -15,9 +15,8 @@ import threading
 from math import log
 from hashlib import md5
 from ._compat import *
-
 import lac_small.predict as predict
-
+import jieba.finalseg
 
 if os.name == 'nt':
     from shutil import move as _replace_file

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals
 __version__ = '0.39'
 __license__ = 'MIT'
@@ -13,12 +15,17 @@ import threading
 from math import log
 from hashlib import md5
 from ._compat import *
-from . import finalseg
+
+import lac_small.predict as predict
+
 
 if os.name == 'nt':
     from shutil import move as _replace_file
 else:
     _replace_file = os.rename
+
+import paddle.fluid as fluid
+
 
 _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 
@@ -92,6 +99,7 @@ class Tokenizer(object):
         return lfreq, ltotal
 
     def initialize(self, dictionary=None):
+        print("initialize.........")
         if dictionary:
             abs_path = _get_abs_path(dictionary)
             if self.dictionary == abs_path and self.initialized:
@@ -272,7 +280,7 @@ class Tokenizer(object):
                 for elem in buf:
                     yield elem
 
-    def cut(self, sentence, cut_all=False, HMM=True):
+    def cut(self, sentence, cut_all=False, HMM=True,use_paddle=True):
         '''
         The main function that segments an entire sentence that contains
         Chinese characters into separated words.
@@ -283,7 +291,14 @@ class Tokenizer(object):
             - HMM: Whether to use the Hidden Markov Model.
         '''
         sentence = strdecode(sentence)
-
+        
+        if use_paddle==True:
+            results = predict.get_jieba(sentence)
+            for sent in results:
+                if sent is None:
+                    continue
+                yield sent
+            return
         if cut_all:
             re_han = re_han_cut_all
             re_skip = re_skip_cut_all

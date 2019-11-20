@@ -15,9 +15,9 @@ import threading
 from math import log
 from hashlib import md5
 from ._compat import *
+
 import jieba.lac_small.predict as predict
 import jieba.finalseg
-
 if os.name == 'nt':
     from shutil import move as _replace_file
 else:
@@ -25,11 +25,11 @@ else:
 
 import paddle.fluid as fluid
 
-
 _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 
 DEFAULT_DICT = None
 DEFAULT_DICT_NAME = "dict.txt"
+
 
 log_console = logging.StreamHandler(sys.stderr)
 default_logger = logging.getLogger(__name__)

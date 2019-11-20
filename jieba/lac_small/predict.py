@@ -31,7 +31,9 @@ word_emb_dim=128
 grnn_hidden_dim=128
 bigru_num=2
 use_cuda=False
-init_checkpoint="./lac_small/model_baseline"
+basepath = os.path.abspath(__file__)
+folder = os.path.dirname(basepath)
+init_checkpoint = os.path.join(folder, "model_baseline")
 batch_size=1
 
 dataset = reader_small.Dataset()

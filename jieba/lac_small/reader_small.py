@@ -51,9 +51,11 @@ class Dataset(object):
     """data reader"""
     def __init__(self):
         # read dict
-        word_dict_path="./lac_small/conf/word.dic"
-        label_dict_path="./lac_small/conf/tag.dic"
-        word_rep_dict_path="./lac_small/conf/q2b.dic" 
+        basepath = os.path.abspath(__file__)
+        folder = os.path.dirname(basepath)
+        word_dict_path = os.path.join(folder, "word.dic")
+        label_dict_path = os.path.join(folder, "tag.dic")
+        word_rep_dict_path = os.path.join(folder, "q2b.dic")
         self.word2id_dict = load_kv_dict(
             word_dict_path, reverse=True, value_func=int)
         self.id2word_dict = load_kv_dict(word_dict_path)

@@ -210,7 +210,7 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 天安门 ns
 ```
 
-paddle模式词性标注对应表
+paddle模式词性标注对应表如下：
 
 词性和专名类别标签集合如下表，其中词性标签 24 个（小写字母），专名类别标签 4 个（大写字母）。
 

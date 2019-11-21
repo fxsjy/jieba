@@ -48,7 +48,23 @@ exe.run(fluid.default_startup_program())
 utils.init_checkpoint(exe, init_checkpoint, infer_program)
 results = []
 
-def get_jieba(str1):
+def get_sent(str1):
+    feed_data=dataset.get_vars(str1)
+    a = numpy.array(feed_data)
+    a=a.reshape(-1,1)
+    c = fluid.create_lod_tensor(a, [[a.shape[0]]], place)
+
+    words, crf_decode = exe.run(
+            infer_program,
+            fetch_list=[infer_ret['words'], infer_ret['crf_decode']],
+            feed={"words":c, },
+            return_numpy=False,
+            use_program_cache=True)
+    sents=[]
+    sents += utils.parse_sent(words, crf_decode, dataset)
+    return sents
+
+def get_result(str1):
     feed_data=dataset.get_vars(str1)
     a = numpy.array(feed_data)
     a=a.reshape(-1,1)

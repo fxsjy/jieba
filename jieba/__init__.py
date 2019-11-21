@@ -292,7 +292,7 @@ class Tokenizer(object):
         sentence = strdecode(sentence)
         
         if use_paddle==True:
-            results = predict.get_jieba(sentence)
+            results = predict.get_sent(sentence)
             for sent in results:
                 if sent is None:
                     continue

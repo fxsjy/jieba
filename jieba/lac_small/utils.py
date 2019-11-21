@@ -28,6 +28,35 @@ def str2bool(v):
     """
     return v.lower() in ("true", "t", "1")
 
+def parse_sent(words, crf_decode, dataset):
+    """ parse sent """
+    offset_list = (crf_decode.lod())[0]
+    words = np.array(words)
+    crf_decode = np.array(crf_decode)
+    batch_size = len(offset_list) - 1
+
+    batch_out = []
+    for sent_index in range(batch_size):
+        begin, end = offset_list[sent_index], offset_list[sent_index + 1]
+        sent = [dataset.id2word_dict[str(id[0])] for id in words[begin:end]]
+        tags = [dataset.id2label_dict[str(id[0])] for id in crf_decode[begin:end]] 
+        sent_out = []
+        parital_word = ""
+        for ind, tag in enumerate(tags):
+            # for the first word
+            if parital_word == "":
+                parital_word = sent[ind]
+                continue
+
+            # for the beginning of word
+            if tag.endswith("-B") or (tag == "O" and tags[ind - 1] != "O"):
+                sent_out.append(parital_word)
+                parital_word = sent[ind]
+                continue
+
+            parital_word += sent[ind]
+
+    return sent_out
 
 
 def parse_result(words, crf_decode, dataset):
@@ -37,7 +66,6 @@ def parse_result(words, crf_decode, dataset):
     crf_decode = np.array(crf_decode)
     batch_size = len(offset_list) - 1
 
-    batch_out = []
     for sent_index in range(batch_size):
         begin, end = offset_list[sent_index], offset_list[sent_index + 1]
         sent = [dataset.id2word_dict[str(id[0])] for id in words[begin:end]]
@@ -68,8 +96,7 @@ def parse_result(words, crf_decode, dataset):
         if len(sent_out) < len(tags_out):
             sent_out.append(parital_word)
 
-    return sent_out
-
+    return sent_out,tags_out
 
 def parse_padding_result(words, crf_decode, seq_lens, dataset):
     """ parse padding result """
@@ -135,5 +162,4 @@ def init_checkpoint(exe, init_checkpoint_path, main_program):
         init_checkpoint_path,
         main_program=main_program,
         predicate=existed_persitables)
-    print("Load model from {}".format(init_checkpoint_path))
 

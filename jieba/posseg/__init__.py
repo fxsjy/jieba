@@ -7,6 +7,10 @@ import pickle
 from .._compat import *
 from .viterbi import viterbi
 
+import jieba.lac_small.predict as predict
+
+import paddle.fluid as fluid
+
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
@@ -269,13 +273,20 @@ def _lcut_internal_no_hmm(s):
     return dt._lcut_internal_no_hmm(s)
 
 
-def cut(sentence, HMM=True):
+def cut(sentence, HMM=True, use_paddle=False):
     """
     Global `cut` function that supports parallel processing.
 
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
+    if use_paddle==True:
+        sents,tags = predict.get_result(sentence)
+        for i,sent in enumerate(sents):
+            if sent is None or tags[i] is None:
+                continue
+            yield [sent,tags[i]] 
+        return
     global dt
     if jieba.pool is None:
         for w in dt.cut(sentence, HMM=HMM):

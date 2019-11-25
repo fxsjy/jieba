@@ -283,7 +283,6 @@ def cut(sentence, HMM=True, use_paddle=False):
     instances are not supported.
     """
     if use_paddle==True:
-       # sentence = sentence.strip().encode("utf-8").decode("utf-8")
         sents,tags = predict.get_result(sentence)
         for i,sent in enumerate(sents):
             if sent is None or tags[i] is None:

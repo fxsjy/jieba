@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals
 import os
 import re
@@ -281,7 +283,7 @@ def cut(sentence, HMM=True, use_paddle=False):
     instances are not supported.
     """
     if use_paddle==True:
-        sentence = sentence.decode('utf8')
+       # sentence = sentence.strip().encode("utf-8").decode("utf-8")
         sents,tags = predict.get_result(sentence)
         for i,sent in enumerate(sents):
             if sent is None or tags[i] is None:

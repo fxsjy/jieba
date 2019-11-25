@@ -281,11 +281,12 @@ def cut(sentence, HMM=True, use_paddle=False):
     instances are not supported.
     """
     if use_paddle==True:
+        sentence = sentence.decode('utf8')
         sents,tags = predict.get_result(sentence)
         for i,sent in enumerate(sents):
             if sent is None or tags[i] is None:
                 continue
-            yield [sent,tags[i]] 
+            yield pair(sent,tags[i])
         return
     global dt
     if jieba.pool is None:

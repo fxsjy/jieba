@@ -200,7 +200,7 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 ```pycon
 >>> import jieba.posseg as pseg
 >>> words = pseg.cut("我爱北京天安门") #jieba默认模式
->>> words = pseg.cut("我爱北京天安门") #paddle模式
+>>> words = pseg.cut("我爱北京天安门",use_paddle=True) #paddle模式
 >>> for word, flag in words:
 ...    print('%s %s' % (word, flag))
 ...

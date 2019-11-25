@@ -98,6 +98,6 @@ class Dataset(object):
     def get_vars(self,str1):
         words = str1.strip()
         word_ids = self.word_to_ids(words)
-        return word_ids[0:64]
+        return word_ids
     
    

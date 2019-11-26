@@ -61,7 +61,8 @@ def get_sent(str1):
             return_numpy=False,
             use_program_cache=True)
     sents=[]
-    sents += utils.parse_sent(words, crf_decode, dataset)
+    sent,tag = utils.parse_result(words, crf_decode, dataset)
+    sents = sents + sent
     return sents
 
 def get_result(str1):

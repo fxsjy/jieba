@@ -8,6 +8,7 @@ import re
 import os
 import sys
 import time
+import imp
 import logging
 import marshal
 import tempfile
@@ -16,14 +17,18 @@ from math import log
 from hashlib import md5
 from ._compat import *
 
-import jieba.lac_small.predict as predict
 import jieba.finalseg
 if os.name == 'nt':
     from shutil import move as _replace_file
 else:
     _replace_file = os.rename
 
-import paddle.fluid as fluid
+
+try:
+    import paddle.fluid as fluid
+    import jieba.lac_small.predict as predict
+except ImportError:
+    pass
 
 _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 
@@ -98,7 +103,6 @@ class Tokenizer(object):
         return lfreq, ltotal
 
     def initialize(self, dictionary=None):
-        print("initialize.........")
         if dictionary:
             abs_path = _get_abs_path(dictionary)
             if self.dictionary == abs_path and self.initialized:
@@ -289,9 +293,16 @@ class Tokenizer(object):
             - cut_all: Model type. True for full pattern, False for accurate pattern.
             - HMM: Whether to use the Hidden Markov Model.
         '''
-        sentence = strdecode(sentence)
-        
-        if use_paddle==True:
+        is_paddle_installed = False
+        if use_paddle == True:
+            try:
+                imp.find_module('paddle')
+                is_paddle_installed = True
+            except ImportError:
+                is_paddle_installed = False
+                default_logger.debug("Can not import paddle, back to jieba basic mode......")
+        sentence = strdecode(sentence)    
+        if use_paddle==True and is_paddle_installed == True:
             results = predict.get_sent(sentence)
             for sent in results:
                 if sent is None:

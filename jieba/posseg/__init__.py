@@ -4,14 +4,23 @@ from __future__ import absolute_import, unicode_literals
 import os
 import re
 import sys
+import imp
 import jieba
+import logging
 import pickle
 from .._compat import *
 from .viterbi import viterbi
 
-import jieba.lac_small.predict as predict
+try:
+    import paddle.fluid as fluid
+    import jieba.lac_small.predict as predict
+except ImportError:
+    pass
 
-import paddle.fluid as fluid
+log_console = logging.StreamHandler(sys.stderr)
+default_logger = logging.getLogger(__name__)
+default_logger.setLevel(logging.DEBUG)
+default_logger.addHandler(log_console)
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
@@ -275,14 +284,22 @@ def _lcut_internal_no_hmm(s):
     return dt._lcut_internal_no_hmm(s)
 
 
-def cut(sentence, HMM=True, use_paddle=False):
+def cut(sentence, HMM=True, use_paddle=True):
     """
     Global `cut` function that supports parallel processing.
 
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
-    if use_paddle==True:
+    is_paddle_installed = False
+    if use_paddle == True:
+        try:
+            imp.find_module('paddle')
+            is_paddle_installed = True
+        except ImportError:
+            is_paddle_installed = False
+            default_logger.debug("Can not import paddle, back to jieba basic mode......")
+    if use_paddle==True and is_paddle_installed == True:
         sents,tags = predict.get_result(strdecode(sentence))
         for i,sent in enumerate(sents):
             if sent is None or tags[i] is None:

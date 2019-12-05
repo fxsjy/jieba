@@ -11,12 +11,6 @@ import pickle
 from .._compat import *
 from .viterbi import viterbi
 
-try:
-    import paddle.fluid as fluid
-    import jieba.lac_small.predict as predict
-except ImportError:
-    pass
-
 log_console = logging.StreamHandler(sys.stderr)
 default_logger = logging.getLogger(__name__)
 default_logger.setLevel(logging.DEBUG)
@@ -291,14 +285,8 @@ def cut(sentence, HMM=True, use_paddle=True):
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
-    is_paddle_installed = False
     if use_paddle == True:
-        try:
-            imp.find_module('paddle')
-            is_paddle_installed = True
-        except ImportError:
-            is_paddle_installed = False
-            default_logger.debug("Can not import paddle, back to jieba basic mode......")
+        is_paddle_installed = check_paddle_install(default_logger)
     if use_paddle==True and is_paddle_installed == True:
         sents,tags = predict.get_result(strdecode(sentence))
         for i,sent in enumerate(sents):

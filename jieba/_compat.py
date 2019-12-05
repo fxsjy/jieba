@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import imp
 
 try:
     import pkg_resources
@@ -9,6 +10,14 @@ try:
 except ImportError:
     get_module_res = lambda *res: open(os.path.normpath(os.path.join(
                             os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
+
+try:
+    import paddle
+    if paddle.__version__ == '1.6.1':
+        import paddle.fluid as fluid
+        import jieba.lac_small.predict as predict
+except ImportError:
+    pass
 
 PY2 = sys.version_info[0] == 2
 
@@ -44,3 +53,16 @@ def resolve_filename(f):
         return f.name
     except AttributeError:
         return repr(f)
+
+
+def check_paddle_install(default_logger):
+    is_paddle_installed =  False
+    try:
+        if imp.find_module('paddle') and paddle.__version__ == '1.6.1':
+             is_paddle_installed = True
+        if paddle.__version__ != '1.6.1':
+             default_logger.debug("Check the paddle version is not correct, subject you to use command to install paddle: pip install paddlepaddle==1.6.1. Back to jieba basic cut......")
+    except ImportError:
+        default_logger.debug("Can not import paddle, back to jieba basic cut......")
+        is_paddle_installed = False
+    return is_paddle_installed

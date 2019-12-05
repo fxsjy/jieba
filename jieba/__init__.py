@@ -24,12 +24,6 @@ else:
     _replace_file = os.rename
 
 
-try:
-    import paddle.fluid as fluid
-    import jieba.lac_small.predict as predict
-except ImportError:
-    pass
-
 _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 
 DEFAULT_DICT = None
@@ -283,7 +277,7 @@ class Tokenizer(object):
                 for elem in buf:
                     yield elem
 
-    def cut(self, sentence, cut_all=False, HMM=True,use_paddle=True):
+    def cut(self, sentence, cut_all = False, HMM = True,use_paddle = False):
         '''
         The main function that segments an entire sentence that contains
         Chinese characters into separated words.
@@ -295,14 +289,9 @@ class Tokenizer(object):
         '''
         is_paddle_installed = False
         if use_paddle == True:
-            try:
-                imp.find_module('paddle')
-                is_paddle_installed = True
-            except ImportError:
-                is_paddle_installed = False
-                default_logger.debug("Can not import paddle, back to jieba basic mode......")
+            is_paddle_installed = check_paddle_install(default_logger)
         sentence = strdecode(sentence)    
-        if use_paddle==True and is_paddle_installed == True:
+        if use_paddle == True and is_paddle_installed == True:
             results = predict.get_sent(sentence)
             for sent in results:
                 if sent is None:

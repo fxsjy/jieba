@@ -55,14 +55,12 @@ class Dataset(object):
         folder = os.path.dirname(basepath)
         word_dict_path = os.path.join(folder, "word.dic")
         label_dict_path = os.path.join(folder, "tag.dic")
-        word_rep_dict_path = os.path.join(folder, "q2b.dic")
         self.word2id_dict = load_kv_dict(
             word_dict_path, reverse=True, value_func=int)
         self.id2word_dict = load_kv_dict(word_dict_path)
         self.label2id_dict = load_kv_dict(
             label_dict_path, reverse=True, value_func=int)
         self.id2label_dict = load_kv_dict(label_dict_path)
-        self.word_replace_dict = load_kv_dict(word_rep_dict_path)
     
     @property
     def vocab_size(self):
@@ -78,7 +76,6 @@ class Dataset(object):
         """convert word to word index"""
         word_ids = []
         for word in words:
-            word = self.word_replace_dict.get(word, word)
             if word not in self.word2id_dict:
                 word = "OOV"
             word_id = self.word2id_dict[word]

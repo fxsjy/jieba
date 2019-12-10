@@ -6,15 +6,9 @@ import re
 import sys
 import imp
 import jieba
-import logging
 import pickle
 from .._compat import *
 from .viterbi import viterbi
-
-log_console = logging.StreamHandler(sys.stderr)
-default_logger = logging.getLogger(__name__)
-default_logger.setLevel(logging.DEBUG)
-default_logger.addHandler(log_console)
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
@@ -39,6 +33,7 @@ def load_model():
     emit_p = pickle.load(get_module_res("posseg", PROB_EMIT_P))
     state = pickle.load(get_module_res("posseg", CHAR_STATE_TAB_P))
     return state, start_p, trans_p, emit_p
+
 
 
 if sys.platform.startswith("java"):
@@ -285,8 +280,9 @@ def cut(sentence, HMM=True, use_paddle=True):
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
+    is_paddle_installed = False
     if use_paddle == True:
-        is_paddle_installed = check_paddle_install(default_logger)
+        is_paddle_installed = check_paddle_install()
     if use_paddle==True and is_paddle_installed == True:
         sents,tags = predict.get_result(strdecode(sentence))
         for i,sent in enumerate(sents):

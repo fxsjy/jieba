@@ -2,6 +2,15 @@
 import os
 import sys
 import imp
+import logging
+
+log_console = logging.StreamHandler(sys.stderr)
+default_logger = logging.getLogger(__name__)
+default_logger.setLevel(logging.DEBUG)
+
+def setLogLevel(log_level):
+    global logger
+    default_logger.setLevel(log_level)
 
 try:
     import pkg_resources
@@ -55,13 +64,15 @@ def resolve_filename(f):
         return repr(f)
 
 
-def check_paddle_install(default_logger):
+def check_paddle_install():
     is_paddle_installed =  False
     try:
         if imp.find_module('paddle') and paddle.__version__ == '1.6.1':
-             is_paddle_installed = True
-        if paddle.__version__ != '1.6.1':
-             default_logger.debug("Check the paddle version is not correct, subject you to use command to install paddle: pip install paddlepaddle==1.6.1. Back to jieba basic cut......")
+            is_paddle_installed = True
+        elif paddle.__version__ != '1.6.1':
+            is_paddle_installed = False
+            default_logger.debug("Check the paddle version is not correct, subject\
+            you to use command to install paddle: pip install paddlepaddle==1.6.1-tiny. Back to jieba basic cut......")
     except ImportError:
         default_logger.debug("Can not import paddle, back to jieba basic cut......")
         is_paddle_installed = False

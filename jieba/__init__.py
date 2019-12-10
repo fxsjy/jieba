@@ -29,7 +29,6 @@ _get_abs_path = lambda path: os.path.normpath(os.path.join(os.getcwd(), path))
 DEFAULT_DICT = None
 DEFAULT_DICT_NAME = "dict.txt"
 
-
 log_console = logging.StreamHandler(sys.stderr)
 default_logger = logging.getLogger(__name__)
 default_logger.setLevel(logging.DEBUG)
@@ -289,7 +288,7 @@ class Tokenizer(object):
         '''
         is_paddle_installed = False
         if use_paddle == True:
-            is_paddle_installed = check_paddle_install(default_logger)
+            is_paddle_installed = check_paddle_install()
         sentence = strdecode(sentence)    
         if use_paddle == True and is_paddle_installed == True:
             results = predict.get_sent(sentence)

@@ -73,7 +73,5 @@ setup(name='jieba',
       packages=['jieba'],
       package_dir={'jieba':'jieba'},
       package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*', 'lac_small/*','lac_small/model_baseline/*']},
-      install_requires = [
-        'paddlepaddle>=1.6.1'
-      ]
+      install_requires=['paddlepaddle-tiny==1.6.1']
 )

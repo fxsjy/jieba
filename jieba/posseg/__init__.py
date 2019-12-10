@@ -273,7 +273,7 @@ def _lcut_internal_no_hmm(s):
     return dt._lcut_internal_no_hmm(s)
 
 
-def cut(sentence, HMM=True, use_paddle=True):
+def cut(sentence, HMM=True, use_paddle=False):
     """
     Global `cut` function that supports parallel processing.
 

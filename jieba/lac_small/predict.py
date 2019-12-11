@@ -50,7 +50,7 @@ results = []
 
 def get_sent(str1):
     feed_data=dataset.get_vars(str1)
-    a = numpy.array(feed_data)
+    a = numpy.array(feed_data).astype(numpy.int64)
     a=a.reshape(-1,1)
     c = fluid.create_lod_tensor(a, [[a.shape[0]]], place)
 
@@ -67,7 +67,7 @@ def get_sent(str1):
 
 def get_result(str1):
     feed_data=dataset.get_vars(str1)
-    a = numpy.array(feed_data)
+    a = numpy.array(feed_data).astype(numpy.int64)
     a=a.reshape(-1,1)
     c = fluid.create_lod_tensor(a, [[a.shape[0]]], place)
 

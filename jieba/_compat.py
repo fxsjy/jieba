@@ -72,7 +72,8 @@ def check_paddle_install():
         elif paddle.__version__ != '1.6.1':
             is_paddle_installed = False
             default_logger.debug("Check the paddle version is not correct, subject\
-            you to use command to install paddle: pip install paddlepaddle==1.6.1-tiny. Back to jieba basic cut......")
+            you to use command to install paddle: pip uninstall paddlepaddle(-gpu), \
+            pip install paddlepaddle==1.6.1-tiny. Now, back to jieba basic cut......")
     except ImportError:
         default_logger.debug("Can not import paddle, back to jieba basic cut......")
         is_paddle_installed = False

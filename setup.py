@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
+import setuptools
 LONGDOC = """
 jieba
 =====
@@ -71,5 +72,6 @@ setup(name='jieba',
       keywords='NLP,tokenizing,Chinese word segementation',
       packages=['jieba'],
       package_dir={'jieba':'jieba'},
-      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*']}
+      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*', 'lac_small/*','lac_small/model_baseline/*']},
+      install_requires=['paddlepaddle-tiny==1.6.1']
 )

@@ -1,7 +1,10 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals
 import os
 import re
 import sys
+import imp
 import jieba
 import pickle
 from .._compat import *
@@ -30,6 +33,7 @@ def load_model():
     emit_p = pickle.load(get_module_res("posseg", PROB_EMIT_P))
     state = pickle.load(get_module_res("posseg", CHAR_STATE_TAB_P))
     return state, start_p, trans_p, emit_p
+
 
 
 if sys.platform.startswith("java"):
@@ -269,13 +273,23 @@ def _lcut_internal_no_hmm(s):
     return dt._lcut_internal_no_hmm(s)
 
 
-def cut(sentence, HMM=True):
+def cut(sentence, HMM=True, use_paddle=False):
     """
     Global `cut` function that supports parallel processing.
 
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
+    is_paddle_installed = False
+    if use_paddle == True:
+        is_paddle_installed = check_paddle_install()
+    if use_paddle==True and is_paddle_installed == True:
+        sents,tags = predict.get_result(strdecode(sentence))
+        for i,sent in enumerate(sents):
+            if sent is None or tags[i] is None:
+                continue
+            yield pair(sent,tags[i])
+        return
     global dt
     if jieba.pool is None:
         for w in dt.cut(sentence, HMM=HMM):

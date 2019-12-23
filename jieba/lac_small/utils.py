@@ -39,7 +39,12 @@ def parse_result(words, crf_decode, dataset):
 
     for sent_index in range(batch_size):
         begin, end = offset_list[sent_index], offset_list[sent_index + 1]
-        sent = [dataset.id2word_dict[str(id[0])] for id in words[begin:end]]
+        sent=[]
+        for id in words[begin:end]:
+            if dataset.id2word_dict[str(id[0])]=='OOV':
+                sent.append(' ')
+            else:
+                sent.append(dataset.id2word_dict[str(id[0])])
         tags = [
             dataset.id2label_dict[str(id[0])] for id in crf_decode[begin:end]
         ]
@@ -66,7 +71,6 @@ def parse_result(words, crf_decode, dataset):
         # append the last word, except for len(tags)=0
         if len(sent_out) < len(tags_out):
             sent_out.append(parital_word)
-
     return sent_out,tags_out
 
 def parse_padding_result(words, crf_decode, seq_lens, dataset):
@@ -77,10 +81,12 @@ def parse_padding_result(words, crf_decode, seq_lens, dataset):
     batch_out = []
     for sent_index in range(batch_size):
 
-        sent = [
-            dataset.id2word_dict[str(id)]
-            for id in words[sent_index][1:seq_lens[sent_index] - 1]
-        ]
+        sent=[]
+        for id in words[begin:end]:
+            if dataset.id2word_dict[str(id[0])]=='OOV':
+                sent.append(' ')
+            else:
+                sent.append(dataset.id2word_dict[str(id[0])])
         tags = [
             dataset.id2label_dict[str(id)]
             for id in crf_decode[sent_index][1:seq_lens[sent_index] - 1]

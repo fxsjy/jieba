@@ -9,11 +9,11 @@ jieba
 
 特点
 ========
-* 支持三种分词模式：
+* 支持四种分词模式：
     * 精确模式，试图将句子最精确地切开，适合文本分析；
     * 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
     * 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
-
+    * paddle模式，利用paddlepaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
 * 支持繁体分词
 * 支持自定义词典
 * MIT 授权协议
@@ -33,6 +33,7 @@ jieba
 * 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 `python setup.py install`
 * 手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
 * 通过 `import jieba` 来引用
+* 如果需要使用paddle模式下的分词和词性标注功能，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
 
 算法
 ========
@@ -44,7 +45,7 @@ jieba
 =======
 1. 分词
 --------
-* `jieba.cut` 方法接受三个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型
+* `jieba.cut` 方法接受四个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型；use_paddle 参数用来控制是否使用paddle模式下的分词模式（如需使用，安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1` ）；
 * `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
 * 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
 * `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，或者用
@@ -56,6 +57,9 @@ jieba
 ```python
 # encoding=utf-8
 import jieba
+
+seg_list = jieba.cut("我来到北京清华大学", use_paddle=True)
+print("Paddle Mode: " + "/ ".join(seg_list))  # paddle模式
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
 print("Full Mode: " + "/ ".join(seg_list))  # 全模式
@@ -192,11 +196,13 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 -----------
 * `jieba.posseg.POSTokenizer(tokenizer=None)` 新建自定义分词器，`tokenizer` 参数可指定内部使用的 `jieba.Tokenizer` 分词器。`jieba.posseg.dt` 为默认词性标注分词器。
 * 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法。
+* 除了jieba默认分词模式，提供paddle模式下的词性标注功能。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
 * 用法示例
 
 ```pycon
 >>> import jieba.posseg as pseg
->>> words = pseg.cut("我爱北京天安门")
+>>> words = pseg.cut("我爱北京天安门") #jieba默认模式
+>>> words = pseg.cut("我爱北京天安门",use_paddle=True) #paddle模式
 >>> for word, flag in words:
 ...    print('%s %s' % (word, flag))
 ...
@@ -205,6 +211,21 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 北京 ns
 天安门 ns
 ```
+
+paddle模式词性标注对应表如下：
+
+paddle模式词性和专名类别标签集合如下表，其中词性标签 24 个（小写字母），专名类别标签 4 个（大写字母）。
+
+| 标签 | 含义     | 标签 | 含义     | 标签 | 含义     | 标签 | 含义     |
+| ---- | -------- | ---- | -------- | ---- | -------- | ---- | -------- |
+| n    | 普通名词 | f    | 方位名词 | s    | 处所名词 | t    | 时间     |
+| nr   | 人名     | ns   | 地名     | nt   | 机构名   | nw   | 作品名   |
+| nz   | 其他专名 | v    | 普通动词 | vd   | 动副词   | vn   | 名动词   |
+| a    | 形容词   | ad   | 副形词   | an   | 名形词   | d    | 副词     |
+| m    | 数量词   | q    | 量词     | r    | 代词     | p    | 介词     |
+| c    | 连词     | u    | 助词     | xc   | 其他虚词 | w    | 标点符号 |
+| PER  | 人名     | LOC  | 地名     | ORG  | 机构名   | TIME | 时间     |
+
 
 5. 并行分词
 -----------

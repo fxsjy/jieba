@@ -289,6 +289,7 @@ class Tokenizer(object):
             is_paddle_installed = check_paddle_install()
         sentence = strdecode(sentence)
         if use_paddle == True and is_paddle_installed == True and import_paddle_check == True:
+            import jieba.lac_small.predict as predict
             results = predict.get_sent(sentence)
             for sent in results:
                 if sent is None:

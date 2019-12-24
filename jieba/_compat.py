@@ -20,14 +20,6 @@ except ImportError:
     get_module_res = lambda *res: open(os.path.normpath(os.path.join(
                             os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
 
-try:
-    import paddle
-    if paddle.__version__ == '1.6.1':
-        import paddle.fluid as fluid
-        import jieba.lac_small.predict as predict
-except ImportError:
-    pass
-
 
 def import_paddle():
     import_paddle_check = False
@@ -82,6 +74,7 @@ def resolve_filename(f):
 def check_paddle_install():
     is_paddle_installed =  False
     try:
+        import paddle
         if imp.find_module('paddle') and paddle.__version__ == '1.6.1':
             is_paddle_installed = True
         elif paddle.__version__ != '1.6.1':

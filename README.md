@@ -13,16 +13,10 @@ jieba
     * 精确模式，试图将句子最精确地切开，适合文本分析；
     * 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
     * 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
-    * paddle模式，利用paddlepaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
+    * paddle模式，利用paddlepaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。 （www.paddlepaddle.org）
 * 支持繁体分词
 * 支持自定义词典
 * MIT 授权协议
-
-友情链接
-=========
-* https://github.com/baidu/lac   百度中文词法分析（分词+词性+专名）系统
-* https://github.com/baidu/AnyQ  百度FAQ自动问答系统
-* https://github.com/baidu/Senta 百度情感识别系统
 
 安装说明
 =======
@@ -425,6 +419,12 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 ------------------
 + 作者   Dongliang.W  地址：https://github.com/452896915/jieba-android
 
+
+友情链接
+=========
+* https://github.com/baidu/lac   百度中文词法分析（分词+词性+专名）系统
+* https://github.com/baidu/AnyQ  百度FAQ自动问答系统
+* https://github.com/baidu/Senta 百度情感识别系统
 
 系统集成
 ========

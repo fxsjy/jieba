@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals
 import os
 import re
@@ -32,7 +30,6 @@ def load_model():
     emit_p = pickle.load(get_module_res("posseg", PROB_EMIT_P))
     state = pickle.load(get_module_res("posseg", CHAR_STATE_TAB_P))
     return state, start_p, trans_p, emit_p
-
 
 
 if sys.platform.startswith("java"):

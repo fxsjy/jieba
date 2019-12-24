@@ -25,7 +25,7 @@ def import_paddle():
     import_paddle_check = False
     try:
         import paddle
-        if paddle.__version__ == '1.6.1':
+        if paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1':
             import paddle.fluid as fluid
             import jieba.lac_small.predict as predict
         import_paddle_check = True
@@ -75,9 +75,9 @@ def check_paddle_install():
     is_paddle_installed =  False
     try:
         import paddle
-        if imp.find_module('paddle') and paddle.__version__ == '1.6.1':
+        if imp.find_module('paddle') and (paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1'):
             is_paddle_installed = True
-        elif paddle.__version__ != '1.6.1':
+        elif paddle.__version__ <= '1.6.1':
             is_paddle_installed = False
             default_logger.debug("Check the paddle version is not correct, please\
             use command to install paddle: pip uninstall paddlepaddle(-gpu), \

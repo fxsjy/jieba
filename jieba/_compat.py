@@ -77,7 +77,7 @@ def check_paddle_install():
         import paddle
         if imp.find_module('paddle') and (paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1'):
             is_paddle_installed = True
-        elif paddle.__version__ <= '1.6.1':
+        elif paddle.__version__ < '1.6.1':
             is_paddle_installed = False
             default_logger.debug("Check the paddle version is not correct, please\
             use command to install paddle: pip uninstall paddlepaddle(-gpu), \

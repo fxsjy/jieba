@@ -33,7 +33,7 @@ jieba
 * 半自动安装：先下载 http://pypi.python.org/pypi/jieba/ ，解压后运行 `python setup.py install`
 * 手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
 * 通过 `import jieba` 来引用
-* 如果需要使用paddle模式下的分词和词性标注功能，如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
+* 如果需要使用paddle模式下的分词和词性标注功能，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
 
 算法
 ========

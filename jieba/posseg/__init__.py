@@ -281,6 +281,10 @@ def cut(sentence, HMM=True, use_paddle=False):
         import_paddle_check = import_paddle()
         is_paddle_installed = check_paddle_install()
     if use_paddle==True and is_paddle_installed == True and import_paddle_check == True:
+        if sentence is None or sentence == "" or sentence == u"":
+            yield pair(None, None)
+            return
+        import jieba.lac_small.predict as predict
         sents,tags = predict.get_result(strdecode(sentence))
         for i,sent in enumerate(sents):
             if sent is None or tags[i] is None:

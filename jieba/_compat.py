@@ -25,12 +25,18 @@ def import_paddle():
     import_paddle_check = False
     try:
         import paddle
+    except ImportError:
+        default_logger.debug("Import paddle error, please use command to install: pip install paddlepaddle-tiny==1.6.1. "
+                             "Now, back to jieba basic cut......")
+        return False
+    try:
         if paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1':
             import paddle.fluid as fluid
             import jieba.lac_small.predict as predict
-        import_paddle_check = True
+            import_paddle_check = True
     except ImportError:   
-        default_logger.debug("Import paddle error, please use command to install: pip install paddlepaddle-tiny==1.6.1. Now, back to jieba basic cut......")
+        default_logger.debug("Import error, cannot find paddle.fluid and jieba.lac_small.predict module. "
+                             "Now, back to jieba basic cut......")
         return False
     return import_paddle_check
 
@@ -79,10 +85,10 @@ def check_paddle_install():
             is_paddle_installed = True
         elif paddle.__version__ < '1.6.1':
             is_paddle_installed = False
-            default_logger.debug("Check the paddle version is not correct, please\
-            use command to install paddle: pip uninstall paddlepaddle(-gpu), \
-            pip install paddlepaddle-tiny==1.6.1. Now, back to jieba basic cut......")
+            default_logger.debug("Check the paddle version is not correct, the current version is "+ paddle.__version__+","
+            "please use command to install paddle: pip uninstall paddlepaddle(-gpu), "
+            "pip install paddlepaddle-tiny==1.6.1. Now, back to jieba basic cut......")
     except ImportError:
-        default_logger.debug("import paddle error, back to jieba basic cut......")
+        default_logger.debug("Import paddle error, back to jieba basic cut......")
         is_paddle_installed = False
     return is_paddle_installed

@@ -53,7 +53,7 @@ jieba
 import jieba
 
 seg_list = jieba.cut("我来到北京清华大学", use_paddle=True)
-print("Paddle Mode: " + "/ ".join(seg_list))  # paddle模式
+print("Paddle Mode: " + "/ ".join(seg_list))  # paddle模式, 0.40版之后开始支持，早期版本不支持
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
 print("Full Mode: " + "/ ".join(seg_list))  # 全模式

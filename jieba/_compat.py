@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import imp
+import importlib
 import logging
 
 log_console = logging.StreamHandler(sys.stderr)
@@ -81,7 +81,7 @@ def check_paddle_install():
     is_paddle_installed =  False
     try:
         import paddle
-        if imp.find_module('paddle') and (paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1'):
+        if importlib.find_module('paddle') and (paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1'):
             is_paddle_installed = True
         elif paddle.__version__ < '1.6.1':
             is_paddle_installed = False

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import importlib
 import logging
 
 log_console = logging.StreamHandler(sys.stderr)
@@ -30,7 +29,7 @@ def import_paddle():
                              "Now, back to jieba basic cut......")
         return False
     try:
-        if paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1':
+        if paddle.__version__ >= '1.6.1':
             import paddle.fluid as fluid
             import jieba.lac_small.predict as predict
             import_paddle_check = True
@@ -81,9 +80,9 @@ def check_paddle_install():
     is_paddle_installed =  False
     try:
         import paddle
-        if importlib.find_module('paddle') and (paddle.__version__ >= '1.6.1' or paddle.__version__ >= u'1.6.1'):
+        if paddle.__version__ >= '1.6.1':
             is_paddle_installed = True
-        elif paddle.__version__ < '1.6.1':
+        else:
             is_paddle_installed = False
             default_logger.debug("Check the paddle version is not correct, the current version is "+ paddle.__version__+","
             "please use command to install paddle: pip uninstall paddlepaddle(-gpu), "

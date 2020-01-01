@@ -16,8 +16,13 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
     mem_path = [{}]
     all_states = trans_p.keys()
     for y in states.get(obs[0], all_states):  # init
+        
+        if y[0] != 'B' and len(obs) > 1: continue
+        if y[0] != 'S' and len(obs) == 1: continue
+        
         V[0][y] = start_p[y] + emit_p[y].get(obs[0], MIN_FLOAT)
         mem_path[0][y] = ''
+        
     for t in xrange(1, len(obs)):
         V.append({})
         mem_path.append({})
@@ -27,9 +32,12 @@ def viterbi(obs, states, start_p, trans_p, emit_p):
 
         prev_states_expect_next = set(
             (y for x in prev_states for y in trans_p[x].keys()))
-        obs_states = set(
-            states.get(obs[t], all_states)) & prev_states_expect_next
-
+        
+        if t < len(obs) - 1: obs_states = [y for y in states.get(obs[t], all_states) if y[0] == 'M']
+        else: obs_states = [y for y in states.get(obs[t], all_states) if y[0] == 'E']
+        
+        obs_states = set(obs_states) & prev_states_expect_next
+        
         if not obs_states:
             obs_states = prev_states_expect_next if prev_states_expect_next else all_states
 

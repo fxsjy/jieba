@@ -64,7 +64,7 @@ class Dataset(object):
     
     @property
     def vocab_size(self):
-        """vocabuary size"""
+        """vocabulary size"""
         return max(self.word2id_dict.values()) + 1
     
     @property

@@ -400,22 +400,23 @@ class Tokenizer(object):
             f = open(f, 'rb')
         else:
             f_name = resolve_filename(f)
-        for lineno, ln in enumerate(f, 1):
-            line = ln.strip()
-            if not isinstance(line, text_type):
-                try:
-                    line = line.decode('utf-8').lstrip('\ufeff')
-                except UnicodeDecodeError:
-                    raise ValueError('dictionary file %s must be utf-8' % f_name)
-            if not line:
-                continue
-            # match won't be None because there's at least one character
-            word, freq, tag = re_userdict.match(line).groups()
-            if freq is not None:
-                freq = freq.strip()
-            if tag is not None:
-                tag = tag.strip()
-            self.add_word(word, freq, tag)
+        with f:
+            for lineno, ln in enumerate(f, 1):
+                line = ln.strip()
+                if not isinstance(line, text_type):
+                    try:
+                        line = line.decode('utf-8').lstrip('\ufeff')
+                    except UnicodeDecodeError:
+                        raise ValueError('dictionary file %s must be utf-8' % f_name)
+                if not line:
+                    continue
+                # match won't be None because there's at least one character
+                word, freq, tag = re_userdict.match(line).groups()
+                if freq is not None:
+                    freq = freq.strip()
+                if tag is not None:
+                    tag = tag.strip()
+                self.add_word(word, freq, tag)
 
     def add_word(self, word, freq=None, tag=None):
         """

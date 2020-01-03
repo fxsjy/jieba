@@ -1,5 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-import os
 import re
 import sys
 import jieba
@@ -11,6 +10,7 @@ PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
 PROB_EMIT_P = "prob_emit.p"
 CHAR_STATE_TAB_P = "char_state_tab.p"
+prob_delay = []
 
 re_han_detail = re.compile("([\u4E00-\u9FD5]+)")
 re_skip_detail = re.compile("([\.0-9]+|[a-zA-Z0-9]+)")
@@ -32,13 +32,17 @@ def load_model():
     return state, start_p, trans_p, emit_p
 
 
-if sys.platform.startswith("java"):
-    char_state_tab_P, start_P, trans_P, emit_P = load_model()
-else:
-    from .char_state_tab import P as char_state_tab_P
-    from .prob_start import P as start_P
-    from .prob_trans import P as trans_P
-    from .prob_emit import P as emit_P
+def verify_load_prob():
+    if not prob_delay:
+        if sys.platform.startswith("java"):
+            prob_delay.extend(load_model())
+        else:
+            from .char_state_tab import P as STATE_P
+            from .prob_start import P as START_P
+            from .prob_trans import P as TRANS_P
+            from .prob_emit import P as EMIT_P
+            prob_delay.extend([STATE_P, START_P, TRANS_P, EMIT_P])
+    return prob_delay
 
 
 class pair(object):
@@ -79,7 +83,8 @@ class POSTokenizer(object):
 
     def __init__(self, tokenizer=None):
         self.tokenizer = tokenizer or jieba.Tokenizer()
-        self.load_word_tag(self.tokenizer.get_dict_file())
+        self.word_tag_tab = None
+        # Use makesure_dict_loaded() instead of self.load_word_tag(self.tokenizer.get_dict_file())
 
     def __repr__(self):
         return '<POSTokenizer tokenizer=%r>' % self.tokenizer
@@ -93,6 +98,10 @@ class POSTokenizer(object):
     def initialize(self, dictionary=None):
         self.tokenizer.initialize(dictionary)
         self.load_word_tag(self.tokenizer.get_dict_file())
+
+    def makesure_dict_loaded(self):
+        if self.word_tag_tab is None:
+            self.load_word_tag(self.tokenizer.get_dict_file())
 
     def load_word_tag(self, f):
         self.word_tag_tab = {}
@@ -111,12 +120,14 @@ class POSTokenizer(object):
 
     def makesure_userdict_loaded(self):
         if self.tokenizer.user_word_tag_tab:
+            self.makesure_dict_loaded()
             self.word_tag_tab.update(self.tokenizer.user_word_tag_tab)
             self.tokenizer.user_word_tag_tab = {}
 
     def __cut(self, sentence):
+        char_state_tab_p, start_p, trans_p, emit_p = verify_load_prob()
         prob, pos_list = viterbi(
-            sentence, char_state_tab_P, start_P, trans_P, emit_P)
+            sentence, char_state_tab_p, start_p, trans_p, emit_p)
         begin, nexti = 0, 0
 
         for i, char in enumerate(sentence):
@@ -213,6 +224,7 @@ class POSTokenizer(object):
                     yield pair(elem, self.word_tag_tab.get(elem, 'x'))
 
     def __cut_internal(self, sentence, HMM=True):
+        self.makesure_dict_loaded()
         self.makesure_userdict_loaded()
         sentence = strdecode(sentence)
         blocks = re_han_internal.split(sentence)

@@ -96,3 +96,5 @@ if __name__ == "__main__":
     cuttest('AT&T是一件不错的公司，给你发offer了吗？')
     cuttest('C++和c#是什么关系？11+122=133，是吗？PI=3.14159')
     cuttest('你认识那个和主席握手的的哥吗？他开一辆黑色的士。')
+    jieba.add_word('超敏C反应蛋白')
+    cuttest('超敏C反应蛋白是什么, java好学吗?,小潘老板都学Python')

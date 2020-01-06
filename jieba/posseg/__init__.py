@@ -278,9 +278,8 @@ def cut(sentence, HMM=True, use_paddle=False):
     """
     is_paddle_installed = False
     if use_paddle == True:
-        import_paddle_check = import_paddle()
         is_paddle_installed = check_paddle_install()
-    if use_paddle==True and is_paddle_installed == True and import_paddle_check == True:
+    if use_paddle==True and is_paddle_installed == True:
         if sentence is None or sentence == "" or sentence == u"":
             yield pair(None, None)
             return

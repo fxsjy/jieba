@@ -51,9 +51,9 @@ jieba
 ```python
 # encoding=utf-8
 import jieba
-
-seg_list = jieba.cut("我来到北京清华大学", use_paddle=True)
-print("Paddle Mode: " + "/ ".join(seg_list))  # paddle模式, 0.40版之后开始支持，早期版本不支持
+jieba.enable_paddle()# 启动paddle模式, 一次启动后后续可以重复使用。 0.40版之后开始支持，早期版本不支持
+seg_list = jieba.cut("我来到北京清华大学", use_paddle=True)# 使用paddle模式
+print("Paddle Mode: " + "/ ".join(seg_list))  
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
 print("Full Mode: " + "/ ".join(seg_list))  # 全模式
@@ -196,7 +196,11 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 ```pycon
 >>> import jieba.posseg as pseg
 >>> words = pseg.cut("我爱北京天安门") #jieba默认模式
->>> words = pseg.cut("我爱北京天安门",use_paddle=True) #paddle模式
+
+>>> import jieba
+>>> jieba.enable_paddle()# 启动paddle模式, 一次启动后后续可以重复使用。 0.40版之后开始支持，早期版本不支持
+>>> words = pseg.cut("我爱北京天安门",use_paddle=True) #使用paddle模式
+
 >>> for word, flag in words:
 ...    print('%s %s' % (word, flag))
 ...

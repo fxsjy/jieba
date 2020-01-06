@@ -13,7 +13,7 @@ jieba
     * 精确模式，试图将句子最精确地切开，适合文本分析；
     * 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
     * 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
-    * paddle模式，利用paddlepaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。目前paddle模式支持jieba v0.40及以上版本。jieba v0.40以下版本，请升级jieba，`pip install jieba --upgrade` 。（www.paddlepaddle.org） 
+    * paddle模式，利用paddlepaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。paddle模式使用需安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。目前paddle模式支持jieba v0.40及以上版本。jieba v0.40以下版本，请升级jieba，`pip install jieba --upgrade` 。（www.paddlepaddle.org） 
 * 支持繁体分词
 * 支持自定义词典
 * MIT 授权协议
@@ -39,7 +39,7 @@ jieba
 =======
 1. 分词
 --------
-* `jieba.cut` 方法接受四个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型；use_paddle 参数用来控制是否使用paddle模式下的分词模式（如需使用，安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1` ）；
+* `jieba.cut` 方法接受四个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型；use_paddle 参数用来控制是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；
 * `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
 * 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
 * `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，或者用
@@ -52,8 +52,11 @@ jieba
 # encoding=utf-8
 import jieba
 
-seg_list = jieba.cut("我来到北京清华大学", use_paddle=True)
-print("Paddle Mode: " + "/ ".join(seg_list))  # paddle模式, 0.40版之后开始支持，早期版本不支持
+jieba.enable_paddle()# 启动paddle模式。 0.40版之后开始支持，早期版本不支持
+strs=["我来到北京清华大学","乒乓球拍卖完了","中国科学技术大学"]
+for str in strs:
+    seg_list = jieba.cut(str,use_paddle=True) # 使用paddle模式
+    print("Paddle Mode: " + '/'.join(list(seg_list)))
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
 print("Full Mode: " + "/ ".join(seg_list))  # 全模式
@@ -190,12 +193,14 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 -----------
 * `jieba.posseg.POSTokenizer(tokenizer=None)` 新建自定义分词器，`tokenizer` 参数可指定内部使用的 `jieba.Tokenizer` 分词器。`jieba.posseg.dt` 为默认词性标注分词器。
 * 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法。
-* 除了jieba默认分词模式，提供paddle模式下的词性标注功能。如需使用，请先安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
+* 除了jieba默认分词模式，提供paddle模式下的词性标注功能。paddle模式采用延迟加载方式，通过enable_paddle()安装paddlepaddle-tiny，并且import相关代码；
 * 用法示例
 
 ```pycon
+>>> import jieba
 >>> import jieba.posseg as pseg
 >>> words = pseg.cut("我爱北京天安门") #jieba默认模式
+>>> jieba.enable_paddle() #启动paddle模式。 0.40版之后开始支持，早期版本不支持
 >>> words = pseg.cut("我爱北京天安门",use_paddle=True) #paddle模式
 >>> for word, flag in words:
 ...    print('%s %s' % (word, flag))

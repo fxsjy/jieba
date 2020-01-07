@@ -32,7 +32,6 @@ def enable_paddle():
     except ImportError:
         default_logger.debug("Import paddle error, please use command to install: pip install paddlepaddle-tiny==1.6.1."
                              "Now, back to jieba basic cut......")
-        return False
     if paddle.__version__ < '1.6.1':
         default_logger.debug("Find your own paddle version doesn't satisfy the minimum requirement (1.6.1), "
                              "please install paddle tiny by 'pip install --upgrade paddlepaddle-tiny', "
@@ -45,8 +44,6 @@ def enable_paddle():
         except ImportError:
             default_logger.debug("Import error, cannot find paddle.fluid and jieba.lac_small.predict module. "
                              "Now, back to jieba basic cut......")
-            return False
-    return import_paddle_check
 
 PY2 = sys.version_info[0] == 2
 

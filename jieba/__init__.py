@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-__version__ = '0.40'
+__version__ = '0.41'
 __license__ = 'MIT'
 
 import re

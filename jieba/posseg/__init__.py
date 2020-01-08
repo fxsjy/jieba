@@ -305,5 +305,7 @@ def cut(sentence, HMM=True, use_paddle=False):
                 yield w
 
 
-def lcut(sentence, HMM=True):
+def lcut(sentence, HMM=True, use_paddle=False):
+    if use_paddle:
+        return list(cut(sentence, use_paddle=True))
     return list(cut(sentence, HMM))

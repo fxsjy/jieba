@@ -20,25 +20,30 @@ except ImportError:
                             os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
 
 
-def import_paddle():
+def enable_paddle():
     import_paddle_check = False
     try:
         import paddle
     except ImportError:
-        default_logger.debug("Import paddle error, please use command to install: pip install paddlepaddle-tiny==1.6.1. "
-                             "Now, back to jieba basic cut......")
-        return False
+        default_logger.debug("Installing paddle-tiny, please wait a minute......")
+        os.system("pip install paddlepaddle-tiny")
     try:
-        if paddle.__version__ >= '1.6.1':
-            import paddle.fluid as fluid
+        import paddle
+    except ImportError:
+        default_logger.debug("Import paddle error, please use command to install: pip install paddlepaddle-tiny==1.6.1."
+                             "Now, back to jieba basic cut......")
+    if paddle.__version__ < '1.6.1':
+        default_logger.debug("Find your own paddle version doesn't satisfy the minimum requirement (1.6.1), "
+                             "please install paddle tiny by 'pip install --upgrade paddlepaddle-tiny', "
+                             "or upgrade paddle full version by 'pip install --upgrade paddlepaddle (-gpu for GPU version)' ")
+    else:
+        try:
             import jieba.lac_small.predict as predict
             import_paddle_check = True
-    except ImportError:   
-        default_logger.debug("Import error, cannot find paddle.fluid and jieba.lac_small.predict module. "
+            default_logger.debug("Paddle enabled successfully......")
+        except ImportError:
+            default_logger.debug("Import error, cannot find paddle.fluid and jieba.lac_small.predict module. "
                              "Now, back to jieba basic cut......")
-        return False
-    return import_paddle_check
-
 
 PY2 = sys.version_info[0] == 2
 

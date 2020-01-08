@@ -297,10 +297,9 @@ class Tokenizer(object):
         '''
         is_paddle_installed = False
         if use_paddle == True:
-            import_paddle_check = import_paddle()
             is_paddle_installed = check_paddle_install()
         sentence = strdecode(sentence)
-        if use_paddle == True and is_paddle_installed == True and import_paddle_check == True:
+        if use_paddle == True and is_paddle_installed == True:
             if sentence is None or sentence == "" or sentence == u"":
                 yield sentence
                 return

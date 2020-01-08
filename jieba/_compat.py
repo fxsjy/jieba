@@ -25,7 +25,7 @@ def enable_paddle():
     try:
         import paddle
     except ImportError:
-        default_logger.debug("Installing paddle-tiny, please waite a minute......")
+        default_logger.debug("Installing paddle-tiny, please wait a minute......")
         os.system("pip install paddlepaddle-tiny")
     try:
         import paddle

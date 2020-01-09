@@ -1,11 +1,11 @@
 from __future__ import absolute_import, unicode_literals
-import os
-import re
-import sys
-import jieba
+
 import pickle
-from .._compat import *
+import re
+
+import jieba
 from .viterbi import viterbi
+from .._compat import *
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"
@@ -252,6 +252,7 @@ class POSTokenizer(object):
     def lcut(self, *args, **kwargs):
         return list(self.cut(*args, **kwargs))
 
+
 # default Tokenizer instance
 
 dt = POSTokenizer(jieba.dt)
@@ -276,19 +277,16 @@ def cut(sentence, HMM=True, use_paddle=False):
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
     """
-    is_paddle_installed = False
-    if use_paddle == True:
-        is_paddle_installed = check_paddle_install()
-    if use_paddle==True and is_paddle_installed == True:
+    is_paddle_installed = check_paddle_install['is_paddle_installed']
+    if use_paddle and is_paddle_installed:
         if sentence is None or sentence == "" or sentence == u"":
             yield pair(None, None)
-            return
         import jieba.lac_small.predict as predict
-        sents,tags = predict.get_result(strdecode(sentence))
-        for i,sent in enumerate(sents):
+        sents, tags = predict.get_result(strdecode(sentence))
+        for i, sent in enumerate(sents):
             if sent is None or tags[i] is None:
                 continue
-            yield pair(sent,tags[i])
+            yield pair(sent, tags[i])
         return
     global dt
     if jieba.pool is None:

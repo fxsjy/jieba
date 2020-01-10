@@ -300,12 +300,13 @@ class Tokenizer(object):
         if use_paddle and is_paddle_installed:
             if sentence is None or sentence == "" or sentence == u"":
                 yield sentence
-            import jieba.lac_small.predict as predict
-            results = predict.get_sent(sentence)
-            for sent in results:
-                if sent is None:
-                    continue
-                yield sent
+            else:
+                import jieba.lac_small.predict as predict
+                results = predict.get_sent(sentence)
+                for sent in results:
+                    if sent is None:
+                        continue
+                    yield sent
             return
         re_han = re_han_default
         re_skip = re_skip_default

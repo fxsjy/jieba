@@ -298,8 +298,9 @@ class Tokenizer(object):
         is_paddle_installed = check_paddle_install['is_paddle_installed']
         sentence = strdecode(sentence)
         if use_paddle and is_paddle_installed:
+            # if sentence is null, it will raise core exception in paddle.
             if sentence is None or sentence == "" or sentence == u"":
-                yield sentence
+                return
             import jieba.lac_small.predict as predict
             results = predict.get_sent(sentence)
             for sent in results:

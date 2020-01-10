@@ -2,7 +2,7 @@
 import sys
 sys.path.append("../")
 import jieba
-
+jieba.enable_paddle()
 
 def cuttest(test_sent):
     result = jieba.cut(test_sent, use_paddle=True)

@@ -2,7 +2,8 @@
 import sys
 sys.path.append("../")
 import jieba.posseg as pseg
-
+import jieba
+jieba.enable_paddle()
 
 def cuttest(test_sent):
     result = pseg.cut(test_sent, use_paddle=True)

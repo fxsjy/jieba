@@ -279,6 +279,7 @@ def cut(sentence, HMM=True, use_paddle=False):
     """
     is_paddle_installed = check_paddle_install['is_paddle_installed']
     if use_paddle and is_paddle_installed:
+        # if sentence is null, it will raise core exception in paddle.
         if sentence is None or sentence == "" or sentence == u"":
             yield pair(None, None)
         else:

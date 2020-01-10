@@ -281,14 +281,13 @@ def cut(sentence, HMM=True, use_paddle=False):
     if use_paddle and is_paddle_installed:
         # if sentence is null, it will raise core exception in paddle.
         if sentence is None or sentence == "" or sentence == u"":
-            yield pair(None, None)
-        else:
-            import jieba.lac_small.predict as predict
-            sents, tags = predict.get_result(strdecode(sentence))
-            for i, sent in enumerate(sents):
-                if sent is None or tags[i] is None:
-                    continue
-                yield pair(sent, tags[i])
+            return
+        import jieba.lac_small.predict as predict
+        sents, tags = predict.get_result(strdecode(sentence))
+        for i, sent in enumerate(sents):
+            if sent is None or tags[i] is None:
+                continue
+            yield pair(sent, tags[i])
         return
     global dt
     if jieba.pool is None:

@@ -300,14 +300,13 @@ class Tokenizer(object):
         if use_paddle and is_paddle_installed:
             # if sentence is null, it will raise core exception in paddle.
             if sentence is None or sentence == "" or sentence == u"":
-                yield sentence
-            else:
-                import jieba.lac_small.predict as predict
-                results = predict.get_sent(sentence)
-                for sent in results:
-                    if sent is None:
-                        continue
-                    yield sent
+                return
+            import jieba.lac_small.predict as predict
+            results = predict.get_sent(sentence)
+            for sent in results:
+                if sent is None:
+                    continue
+                yield sent
             return
         re_han = re_han_default
         re_skip = re_skip_default

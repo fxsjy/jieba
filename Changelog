@@ -1,3 +1,8 @@
+2019-1-13: version 0.42
+1. 修复paddle模式空字符串coredump问题 @JesseyXujin
+2. 修复cut_all模式切分丢字问题 @fxsjy
+3. paddle安装检测优化 @vissssa
+
 2019-1-8: version 0.41
 1. 开启paddle模式更友好
 2. 修复cut_all模式不支持中英混合词的bug

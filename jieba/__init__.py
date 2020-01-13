@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-__version__ = '0.41'
+__version__ = '0.42'
 __license__ = 'MIT'
 
 import marshal

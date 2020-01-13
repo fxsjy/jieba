@@ -98,3 +98,4 @@ if __name__ == "__main__":
     cuttest('你认识那个和主席握手的的哥吗？他开一辆黑色的士。')
     jieba.add_word('超敏C反应蛋白')
     cuttest('超敏C反应蛋白是什么, java好学吗?,小潘老板都学Python')
+    cuttest('steel健身爆发力运动兴奋补充剂')

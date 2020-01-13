@@ -205,14 +205,15 @@ class Tokenizer(object):
                 eng_scan = 0
                 yield eng_buf
             if len(L) == 1 and k > old_j:
-                if re_eng.match(sentence[k]):
+                word = sentence[k:L[0] + 1]
+                if re_eng.match(word):
                     if eng_scan == 0:
                         eng_scan = 1
-                        eng_buf = sentence[k]
+                        eng_buf = word
                     else:
-                        eng_buf += sentence[k]
+                        eng_buf += word
                 if eng_scan == 0:
-                    yield sentence[k:L[0] + 1]
+                    yield word
                 old_j = L[0]
             else:
                 for j in L:

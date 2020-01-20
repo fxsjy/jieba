@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-__version__ = '0.42'
+__version__ = '0.42.1'
 __license__ = 'MIT'
 
 import marshal
@@ -300,7 +300,7 @@ class Tokenizer(object):
         sentence = strdecode(sentence)
         if use_paddle and is_paddle_installed:
             # if sentence is null, it will raise core exception in paddle.
-            if sentence is None or sentence == "" or sentence == u"":
+            if sentence is None or len(sentence) == 0:
                 return
             import jieba.lac_small.predict as predict
             results = predict.get_sent(sentence)

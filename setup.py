@@ -43,7 +43,7 @@ GitHub: https://github.com/fxsjy/jieba
 """
 
 setup(name='jieba',
-      version='0.42',
+      version='0.42.1',
       description='Chinese Words Segmentation Utilities',
       long_description=LONGDOC,
       author='Sun, Junyi',
@@ -71,5 +71,5 @@ setup(name='jieba',
       keywords='NLP,tokenizing,Chinese word segementation',
       packages=['jieba'],
       package_dir={'jieba':'jieba'},
-      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*', 'lac_small/*','lac_small/model_baseline/*']}
+      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*', 'lac_small/*.py','lac_small/*.dic', 'lac_small/model_baseline/*']}
 )

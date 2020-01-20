@@ -1,3 +1,6 @@
+2019-1-20: version 0.42.1
+1. 修复setup.py在python2.7版本无法工作的问题 (issue #809)
+
 2019-1-13: version 0.42
 1. 修复paddle模式空字符串coredump问题 @JesseyXujin
 2. 修复cut_all模式切分丢字问题 @fxsjy

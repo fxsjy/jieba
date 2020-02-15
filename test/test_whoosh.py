@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
+from __future__ import unicode_literals
 import sys,os
 sys.path.append("../")
 from whoosh.index import create_in,open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 
-from jieba.analyse import ChineseAnalyzer
+from jieba.analyse.analyzer import ChineseAnalyzer
 
 analyzer = ChineseAnalyzer()
 

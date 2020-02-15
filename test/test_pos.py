@@ -1,12 +1,13 @@
 #encoding=utf-8
+from __future__ import print_function
 import sys
 sys.path.append("../")
 import jieba.posseg as pseg
 
 def cuttest(test_sent):
     result = pseg.cut(test_sent)
-    for w in result:
-        print(w.word, "/", w.flag, ", ", end=' ')
+    for word, flag in result:
+        print(word, "/", flag, ", ", end=' ')
     print("")
 
 

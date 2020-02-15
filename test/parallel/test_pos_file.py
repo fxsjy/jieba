@@ -1,9 +1,10 @@
-import urllib.request, urllib.error, urllib.parse
+from __future__ import print_function
 import sys,time
 import sys
 sys.path.append("../../")
 import jieba
 import jieba.posseg as pseg
+
 jieba.enable_parallel(4)
 
 url = sys.argv[1]
@@ -14,9 +15,8 @@ words = list(pseg.cut(content))
 t2 = time.time()
 tm_cost = t2-t1
 
-log_f = open("1.log","wb")
-for w in words:
-    print(w.encode("utf-8"), "/", end=' ', file=log_f)
+log_f = open("1.log","w")
+log_f.write(' / '.join(map(str, words)))
 
 print('speed' , len(content)/tm_cost, " bytes/second")
 

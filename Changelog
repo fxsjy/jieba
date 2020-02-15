@@ -1,3 +1,46 @@
+2019-1-20: version 0.42.1
+1. 修复setup.py在python2.7版本无法工作的问题 (issue #809)
+
+2019-1-13: version 0.42
+1. 修复paddle模式空字符串coredump问题 @JesseyXujin
+2. 修复cut_all模式切分丢字问题 @fxsjy
+3. paddle安装检测优化 @vissssa
+
+2019-1-8: version 0.41
+1. 开启paddle模式更友好
+2. 修复cut_all模式不支持中英混合词的bug
+
+2019-12-25: version 0.40
+1. 支持基于paddle的深度学习分词模式(use_paddle=True); by @JesseyXujin, @xyzhou-puck
+2. 修复自定义Tokenizer实例的add_word方法指向全局的问题; by @linhx13 
+3. 修复whoosh测试用例的引用bug; by @ZhengZixiang
+4. 修复自定义词库不支持含"-"符号的问题；by @JimCurryWang 
+
+2017-08-28: version 0.39
+1. del_word支持强行拆开词语;  by @gumblex,@fxsjy
+2. 修复百分数的切词; by @fxsjy
+3. 修复HMM=False在多进程模式下的bug; by @huntzhan
+
+2015-12-16: version 0.38
+1. 通过pkg_resources载入默认词典，支持在Spark等平台上运行, by @gumblex;
+2. 扩充识别的汉字unicode范围：[\u4E00-\u9FD5], by @gumblex;
+3. 关键词提取支持返回词性，修复posseg分词得到的pair做dict关键字的问题，by @jerryday；
+4. 修复load_userdict加载用户词典不能识别含有空格等特殊字符的问题， by @gumblex;
+5. 命令行分词支持返回词性， by @gumblex;
+
+2015-06-27: version 0.37
+1. 代码重构，分词器封装为Class，支持实例化，by @gumblex (https://github.com/fxsjy/jieba/commit/94840a734c32cfece05c0c3ec236ffc3d36b4ae6)
+2. 修复cut_for_search的bug，完善posseg； by @gumblex
+3. 修复posseg在0.36中引入的一处bug; by @wangbin
+4. 修复load_userdict异常处理的bug; by @gip0
+5. 修复生成词典二进制cache文件时跨文件系统的bug, 支持自定义; by @gumblex 
+
+2015-03-20: version 0.36
+1. 代码同时兼容python2与python3, 若干性能优化; by @gumblex 
+2. 解决用户添加词的概率自动计算问题，分词更加准确；by @gumblex 
+3. 可自定义cache_file的文件系统路径; by @changyy
+4. TextRank算法实现完善; by @sing1ee，@walkskyer
+
 2014-11-15: version 0.35.1
 1. 修复 Python 3.2 的兼容性问题
 

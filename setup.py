@@ -11,7 +11,7 @@ be the best Python Chinese word segmentation module.
 
 完整文档见 ``README.md``
 
-GitHub: https://github.com/fxsjy/jieba/tree/jieba3k
+GitHub: https://github.com/fxsjy/jieba
 
 特点
 ====
@@ -25,41 +25,30 @@ GitHub: https://github.com/fxsjy/jieba/tree/jieba3k
 
 -  支持繁体分词
 -  支持自定义词典
+-  MIT 授权协议
 
 在线演示： http://jiebademo.ap01.aws.af.cm/
 
 安装说明
 ========
 
-Python 2.x
-----------
+代码对 Python 2/3 均兼容
 
-见 https://pypi.python.org/pypi/jieba/
-
-Python 3.x
-----------
-
--  目前 master 分支是只支持 Python 2.x 的
--  Python 3.x 版本的分支也已经基本可用：
-   https://github.com/fxsjy/jieba/tree/jieba3k
-
-.. code:: bash
-
-    git clone https://github.com/fxsjy/jieba.git
-    git checkout jieba3k
-    python setup.py install
-
--  或使用pip3安装： pip3 install jieba3k
+-  全自动安装： ``easy_install jieba`` 或者 ``pip install jieba`` / ``pip3 install jieba``
+-  半自动安装：先下载 https://pypi.python.org/pypi/jieba/ ，解压后运行
+   python setup.py install
+-  手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录
+-  通过 ``import jieba`` 来引用
 
 """
 
-setup(name='jieba3k',
-      version='0.35.1',
-      description='Chinese Words Segementation Utilities',
+setup(name='jieba',
+      version='0.42.1',
+      description='Chinese Words Segmentation Utilities',
       long_description=LONGDOC,
       author='Sun, Junyi',
       author_email='ccnusjy@gmail.com',
-      url='https://github.com/fxsjy/jieba/tree/jieba3k',
+      url='https://github.com/fxsjy/jieba',
       license="MIT",
       classifiers=[
         'Intended Audience :: Developers',
@@ -68,7 +57,13 @@ setup(name='jieba3k',
         'Natural Language :: Chinese (Simplified)',
         'Natural Language :: Chinese (Traditional)',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Indexing',
         'Topic :: Text Processing :: Linguistic',
@@ -76,5 +71,5 @@ setup(name='jieba3k',
       keywords='NLP,tokenizing,Chinese word segementation',
       packages=['jieba'],
       package_dir={'jieba':'jieba'},
-      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*']}
+      package_data={'jieba':['*.*','finalseg/*','analyse/*','posseg/*', 'lac_small/*.py','lac_small/*.dic', 'lac_small/model_baseline/*']}
 )

@@ -98,3 +98,5 @@ if __name__ == "__main__":
     cuttest('张三风同学走上了不归路')
     cuttest('阿Q腰间挂着BB机手里拿着大哥大，说：我一般吃饭不AA制的。')
     cuttest('在1号店能买到小S和大S八卦的书，还有3D电视。')
+    jieba.del_word('很赞')
+    cuttest('看上去iphone8手机样式很赞,售价699美元,销量涨了5%么？')

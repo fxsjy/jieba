@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 P={'\u4e00': (('B', 'm'),
              ('S', 'm'),
              ('B', 'd'),

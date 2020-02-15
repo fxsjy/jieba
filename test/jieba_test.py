@@ -1,10 +1,13 @@
 #-*-coding: utf-8 -*-
+from __future__ import unicode_literals, print_function
 import sys
-import imp
 sys.path.append("../")
 import unittest
 import types
 import jieba
+if sys.version_info[0] > 2:
+    from imp import reload
+
 jieba.initialize()
 
 
@@ -98,7 +101,7 @@ test_contents = [
 
 class JiebaTestCase(unittest.TestCase):
     def setUp(self):
-        imp.reload(jieba)
+        reload(jieba)
 
     def tearDown(self):
         pass

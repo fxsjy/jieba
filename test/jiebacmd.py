@@ -6,7 +6,7 @@ cat abc.txt | python jiebacmd.py | sort | uniq -c | sort -nr -k1 | head -100
 
 '''
 
-
+from __future__ import unicode_literals
 import sys
 sys.path.append("../")
 

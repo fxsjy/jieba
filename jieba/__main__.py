@@ -2,17 +2,20 @@
 import sys
 import jieba
 from argparse import ArgumentParser
+from ._compat import *
 
 parser = ArgumentParser(usage="%s -m jieba [options] filename" % sys.executable, description="Jieba command line interface.", epilog="If no filename specified, use STDIN instead.")
 parser.add_argument("-d", "--delimiter", metavar="DELIM", default=' / ',
                     nargs='?', const=' ',
                     help="use DELIM instead of ' / ' for word delimiter; or a space if it is used without DELIM")
+parser.add_argument("-p", "--pos", metavar="DELIM", nargs='?', const='_',
+                    help="enable POS tagging; if DELIM is specified, use DELIM instead of '_' for POS delimiter")
 parser.add_argument("-D", "--dict", help="use DICT as dictionary")
 parser.add_argument("-u", "--user-dict",
                     help="use USER_DICT together with the default dictionary or DICT (if specified)")
 parser.add_argument("-a", "--cut-all",
                     action="store_true", dest="cutall", default=False,
-                    help="full pattern cutting")
+                    help="full pattern cutting (ignored with POS tagging)")
 parser.add_argument("-n", "--no-hmm", dest="hmm", action="store_false",
                     default=True, help="don't use the Hidden Markov Model")
 parser.add_argument("-q", "--quiet", action="store_true", default=False,
@@ -25,7 +28,16 @@ args = parser.parse_args()
 
 if args.quiet:
     jieba.setLogLevel(60)
-delim = str(args.delimiter)
+if args.pos:
+    import jieba.posseg
+    posdelim = args.pos
+    def cutfunc(sentence, _, HMM=True):
+        for w, f in jieba.posseg.cut(sentence, HMM):
+            yield w + posdelim + f
+else:
+    cutfunc = jieba.cut
+
+delim = text_type(args.delimiter)
 cutall = args.cutall
 hmm = args.hmm
 fp = open(args.filename, 'r') if args.filename else sys.stdin
@@ -40,7 +52,10 @@ if args.user_dict:
 ln = fp.readline()
 while ln:
     l = ln.rstrip('\r\n')
-    print(delim.join(jieba.cut(ln.rstrip('\r\n'), cutall, hmm)))
+    result = delim.join(cutfunc(ln.rstrip('\r\n'), cutall, hmm))
+    if PY2:
+        result = result.encode(default_encoding)
+    print(result)
     ln = fp.readline()
 
 fp.close()

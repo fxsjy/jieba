@@ -110,7 +110,5 @@ class TFIDF(KeywordExtractor):
             tags = sorted(freq.items(), key=itemgetter(1), reverse=True)
         else:
             tags = sorted(freq, key=freq.__getitem__, reverse=True)
-        if topK:
-            return tags[:topK]
-        else:
-            return tags
+
+        return tags[:topK]

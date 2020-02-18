@@ -75,7 +75,7 @@ def __cut(sentence):
         yield sentence[nexti:]
 
 re_han = re.compile("([\u4E00-\u9FD5]+)")
-re_skip = re.compile("([a-zA-Z0-9]+(?:\.\d+)?%?)")
+re_skip = re.compile(r"([a-zA-Z0-9]+(?:\.\d+)?%?)")
 
 
 def add_force_split(word):

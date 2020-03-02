@@ -4,12 +4,11 @@ import os
 import jieba
 import jieba.posseg
 from operator import itemgetter
+from .._compat import get_module_res
 
-_get_module_path = lambda path: os.path.normpath(os.path.join(os.getcwd(),
-                                                 os.path.dirname(__file__), path))
 _get_abs_path = jieba._get_abs_path
 
-DEFAULT_IDF = _get_module_path("idf.txt")
+DEFAULT_IDF = "analyse/idf.txt"
 
 
 class KeywordExtractor(object):
@@ -38,19 +37,25 @@ class IDFLoader(object):
         self.path = ""
         self.idf_freq = {}
         self.median_idf = 0.0
-        if idf_path:
-            self.set_new_path(idf_path)
+        self.load(idf_path)
 
-    def set_new_path(self, new_idf_path):
+    def get_idf_file(self, idf_path):
+        if idf_path is None:
+            return get_module_res(DEFAULT_IDF)
+        else:
+            return open(idf_path, 'rb')
+
+    def load(self, new_idf_path):
         if self.path != new_idf_path:
-            self.path = new_idf_path
-            content = open(new_idf_path, 'rb').read().decode('utf-8')
+            f = self.get_idf_file(new_idf_path)
+            content = f.read().decode('utf-8')
             self.idf_freq = {}
             for line in content.splitlines():
                 word, freq = line.strip().split(' ')
                 self.idf_freq[word] = float(freq)
             self.median_idf = sorted(
                 self.idf_freq.values())[len(self.idf_freq) // 2]
+            self.path = new_idf_path
 
     def get_idf(self):
         return self.idf_freq, self.median_idf
@@ -62,14 +67,15 @@ class TFIDF(KeywordExtractor):
         self.tokenizer = jieba.dt
         self.postokenizer = jieba.posseg.dt
         self.stop_words = self.STOP_WORDS.copy()
-        self.idf_loader = IDFLoader(idf_path or DEFAULT_IDF)
+        self.idf_path = idf_path
+        self.idf_loader = IDFLoader(idf_path)
         self.idf_freq, self.median_idf = self.idf_loader.get_idf()
 
     def set_idf_path(self, idf_path):
         new_abs_path = _get_abs_path(idf_path)
         if not os.path.isfile(new_abs_path):
             raise Exception("jieba: file does not exist: " + new_abs_path)
-        self.idf_loader.set_new_path(new_abs_path)
+        self.idf_loader.load(new_abs_path)
         self.idf_freq, self.median_idf = self.idf_loader.get_idf()
 
     def extract_tags(self, sentence, topK=20, withWeight=False, allowPOS=(), withFlag=False):

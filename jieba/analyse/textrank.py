@@ -62,9 +62,13 @@ class TextRank(KeywordExtractor):
         self.pos_filt = frozenset(('ns', 'n', 'vn', 'v'))
         self.span = 5
 
-    def pairfilter(self, wp):
-        return (wp.flag in self.pos_filt and len(wp.word.strip()) >= 2
-                and wp.word.lower() not in self.stop_words)
+    def pairfilter(self, wp, filt_pos=True):
+        if filt_pos == True:
+            return (wp.flag in self.pos_filt and len(wp.word.strip()) >= 2
+                    and wp.word.lower() not in self.stop_words)
+        else:
+            return (len(wp.word.strip()) >= 2
+                    and wp.word.lower() not in self.stop_words)
 
     def textrank(self, sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v'), withFlag=False):
         """
@@ -83,11 +87,12 @@ class TextRank(KeywordExtractor):
         cm = defaultdict(int)
         words = tuple(self.tokenizer.cut(sentence))
         for i, wp in enumerate(words):
-            if self.pairfilter(wp):
+            filt_pos = True if self.pos_filt else False                
+            if self.pairfilter(wp, filt_pos):
                 for j in xrange(i + 1, i + self.span):
                     if j >= len(words):
                         break
-                    if not self.pairfilter(words[j]):
+                    if not self.pairfilter(words[j], filt_pos):
                         continue
                     if allowPOS and withFlag:
                         cm[(wp, words[j])] += 1

@@ -414,6 +414,7 @@ class Tokenizer(object):
             if tag is not None:
                 tag = tag.strip()
             self.add_word(word, freq, tag)
+        f.close()
 
     def add_word(self, word, freq=None, tag=None):
         """

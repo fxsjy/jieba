@@ -194,7 +194,25 @@ class Tokenizer(object):
                 tmplist.append(k)
             DAG[k] = tmplist
         return DAG
-
+    def get_pos_DAG(self, sentence_list):
+        self.check_initialized()
+        DAG = {}
+        sentence = ''.join(sentence_list)
+        N = len(sentence)
+        word_index_d = {}
+        index = 0
+        for word in sentence_list:
+            word_index_d[index] = index + len(word)
+            index += len(word)
+        for k in xrange(N):
+            tmplist = []
+            if k in word_index_d:
+                tmplist.append(word_index_d[k]-1)
+                #print sentence[k:word_index_d[k]]
+            if not tmplist:
+                tmplist.append(k)
+            DAG[k] = tmplist
+        return DAG
     def __cut_all(self, sentence):
         dag = self.get_DAG(sentence)
         old_j = -1

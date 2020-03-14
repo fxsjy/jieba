@@ -1,3 +1,4 @@
+# -*- coding: cp936 -*-
 from __future__ import absolute_import, unicode_literals
 
 import pickle
@@ -211,7 +212,57 @@ class POSTokenizer(object):
             else:
                 for elem in buf:
                     yield pair(elem, self.word_tag_tab.get(elem, 'x'))
+    def word_tag_tab_fun(self, buf):
+        tag = self.word_tag_tab.get(buf, 'x')
+        if tag != 'x':
+            return tag
+        if re_skip_internal.match(buf):
+            return 'x'
+        elif re_num.match(buf):
+            return 'm'
+        elif re_eng.match(buf):
+            return 'eng'
+        else:
+            return 'x'        
+    def __cut_pos_DAG(self, sentence_list):
+        DAG = self.tokenizer.get_pos_DAG(sentence_list)
+        route = {}
+        sentence=''.join(sentence_list)
+        self.tokenizer.calc(sentence, DAG, route)
 
+        x = 0
+        buf = ''
+        N = len(sentence)
+        while x < N:
+            y = route[x][1] + 1
+            l_word = sentence[x:y]
+            if y - x == 1:
+                buf += l_word
+            else:
+                if buf:
+                    if len(buf) == 1:
+                        yield pair(buf, self.word_tag_tab_fun(buf))
+                    elif not self.tokenizer.FREQ.get(buf):
+                        recognized = self.__cut_detail(buf)
+                        for t in recognized:
+                            yield t
+                    else:
+                        for elem in buf:
+                            yield pair(elem, self.word_tag_tab_fun(elem))
+                    buf = ''
+                yield pair(l_word, self.word_tag_tab_fun(l_word))
+            x = y
+
+        if buf:
+            if len(buf) == 1:
+                yield pair(buf, self.word_tag_tab_fun(buf))
+            elif not self.tokenizer.FREQ.get(buf):
+                recognized = self.__cut_detail(buf)
+                for t in recognized:
+                    yield t
+            else:
+                for elem in buf:
+                    yield pair(elem, self.word_tag_tab_fun(elem))
     def __cut_internal(self, sentence, HMM=True):
         self.makesure_userdict_loaded()
         sentence = strdecode(sentence)
@@ -238,6 +289,13 @@ class POSTokenizer(object):
                                 yield pair(xx, 'eng')
                             else:
                                 yield pair(xx, 'x')
+    def __cut_pos_internal(self, sentence_list):
+        self.makesure_userdict_loaded()
+        #sentence = strdecode(''.join(sentence_list))
+        #blocks = re_han_internal.split(sentence)
+        cut_blk = self.__cut_pos_DAG
+        for word in cut_blk(sentence_list):
+            yield word
 
     def _lcut_internal(self, sentence):
         return list(self.__cut_internal(sentence))
@@ -248,7 +306,9 @@ class POSTokenizer(object):
     def cut(self, sentence, HMM=True):
         for w in self.__cut_internal(sentence, HMM=HMM):
             yield w
-
+    def cut_pos(self, sentence_list):
+        for w in self.__cut_pos_internal(sentence_list):
+            yield w
     def lcut(self, *args, **kwargs):
         return list(self.cut(*args, **kwargs))
 
@@ -302,7 +362,14 @@ def cut(sentence, HMM=True, use_paddle=False):
         for r in result:
             for w in r:
                 yield w
-
+def pos(sentence_list):#HMM=True
+    """
+    pos:sentence is list
+    sentence: list, items is unicode, like [a,b,c]
+    """
+    global dt
+    for w in dt.cut_pos(sentence_list):
+        yield w
 
 def lcut(sentence, HMM=True, use_paddle=False):
     if use_paddle:

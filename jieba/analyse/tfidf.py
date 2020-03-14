@@ -104,8 +104,6 @@ class TFIDF(KeywordExtractor):
         total = sum(freq.values())
         for k in freq:
             kw = k.word if allowPOS and withFlag else k
-            freq[k] *= self.idf_freq.get(kw, self.median_idf) / total
-
         if withWeight:
             tags = sorted(freq.items(), key=itemgetter(1), reverse=True)
         else:

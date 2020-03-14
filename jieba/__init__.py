@@ -415,6 +415,37 @@ class Tokenizer(object):
                 tag = tag.strip()
             self.add_word(word, freq, tag)
 
+    def load_userlist(self, word_list):
+        """
+        Add a list of words to dictingary
+
+        Paramerter
+            - word_list:A list contains words and their ocurrences
+
+
+        Structrue of list:  
+        [  
+            "word1 freq1 word_type1",  
+            "word1 freq1 word_type1",  
+            "word1 freq1 word_type1",  
+            ....  
+        ]  
+        """
+        for word in word_list:
+            word = word.strip()
+            try:
+                word = word.decode("utf-8").lstrip("\ufeff")
+            except UnicodeDecodeError:
+                raise ValueError("word %s must be utf-8" % word)
+            if not word:
+                continue
+            word, freq, tag = re_userdict.match(word).groups()
+            if freq:
+                freq = freq.strip()
+            if tag:
+                tag = tag.strip()
+            self.add_word(word, freq, tag)
+
     def add_word(self, word, freq=None, tag=None):
         """
         Add a word to dictionary.
@@ -533,6 +564,7 @@ get_DAG = dt.get_DAG
 get_dict_file = dt.get_dict_file
 initialize = dt.initialize
 load_userdict = dt.load_userdict
+load_userlist = dt.load_userlist
 set_dictionary = dt.set_dictionary
 suggest_freq = dt.suggest_freq
 tokenize = dt.tokenize

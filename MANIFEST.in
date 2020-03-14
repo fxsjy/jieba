@@ -1,2 +1,3 @@
 graft README.md
 graft Changelog
+graft LICENSE

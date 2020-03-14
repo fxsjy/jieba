@@ -1,6 +1,9 @@
 #-*-coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 import sys
+if sys.version_info[0] < 3:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 sys.path.append("../")
 import unittest
 import types

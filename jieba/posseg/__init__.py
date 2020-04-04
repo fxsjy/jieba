@@ -5,7 +5,7 @@ import re
 
 import jieba
 from .viterbi import viterbi
-from .._compat import *
+from jieba._compat import *
 
 PROB_START_P = "prob_start.p"
 PROB_TRANS_P = "prob_trans.p"

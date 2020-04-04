@@ -7,7 +7,7 @@ from operator import itemgetter
 from collections import defaultdict
 import jieba.posseg
 from .tfidf import KeywordExtractor
-from .._compat import *
+from jieba._compat import *
 
 
 class UndirectWeightedGraph:

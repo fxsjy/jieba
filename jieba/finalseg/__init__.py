@@ -3,7 +3,7 @@ import re
 import os
 import sys
 import pickle
-from .._compat import *
+from jieba._compat import *
 
 MIN_FLOAT = -3.14e100
 

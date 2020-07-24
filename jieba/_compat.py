@@ -44,7 +44,6 @@ def enable_paddle():
     else:
         try:
             import jieba.lac_small.predict as predict
-            default_logger.debug("Paddle enabled successfully......")
             check_paddle_install['is_paddle_installed'] = True
         except ImportError:
             default_logger.debug("Import error, cannot find paddle.fluid and jieba.lac_small.predict module. "

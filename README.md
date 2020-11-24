@@ -37,7 +37,7 @@ jieba
 
 主要功能
 =======
-1. 分词
+1 分词
 --------
 * `jieba.cut` 方法接受四个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型；use_paddle 参数用来控制是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；
 * `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
@@ -81,7 +81,7 @@ print(", ".join(seg_list))
 
     【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
-2. 添加自定义词典
+2 添加自定义词典
 ----------------
 
 ### 载入词典
@@ -139,7 +139,7 @@ print(", ".join(seg_list))
 
 * "通过用户自定义词典来增强歧义纠错能力" --- https://github.com/fxsjy/jieba/issues/14
 
-3. 关键词提取
+3 关键词提取
 -------------
 ### 基于 TF-IDF 算法的关键词抽取
 
@@ -189,7 +189,7 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 
 见 [test/demo.py](https://github.com/fxsjy/jieba/blob/master/test/demo.py)
 
-4. 词性标注
+4 词性标注
 -----------
 * `jieba.posseg.POSTokenizer(tokenizer=None)` 新建自定义分词器，`tokenizer` 参数可指定内部使用的 `jieba.Tokenizer` 分词器。`jieba.posseg.dt` 为默认词性标注分词器。
 * 标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法。
@@ -226,7 +226,7 @@ paddle模式词性和专名类别标签集合如下表，其中词性标签 24 �
 | PER  | 人名     | LOC  | 地名     | ORG  | 机构名   | TIME | 时间     |
 
 
-5. 并行分词
+5 并行分词
 -----------
 * 原理：将目标文本按行分隔后，把各行文本分配到多个 Python 进程并行分词，然后归并结果，从而获得分词速度的可观提升
 * 基于 python 自带的 multiprocessing 模块，目前暂不支持 Windows
@@ -240,7 +240,7 @@ paddle模式词性和专名类别标签集合如下表，其中词性标签 24 �
 
 * **注意**：并行分词仅支持默认分词器 `jieba.dt` 和 `jieba.posseg.dt`。
 
-6. Tokenize：返回词语在原文的起止位置
+6 Tokenize：返回词语在原文的起止位置
 ----------------------------------
 * 注意，输入参数只接受 unicode
 * 默认模式
@@ -277,12 +277,12 @@ word 有限公司            start: 6                end:10
 ```
 
 
-7. ChineseAnalyzer for Whoosh 搜索引擎
+7 ChineseAnalyzer for Whoosh 搜索引擎
 --------------------------------------------
 * 引用： `from jieba.analyse import ChineseAnalyzer`
 * 用法示例：https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
 
-8. 命令行分词
+8 命令行分词
 -------------------
 
 使用示例：`python -m jieba news.txt > cut_result.txt`
@@ -518,7 +518,7 @@ Algorithm
 Main Functions
 ==============
 
-1. Cut
+1 Cut
 --------
 * The `jieba.cut` function accepts three input parameters: the first parameter is the string to be cut; the second parameter is `cut_all`, controlling the cut mode; the third parameter is to control whether to use the Hidden Markov Model.
 * `jieba.cut_for_search` accepts two parameter: the string to be cut; whether to use the Hidden Markov Model. This will cut the sentence into short words suitable for search engines.
@@ -558,7 +558,7 @@ Output:
     [Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
 
 
-2. Add a custom dictionary
+2 Add a custom dictionary
 ----------------------------
 
 ### Load dictionary
@@ -615,7 +615,7 @@ Example:
 「/台中/」/正确/应该/不会/被/切开
 ```
 
-3. Keyword Extraction
+3 Keyword Extraction
 -----------------------
 `import jieba.analyse`
 
@@ -650,7 +650,7 @@ Note that it filters POS by default.
 
 `jieba.analyse.TextRank()` creates a new TextRank instance.
 
-4. Part of Speech Tagging
+4 Part of Speech Tagging
 -------------------------
 * `jieba.posseg.POSTokenizer(tokenizer=None)` creates a new customized Tokenizer. `tokenizer` specifies the jieba.Tokenizer to internally use. `jieba.posseg.dt` is the default POSTokenizer.
 * Tags the POS of each word after segmentation, using labels compatible with ictclas.
@@ -683,7 +683,7 @@ Note that it filters POS by default.
 
 * **Note** that parallel processing supports only default tokenizers, `jieba.dt` and `jieba.posseg.dt`.
 
-6. Tokenize: return words with position
+6 Tokenize: return words with position
 ----------------------------------------
 * The input must be unicode
 * Default mode
@@ -720,12 +720,12 @@ word 有限公司            start: 6                end:10
 ```
 
 
-7. ChineseAnalyzer for Whoosh
+7 ChineseAnalyzer for Whoosh
 -------------------------------
 * `from jieba.analyse import ChineseAnalyzer`
 * Example: https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py
 
-8. Command Line Interface
+8 Command Line Interface
 --------------------------------
 
     $> python -m jieba --help

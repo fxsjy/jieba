@@ -424,6 +424,10 @@ https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big
 ------------------
 + 作者   Dongliang.W  地址：https://github.com/452896915/jieba-android
 
+结巴分词Haskell版本
+-------------------
++ 作者：zyklotomic  地址：https://github.com/Jyutt/jieba-hs
+
 
 友情链接
 =========

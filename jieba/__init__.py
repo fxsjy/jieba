@@ -247,6 +247,18 @@ class Tokenizer(object):
             buf = ''
 
     def __cut_DAG(self, sentence):
+
+        def _cut_finalseg(buf):
+            if len(buf) == 1:
+                yield buf
+            elif not self.FREQ.get(buf):
+                recognized = finalseg.cut(buf)
+                for t in recognized:
+                    yield t
+            else:
+                for elem in buf:
+                    yield elem
+
         DAG = self.get_DAG(sentence)
         route = {}
         self.calc(sentence, DAG, route)
@@ -260,31 +272,15 @@ class Tokenizer(object):
                 buf += l_word
             else:
                 if buf:
-                    if len(buf) == 1:
-                        yield buf
-                        buf = ''
-                    else:
-                        if not self.FREQ.get(buf):
-                            recognized = finalseg.cut(buf)
-                            for t in recognized:
-                                yield t
-                        else:
-                            for elem in buf:
-                                yield elem
-                        buf = ''
+                    for buf_cut in _cut_finalseg(buf):
+                        yield buf_cut
+                    buf = ''
                 yield l_word
             x = y
 
         if buf:
-            if len(buf) == 1:
-                yield buf
-            elif not self.FREQ.get(buf):
-                recognized = finalseg.cut(buf)
-                for t in recognized:
-                    yield t
-            else:
-                for elem in buf:
-                    yield elem
+            for buf_cut in _cut_finalseg(buf):
+                yield buf_cut
 
     def cut(self, sentence, cut_all=False, HMM=True, use_paddle=False):
         """

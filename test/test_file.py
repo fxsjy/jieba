@@ -5,7 +5,8 @@ import jieba
 jieba.initialize()
 
 url = sys.argv[1]
-content = open(url,"rb").read()
+with open(url, 'rb') as f:
+    content = f.read()
 t1 = time.time()
 words = "/ ".join(jieba.cut(content))
 

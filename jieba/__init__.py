@@ -5,6 +5,7 @@ __license__ = 'MIT'
 
 import marshal
 import re
+import io
 import tempfile
 import threading
 import time
@@ -414,6 +415,8 @@ class Tokenizer(object):
             if tag is not None:
                 tag = tag.strip()
             self.add_word(word, freq, tag)
+        if isinstance(f, io.IOBase):
+            f.close()
 
     def add_word(self, word, freq=None, tag=None):
         """

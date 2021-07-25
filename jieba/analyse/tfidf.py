@@ -24,7 +24,8 @@ class KeywordExtractor(object):
         abs_path = _get_abs_path(stop_words_path)
         if not os.path.isfile(abs_path):
             raise Exception("jieba: file does not exist: " + abs_path)
-        content = open(abs_path, 'rb').read().decode('utf-8')
+        with open(abs_path, 'rb') as f:
+            content = f.read().decode('utf-8')
         for line in content.splitlines():
             self.stop_words.add(line)
 
@@ -44,7 +45,8 @@ class IDFLoader(object):
     def set_new_path(self, new_idf_path):
         if self.path != new_idf_path:
             self.path = new_idf_path
-            content = open(new_idf_path, 'rb').read().decode('utf-8')
+            with open(new_idf_path, 'rb') as f:
+                content = f.read().decode('utf-8')
             self.idf_freq = {}
             for line in content.splitlines():
                 word, freq = line.strip().split(' ')

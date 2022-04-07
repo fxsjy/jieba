@@ -37,14 +37,31 @@ jieba
 
 主要功能
 =======
+
 1. 分词
 --------
-* `jieba.cut` 方法接受四个输入参数: 需要分词的字符串；cut_all 参数用来控制是否采用全模式；HMM 参数用来控制是否使用 HMM 模型；use_paddle 参数用来控制是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；
-* `jieba.cut_for_search` 方法接受两个参数：需要分词的字符串；是否使用 HMM 模型。该方法适合用于搜索引擎构建倒排索引的分词，粒度比较细
-* 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
-* `jieba.cut` 以及 `jieba.cut_for_search` 返回的结构都是一个可迭代的 generator，可以使用 for 循环来获得分词后得到的每一个词语(unicode)，或者用
+* `jieba.posseg.cut(sentence, HMM=True, use_paddle=False)` : 带词性的cut
+* `jieba.cut(sentence, cut_all=False, HMM=True, use_paddle=False)`: 不带词性的cut
+  - 输入:
+    - sentence: 需要分词的字符串
+    - cut_all:  是否采用全模式
+    - HMM: HMM  是否使用 HMM 模型
+    - use_paddle: 是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；
+  - 输出:
+    - 一个分词结果的`generator`
+* `jieba.cut_for_search(sentence, HMM=True)`:
+  - 输入:
+    - sentence: 需要分词的字符串
+  - HMM: 是否使用 HMM 模型
+    - 适合用于搜索引擎构建倒排索引的分词，粒度比较细
+  - 输出:
+    - 一个分词结果的`generator`(?)
+* `jieba.Tokenizer(dictionary=DEFAULT_DICT)`: 
+  - 作用: 新建自定义分词器，可用于同时使用不同词典。`jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
+  - 输入: 
+    - dictionary: 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`
+* `sentence`: 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
 * `jieba.lcut` 以及 `jieba.lcut_for_search` 直接返回 list
-* `jieba.Tokenizer(dictionary=DEFAULT_DICT)` 新建自定义分词器，可用于同时使用不同词典。`jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
 
 代码示例
 
@@ -341,7 +358,7 @@ word 有限公司            start: 6                end:10
 
     If no filename specified, use STDIN instead.
 
-延迟加载机制
+9.延迟加载机制
 ------------
 
 jieba 采用延迟加载，`import jieba` 和 `jieba.Tokenizer()` 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。

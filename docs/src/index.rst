@@ -1,23 +1,42 @@
-jieba
-========
-“结巴”中文分词：做最好的 Python 中文分词组件
+.. jieba documentation master file, created by
+   sphinx-quickstart on Thu Apr  7 17:38:57 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-"Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+jieba 中文分词：做最好的 Python 中文分词组件
+=================================
 
-- _Scroll down for English documentation._
+"Jieba" (Chinese for "to stutter") Chinese text segmentation:
+built to be the best Python Chinese word segmentation module.
 
-- Documentation 文档: https://shouldsee.github.io/jieba/
+Github: https://github.com/fxsjy/jieba
+
+Github-doc: https://github.com/shouldsee/jieba
+
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: 目录:
+
+   func-token
+   all_module
 
 特点
-========
-* 支持四种分词模式：
-    * 精确模式，试图将句子最精确地切开，适合文本分析；
-    * 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
-    * 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
-    * paddle模式，利用PaddlePaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。paddle模式使用需安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。目前paddle模式支持jieba v0.40及以上版本。jieba v0.40以下版本，请升级jieba，`pip install jieba --upgrade` 。[PaddlePaddle官网](https://www.paddlepaddle.org.cn/)
-* 支持繁体分词
-* 支持自定义词典
-* MIT 授权协议
+******
+1. 支持四种分词模式：
+  a. 精确模式，试图将句子最精确地切开，适合文本分析；
+  b. 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；
+  c. 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+  d. paddle模式，利用PaddlePaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。
+     paddle模式使用需安装paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
+     目前paddle模式支持jieba v0.40及以上版本。jieba v0.40以下版本，请升级jieba，
+     :code:`pip install jieba --upgrade`.
+     `PaddlePaddle官网 <https://www.paddlepaddle.org.cn/>`_
+2. 支持繁体分词
+3. 支持自定义词典
+4. MIT 授权协议
+
 
 安装说明
 =======
@@ -803,3 +822,13 @@ Segmentation speed
 * 1.5 MB / Second in Full Mode
 * 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
+
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

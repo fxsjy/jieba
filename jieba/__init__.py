@@ -53,6 +53,16 @@ def setLogLevel(log_level):
 class Tokenizer(object):
 
     def __init__(self, dictionary=DEFAULT_DICT):
+        '''
+
+        新建自定义分词器，可用于同时使用不同词典。
+
+        `jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
+
+        :param dictionary: 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`
+        '''
+
+
         self.lock = threading.RLock()
         if dictionary == DEFAULT_DICT:
             self.dictionary = dictionary
@@ -288,13 +298,25 @@ class Tokenizer(object):
 
     def cut(self, sentence, cut_all=False, HMM=True, use_paddle=False):
         """
+        
+        对序列进行不带词性的切分
+
         The main function that segments an entire sentence that contains
         Chinese characters into separated words.
 
-        Parameter:
-            - sentence: The str(unicode) to be segmented.
-            - cut_all: Model type. True for full pattern, False for accurate pattern.
-            - HMM: Whether to use the Hidden Markov Model.
+       :param sentence:
+         需要分词的字符串
+         The str(unicode) to be segmented.
+       :type sentence:
+         str/unicode
+       :param HMM:
+         是否使用HMM模型.
+         Whether to use the Hidden Markov Model or not
+       :return:
+         一个遍历结果的生成器,每个元素为str/unicode.
+         A generator that iterates through the tokenized str/unicode
+       :rtype: generator[str/unicode]
+
         """
         is_paddle_installed = check_paddle_install['is_paddle_installed']
         sentence = strdecode(sentence)
@@ -338,6 +360,11 @@ class Tokenizer(object):
     def cut_for_search(self, sentence, HMM=True):
         """
         Finer segmentation for search engines.
+        适合用于搜索引擎构建倒排索引的分词，粒度比较细
+
+        :param sentence: 需要分词的字符串
+        :param HMM: 是否使用 HMM 模型
+        :return: 一个分词结果的`generator`(?)
         """
         words = self.cut(sentence, HMM=HMM)
         for w in words:
@@ -520,6 +547,8 @@ class Tokenizer(object):
 dt = Tokenizer()
 
 # global functions
+
+
 
 get_FREQ = lambda k, d=None: dt.FREQ.get(k, d)
 add_word = dt.add_word

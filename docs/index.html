@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jieba 中文分词：做最好的 Python 中文分词组件 &mdash; jieba 0.42.1 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="1. 功能简介" href="func-token.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> jieba
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="func-token.html">1. 功能简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_module.html">2. 模块列表</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">jieba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>jieba 中文分词：做最好的 Python 中文分词组件</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jieba-python">
+<h1>jieba 中文分词：做最好的 Python 中文分词组件<a class="headerlink" href="#jieba-python" title="永久链接至标题"></a></h1>
+<p>“Jieba” (Chinese for “to stutter”) Chinese text segmentation:
+built to be the best Python Chinese word segmentation module.</p>
+<p>Github: <a class="reference external" href="https://github.com/fxsjy/jieba">https://github.com/fxsjy/jieba</a></p>
+<p>Github-doc: <a class="reference external" href="https://github.com/shouldsee/jieba">https://github.com/shouldsee/jieba</a></p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="func-token.html">1. 功能简介</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="func-token.html#id2">1.1. 分词</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="func-token.html#jieba-cut-jieba-lcut">1.1.1. 不带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="func-token.html#jieba-posseg-cut-jieba-posseg-lcut">1.1.2. 带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.lcut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="func-token.html#jieba-cut-for-search">1.1.3. 适合用于搜索引擎构建倒排索引的分词，粒度比较细 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut_for_search()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="func-token.html#jieba-tokenizer-init">1.1.4. 新建自定义分词器，可用于同时使用不同词典。参见 <code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="func-token.html#id3">1.1.5. 备注</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="all_module.html">2. 模块列表</a></li>
+</ul>
+</div>
+<section id="id1">
+<h2>特点<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<ol class="arabic simple">
+<li><p>支持四种分词模式：</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>精确模式，试图将句子最精确地切开，适合文本分析；</p></li>
+<li><p>全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义；</p></li>
+<li><p>搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。</p></li>
+<li><p>paddle模式，利用PaddlePaddle深度学习框架，训练序列标注（双向GRU）网络模型实现分词。同时支持词性标注。
+paddle模式使用需安装paddlepaddle-tiny，<cite>pip install paddlepaddle-tiny==1.6.1</cite>。
+目前paddle模式支持jieba v0.40及以上版本。jieba v0.40以下版本，请升级jieba，
+<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jieba</span> <span class="pre">--upgrade</span></code>.
+<a class="reference external" href="https://www.paddlepaddle.org.cn/">PaddlePaddle官网</a></p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>支持繁体分词</p></li>
+<li><p>支持自定义词典</p></li>
+<li><p>MIT 授权协议</p></li>
+</ol>
+</section>
+</section>
+<section id="id2">
+<h1>安装说明<a class="headerlink" href="#id2" title="永久链接至标题"></a></h1>
+<p>代码对 Python 2/3 均兼容</p>
+<ul class="simple">
+<li><p>全自动安装：<cite>easy_install jieba</cite> 或者 <cite>pip install jieba</cite> / <cite>pip3 install jieba</cite></p></li>
+<li><p>半自动安装：先下载 <a class="reference external" href="http://pypi.python.org/pypi/jieba/">http://pypi.python.org/pypi/jieba/</a> ，解压后运行 <cite>python setup.py install</cite></p></li>
+<li><p>手动安装：将 jieba 目录放置于当前目录或者 site-packages 目录</p></li>
+<li><p>通过 <cite>import jieba</cite> 来引用</p></li>
+<li><p>如果需要使用paddle模式下的分词和词性标注功能，请先安装paddlepaddle-tiny，<cite>pip install paddlepaddle-tiny==1.6.1</cite>。</p></li>
+</ul>
+</section>
+<section id="id3">
+<h1>算法<a class="headerlink" href="#id3" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>基于前缀词典实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图 (DAG)</p></li>
+<li><p>采用了动态规划查找最大概率路径, 找出基于词频的最大切分组合</p></li>
+<li><p>对于未登录词，采用了基于汉字成词能力的 HMM 模型，使用了 Viterbi 算法</p></li>
+</ul>
+</section>
+<section id="id4">
+<h1>主要功能<a class="headerlink" href="#id4" title="永久链接至标题"></a></h1>
+<ul>
+<li><p><cite>jieba.posseg.cut(sentence, HMM=True, use_paddle=False)</cite> : 带词性的cut</p></li>
+<li><p><cite>jieba.cut(sentence, cut_all=False, HMM=True, use_paddle=False)</cite>: 不带词性的cut
+- 输入:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>sentence: 需要分词的字符串</p></li>
+<li><p>cut_all:  是否采用全模式</p></li>
+<li><p>HMM: HMM  是否使用 HMM 模型</p></li>
+<li><p>use_paddle: 是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>输出:
+- 一个分词结果的`generator`</p></li>
+</ul>
+</li>
+<li><p><cite>jieba.cut_for_search(sentence, HMM=True)</cite>:
+- 输入:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>sentence: 需要分词的字符串</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>HMM: 是否使用 HMM 模型
+- 适合用于搜索引擎构建倒排索引的分词，粒度比较细</p></li>
+<li><p>输出:
+- 一个分词结果的`generator`(?)</p></li>
+</ul>
+</li>
+<li><p><cite>jieba.Tokenizer(dictionary=DEFAULT_DICT)</cite>:
+- 作用: 新建自定义分词器，可用于同时使用不同词典。<cite>jieba.dt</cite> 为默认分词器，所有全局分词相关函数都是该分词器的映射。
+- 输入:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>dictionary: 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><cite>sentence</cite>: 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8</p></li>
+<li><p><cite>jieba.lcut</cite> 以及 <cite>jieba.lcut_for_search</cite> 直接返回 list</p></li>
+</ul>
+<p>代码示例</p>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a>python
+# encoding=utf-8
+import jieba</p>
+<p>jieba.enable_paddle()# 启动paddle模式。 0.40版之后开始支持，早期版本不支持
+strs=[“我来到北京清华大学”,”乒乓球拍卖完了”,”中国科学技术大学”]
+for str in strs:</p>
+<blockquote>
+<div><p>seg_list = jieba.cut(str,use_paddle=True) # 使用paddle模式
+print(“Paddle Mode: ” + ‘/’.join(list(seg_list)))</p>
+</div></blockquote>
+<p>seg_list = jieba.cut(“我来到北京清华大学”, cut_all=True)
+print(“Full Mode: ” + “/ “.join(seg_list))  # 全模式</p>
+<p>seg_list = jieba.cut(“我来到北京清华大学”, cut_all=False)
+print(“Default Mode: ” + “/ “.join(seg_list))  # 精确模式</p>
+<p>seg_list = jieba.cut(“他来到了网易杭研大厦”)  # 默认是精确模式
+print(”, “.join(seg_list))</p>
+<p>seg_list = jieba.cut_for_search(“小明硕士毕业于中国科学院计算所，后在日本京都大学深造”)  # 搜索引擎模式
+print(”, “.join(seg_list))
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>输出:</p>
+<blockquote>
+<div><p>【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学</p>
+<p>【精确模式】: 我/ 来到/ 北京/ 清华大学</p>
+<p>【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)</p>
+<p>【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造</p>
+</div></blockquote>
+<p>### 载入词典</p>
+<ul class="simple">
+<li><p>开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率</p></li>
+<li><p>用法： jieba.load_userdict(file_name) # file_name 为文件类对象或自定义词典的路径</p></li>
+<li><p>词典格式和 <cite>dict.txt</cite> 一样，一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒。<cite>file_name</cite> 若为路径或二进制方式打开的文件，则文件必须为 UTF-8 编码。</p></li>
+<li><p>词频省略时使用自动计算的能保证分出该词的词频。</p></li>
+</ul>
+<p><strong>例如：</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">创新办</span> <span class="pre">3</span> <span class="pre">i</span>
+<span class="pre">云计算</span> <span class="pre">5</span>
+<span class="pre">凱特琳</span> <span class="pre">nz</span>
+<span class="pre">台中</span>
+<span class="pre">`</span></code></p>
+<ul>
+<li><p>更改分词器（默认为 <cite>jieba.dt</cite>）的 <cite>tmp_dir</cite> 和 <cite>cache_file</cite> 属性，可分别指定缓存文件所在的文件夹及其文件名，用于受限的文件系统。</p></li>
+<li><p>范例：</p>
+<blockquote>
+<div><ul>
+<li><p>自定义词典：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/userdict.txt">https://github.com/fxsjy/jieba/blob/master/test/userdict.txt</a></p></li>
+<li><p>用法示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py">https://github.com/fxsjy/jieba/blob/master/test/test_userdict.py</a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>之前： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /</p></li>
+<li><p>加载自定义词库后：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>### 调整词典</p>
+<ul class="simple">
+<li><p>使用 <cite>add_word(word, freq=None, tag=None)</cite> 和 <cite>del_word(word)</cite> 可在程序中动态修改词典。</p></li>
+<li><p>使用 <cite>suggest_freq(segment, tune=True)</cite> 可调节单个词语的词频，使其能（或不能）被分出来。</p></li>
+<li><p>注意：自动计算的词频在使用 HMM 新词发现功能时可能无效。</p></li>
+</ul>
+<p>代码示例：</p>
+<p><code class="docutils literal notranslate"><span class="pre">`pycon</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('如果放到post中将出错。',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">如果/放到/post/中将/出错/。</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">jieba.suggest_freq(('中',</span> <span class="pre">'将'),</span> <span class="pre">True)</span>
+<span class="pre">494</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('如果放到post中将出错。',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">如果/放到/post/中/将/出错/。</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('「台中」正确应该不会被切开',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">「/台/中/」/正确/应该/不会/被/切开</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">jieba.suggest_freq('台中',</span> <span class="pre">True)</span>
+<span class="pre">69</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('「台中」正确应该不会被切开',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">「/台中/」/正确/应该/不会/被/切开</span>
+<span class="pre">`</span></code></p>
+<ul class="simple">
+<li><p>“通过用户自定义词典来增强歧义纠错能力” — <a class="reference external" href="https://github.com/fxsjy/jieba/issues/14">https://github.com/fxsjy/jieba/issues/14</a></p></li>
+</ul>
+<p>### 基于 TF-IDF 算法的关键词抽取</p>
+<p><cite>import jieba.analyse</cite></p>
+<ul class="simple">
+<li><p>jieba.analyse.extract_tags(sentence, topK=20, withWeight=False, allowPOS=())
+* sentence 为待提取的文本
+* topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
+* withWeight 为是否一并返回关键词权重值，默认值为 False
+* allowPOS 仅包括指定词性的词，默认值为空，即不筛选</p></li>
+<li><p>jieba.analyse.TFIDF(idf_path=None) 新建 TFIDF 实例，idf_path 为 IDF 频率文件</p></li>
+</ul>
+<p>代码示例 （关键词提取）</p>
+<p><a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py</a></p>
+<p>关键词提取所使用逆向文件频率（IDF）文本语料库可以切换成自定义语料库的路径</p>
+<ul class="simple">
+<li><p>用法： jieba.analyse.set_idf_path(file_name) # file_name为自定义语料库的路径</p></li>
+<li><p>自定义语料库示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big">https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big</a></p></li>
+<li><p>用法示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py</a></p></li>
+</ul>
+<p>关键词提取所使用停止词（Stop Words）文本语料库可以切换成自定义语料库的路径</p>
+<ul class="simple">
+<li><p>用法： jieba.analyse.set_stop_words(file_name) # file_name为自定义语料库的路径</p></li>
+<li><p>自定义语料库示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt">https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt</a></p></li>
+<li><p>用法示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py</a></p></li>
+</ul>
+<p>关键词一并返回关键词权重值示例</p>
+<ul class="simple">
+<li><p>用法示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py</a></p></li>
+</ul>
+<p>### 基于 TextRank 算法的关键词抽取</p>
+<ul class="simple">
+<li><p>jieba.analyse.textrank(sentence, topK=20, withWeight=False, allowPOS=(‘ns’, ‘n’, ‘vn’, ‘v’)) 直接使用，接口相同，注意默认过滤词性。</p></li>
+<li><p>jieba.analyse.TextRank() 新建自定义 TextRank 实例</p></li>
+</ul>
+<p>算法论文： [TextRank: Bringing Order into Texts](<a class="reference external" href="http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf</a>)</p>
+<p>#### 基本思想:</p>
+<ol class="arabic simple">
+<li><p>将待抽取关键词的文本进行分词</p></li>
+<li><p>以固定窗口大小(默认为5，通过span属性调整)，词之间的共现关系，构建图</p></li>
+<li><p>计算图中节点的PageRank，注意是无向带权图</p></li>
+</ol>
+<p>#### 使用示例:</p>
+<p>见 [test/demo.py](<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/demo.py">https://github.com/fxsjy/jieba/blob/master/test/demo.py</a>)</p>
+<ul class="simple">
+<li><p><cite>jieba.posseg.POSTokenizer(tokenizer=None)</cite> 新建自定义分词器，<cite>tokenizer</cite> 参数可指定内部使用的 <cite>jieba.Tokenizer</cite> 分词器。<cite>jieba.posseg.dt</cite> 为默认词性标注分词器。</p></li>
+<li><p>标注句子分词后每个词的词性，采用和 ictclas 兼容的标记法。</p></li>
+<li><p>除了jieba默认分词模式，提供paddle模式下的词性标注功能。paddle模式采用延迟加载方式，通过enable_paddle()安装paddlepaddle-tiny，并且import相关代码；</p></li>
+<li><p>用法示例</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">`pycon</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">import</span> <span class="pre">jieba</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">import</span> <span class="pre">jieba.posseg</span> <span class="pre">as</span> <span class="pre">pseg</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">words</span> <span class="pre">=</span> <span class="pre">pseg.cut(&quot;我爱北京天安门&quot;)</span> <span class="pre">#jieba默认模式</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">jieba.enable_paddle()</span> <span class="pre">#启动paddle模式。</span> <span class="pre">0.40版之后开始支持，早期版本不支持</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">words</span> <span class="pre">=</span> <span class="pre">pseg.cut(&quot;我爱北京天安门&quot;,use_paddle=True)</span> <span class="pre">#paddle模式</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">for</span> <span class="pre">word,</span> <span class="pre">flag</span> <span class="pre">in</span> <span class="pre">words:</span>
+<span class="pre">...</span>&#160;&#160;&#160; <span class="pre">print('%s</span> <span class="pre">%s'</span> <span class="pre">%</span> <span class="pre">(word,</span> <span class="pre">flag))</span>
+<span class="pre">...</span>
+<span class="pre">我</span> <span class="pre">r</span>
+<span class="pre">爱</span> <span class="pre">v</span>
+<span class="pre">北京</span> <span class="pre">ns</span>
+<span class="pre">天安门</span> <span class="pre">ns</span>
+<span class="pre">`</span></code></p>
+<p>paddle模式词性标注对应表如下：</p>
+<p>paddle模式词性和专名类别标签集合如下表，其中词性标签 24 个（小写字母），专名类别标签 4 个（大写字母）。</p>
+<div class="line-block">
+<div class="line">标签 | 含义     | 标签 | 含义     | 标签 | 含义     | 标签 | 含义     |</div>
+<div class="line">—- | ——– | —- | ——– | —- | ——– | —- | ——– |</div>
+<div class="line">n    | 普通名词 | f    | 方位名词 | s    | 处所名词 | t    | 时间     |</div>
+<div class="line">nr   | 人名     | ns   | 地名     | nt   | 机构名   | nw   | 作品名   |</div>
+<div class="line">nz   | 其他专名 | v    | 普通动词 | vd   | 动副词   | vn   | 名动词   |</div>
+<div class="line">a    | 形容词   | ad   | 副形词   | an   | 名形词   | d    | 副词     |</div>
+<div class="line">m    | 数量词   | q    | 量词     | r    | 代词     | p    | 介词     |</div>
+<div class="line">c    | 连词     | u    | 助词     | xc   | 其他虚词 | w    | 标点符号 |</div>
+<div class="line">PER  | 人名     | LOC  | 地名     | ORG  | 机构名   | TIME | 时间     |</div>
+</div>
+<ul class="simple">
+<li><p>原理：将目标文本按行分隔后，把各行文本分配到多个 Python 进程并行分词，然后归并结果，从而获得分词速度的可观提升</p></li>
+<li><p>基于 python 自带的 multiprocessing 模块，目前暂不支持 Windows</p></li>
+<li><dl class="simple">
+<dt>用法：</dt><dd><ul>
+<li><p><cite>jieba.enable_parallel(4)</cite> # 开启并行分词模式，参数为并行进程数</p></li>
+<li><p><cite>jieba.disable_parallel()</cite> # 关闭并行分词模式</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>例子：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py">https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py</a></p></li>
+<li><p>实验结果：在 4 核 3.4GHz Linux 机器上，对金庸全集进行精确分词，获得了 1MB/s 的速度，是单进程版的 3.3 倍。</p></li>
+<li><p><strong>注意</strong>：并行分词仅支持默认分词器 <cite>jieba.dt</cite> 和 <cite>jieba.posseg.dt</cite>。</p></li>
+</ul>
+<ul class="simple">
+<li><p>注意，输入参数只接受 unicode</p></li>
+<li><p>默认模式</p></li>
+</ul>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a>python
+result = jieba.tokenize(u’永和服装饰品有限公司’)
+for tk in result:</p>
+<blockquote>
+<div><p>print(“word %stt start: %d tt end:%d” % (tk[0],tk[1],tk[2]))</p>
+</div></blockquote>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a></p>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a>`
+word 永和                start: 0                end:2
+word 服装                start: 2                end:4
+word 饰品                start: 4                end:6
+word 有限公司            start: 6                end:10</p>
+<p><a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a></p>
+<ul class="simple">
+<li><p>搜索模式</p></li>
+</ul>
+<p><a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a>python
+result = jieba.tokenize(u’永和服装饰品有限公司’, mode=’search’)
+for tk in result:</p>
+<blockquote>
+<div><p>print(“word %stt start: %d tt end:%d” % (tk[0],tk[1],tk[2]))</p>
+</div></blockquote>
+<p><a href="#id31"><span class="problematic" id="id32">``</span></a><a href="#id33"><span class="problematic" id="id34">`</span></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">word</span> <span class="pre">永和</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:2</span>
+<span class="pre">word</span> <span class="pre">服装</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">2</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:4</span>
+<span class="pre">word</span> <span class="pre">饰品</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">4</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:6</span>
+<span class="pre">word</span> <span class="pre">有限</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">6</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:8</span>
+<span class="pre">word</span> <span class="pre">公司</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">8</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:10</span>
+<span class="pre">word</span> <span class="pre">有限公司</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">6</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:10</span>
+<span class="pre">`</span></code></p>
+<ul class="simple">
+<li><p>引用： <cite>from jieba.analyse import ChineseAnalyzer</cite></p></li>
+<li><p>用法示例：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py">https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py</a></p></li>
+</ul>
+<p>使用示例：<cite>python -m jieba news.txt &gt; cut_result.txt</cite></p>
+<p>命令行选项（翻译）：</p>
+<blockquote>
+<div><p>使用: python -m jieba [options] filename</p>
+<p>结巴命令行界面。</p>
+<dl>
+<dt>固定参数:</dt><dd><p>filename              输入文件</p>
+</dd>
+<dt>可选参数:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>显示此帮助信息并退出</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>-d [DELIM], –delimiter [DELIM]</dt><dd><p>使用 DELIM 分隔词语，而不是用默认的’ / ‘。
+若不指定 DELIM，则使用一个空格分隔。</p>
+</dd>
+<dt>-p [DELIM], –pos [DELIM]</dt><dd><p>启用词性标注；如果指定 DELIM，词语和词性之间
+用它分隔，否则用 _ 分隔</p>
+</dd>
+</dl>
+<dl class="option-list">
+<dt><kbd><span class="option">-D <var>DICT</var></span>, <span class="option">--dict <var>DICT</var></span></kbd></dt>
+<dd><p>使用 DICT 代替默认词典</p>
+</dd>
+<dt><kbd><span class="option">-u <var>USER_DICT</var></span>, <span class="option">--user-dict <var>USER_DICT</var></span></kbd></dt>
+<dd><p>使用 USER_DICT 作为附加词典，与默认词典或自定义词典配合使用</p>
+</dd>
+<dt><kbd><span class="option">-a</span>, <span class="option">--cut-all</span></kbd></dt>
+<dd><p>全模式分词（不支持词性标注）</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--no-hmm</span></kbd></dt>
+<dd><p>不使用隐含马尔可夫模型</p>
+</dd>
+<dt><kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></dt>
+<dd><p>不输出载入信息到 STDERR</p>
+</dd>
+<dt><kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></dt>
+<dd><p>显示版本信息并退出</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>如果没有指定文件名，则使用标准输入。</p>
+</div></blockquote>
+<p><cite>–help</cite> 选项输出：</p>
+<blockquote>
+<div><p>$&gt; python -m jieba –help
+Jieba command line interface.</p>
+<dl>
+<dt>positional arguments:</dt><dd><p>filename              input file</p>
+</dd>
+<dt>optional arguments:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>-d [DELIM], –delimiter [DELIM]</dt><dd><p>use DELIM instead of ‘ / ‘ for word delimiter; or a
+space if it is used without DELIM</p>
+</dd>
+<dt>-p [DELIM], –pos [DELIM]</dt><dd><p>enable POS tagging; if DELIM is specified, use DELIM
+instead of ‘_’ for POS delimiter</p>
+</dd>
+</dl>
+<dl class="option-list">
+<dt><kbd><span class="option">-D <var>DICT</var></span>, <span class="option">--dict <var>DICT</var></span></kbd></dt>
+<dd><p>use DICT as dictionary</p>
+</dd>
+<dt><kbd><span class="option">-u <var>USER_DICT</var></span>, <span class="option">--user-dict <var>USER_DICT</var></span></kbd></dt>
+<dd><p>use USER_DICT together with the default dictionary or
+DICT (if specified)</p>
+</dd>
+<dt><kbd><span class="option">-a</span>, <span class="option">--cut-all</span></kbd></dt>
+<dd><p>full pattern cutting (ignored with POS tagging)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--no-hmm</span></kbd></dt>
+<dd><p>don’t use the Hidden Markov Model</p>
+</dd>
+<dt><kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></dt>
+<dd><p>don’t print loading messages to stderr</p>
+</dd>
+<dt><kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></dt>
+<dd><p>show program’s version number and exit</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>If no filename specified, use STDIN instead.</p>
+</div></blockquote>
+<p>jieba 采用延迟加载，<cite>import jieba</cite> 和 <cite>jieba.Tokenizer()</cite> 不会立即触发词典的加载，一旦有必要才开始加载词典构建前缀字典。如果你想手工初始 jieba，也可以手动初始化。</p>
+<blockquote>
+<div><p>import jieba
+jieba.initialize()  # 手动初始化（可选）</p>
+</div></blockquote>
+<p>在 0.28 之前的版本是不能指定主词典的路径的，有了延迟加载机制后，你可以改变主词典的路径:</p>
+<blockquote>
+<div><p>jieba.set_dictionary(‘data/dict.txt.big’)</p>
+</div></blockquote>
+<p>例子： <a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py">https://github.com/fxsjy/jieba/blob/master/test/test_change_dictpath.py</a></p>
+</section>
+<section id="id35">
+<h1>其他词典<a class="headerlink" href="#id35" title="永久链接至标题"></a></h1>
+<p>1. 占用内存较小的词典文件
+<a class="reference external" href="https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small">https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small</a></p>
+<p>2. 支持繁体分词更好的词典文件
+<a class="reference external" href="https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big">https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big</a></p>
+<p>下载你所需要的词典，然后覆盖 jieba/dict.txt 即可；或者用 <cite>jieba.set_dictionary(‘data/dict.txt.big’)</cite></p>
+</section>
+<section id="id36">
+<h1>其他语言实现<a class="headerlink" href="#id36" title="永久链接至标题"></a></h1>
+<p>作者：piaolingxue
+地址：<a class="reference external" href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a></p>
+<p>作者：yanyiwu
+地址：<a class="reference external" href="https://github.com/yanyiwu/cppjieba">https://github.com/yanyiwu/cppjieba</a></p>
+<p>作者：messense, MnO2
+地址：<a class="reference external" href="https://github.com/messense/jieba-rs">https://github.com/messense/jieba-rs</a></p>
+<p>作者：yanyiwu
+地址：<a class="reference external" href="https://github.com/yanyiwu/nodejieba">https://github.com/yanyiwu/nodejieba</a></p>
+<p>作者：falood
+地址：<a class="reference external" href="https://github.com/falood/exjieba">https://github.com/falood/exjieba</a></p>
+<p>作者：qinwf
+地址：<a class="reference external" href="https://github.com/qinwf/jiebaR">https://github.com/qinwf/jiebaR</a></p>
+<p>作者：yanyiwu
+地址：<a class="reference external" href="https://github.com/yanyiwu/iosjieba">https://github.com/yanyiwu/iosjieba</a></p>
+<p>作者：fukuball
+地址：<a class="reference external" href="https://github.com/fukuball/jieba-php">https://github.com/fukuball/jieba-php</a></p>
+<p>作者：anderscui
+地址：<a class="reference external" href="https://github.com/anderscui/jieba.NET/">https://github.com/anderscui/jieba.NET/</a></p>
+<ul class="simple">
+<li><p>作者: wangbin 地址: <a class="reference external" href="https://github.com/wangbin/jiebago">https://github.com/wangbin/jiebago</a></p></li>
+<li><p>作者: yanyiwu 地址: <a class="reference external" href="https://github.com/yanyiwu/gojieba">https://github.com/yanyiwu/gojieba</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>作者   Dongliang.W  地址：<a class="reference external" href="https://github.com/452896915/jieba-android">https://github.com/452896915/jieba-android</a></p></li>
+</ul>
+</section>
+<section id="id37">
+<h1>友情链接<a class="headerlink" href="#id37" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/baidu/lac">https://github.com/baidu/lac</a>   百度中文词法分析（分词+词性+专名）系统</p></li>
+<li><p><a class="reference external" href="https://github.com/baidu/AnyQ">https://github.com/baidu/AnyQ</a>  百度FAQ自动问答系统</p></li>
+<li><p><a class="reference external" href="https://github.com/baidu/Senta">https://github.com/baidu/Senta</a> 百度情感识别系统</p></li>
+</ul>
+</section>
+<section id="id38">
+<h1>系统集成<a class="headerlink" href="#id38" title="永久链接至标题"></a></h1>
+<ol class="arabic simple">
+<li><p>Solr: <a class="reference external" href="https://github.com/sing1ee/jieba-solr">https://github.com/sing1ee/jieba-solr</a></p></li>
+</ol>
+</section>
+<section id="id39">
+<h1>分词速度<a class="headerlink" href="#id39" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>1.5 MB / Second in Full Mode</p></li>
+<li><p>400 KB / Second in Default Mode</p></li>
+<li><p>测试环境: Intel(R) Core(TM) i7-2600 CPU &#64; 3.4GHz；《围城》.txt</p></li>
+</ul>
+</section>
+<section id="id40">
+<h1>常见问题<a class="headerlink" href="#id40" title="永久链接至标题"></a></h1>
+<p>## 1. 模型的数据是如何生成的？</p>
+<p>详见： <a class="reference external" href="https://github.com/fxsjy/jieba/issues/7">https://github.com/fxsjy/jieba/issues/7</a></p>
+<p>## 2. “台中”总是被切成“台 中”？（以及类似情况）</p>
+<p>P(台中) ＜ P(台)×P(中)，“台中”词频不够导致其成词概率较低</p>
+<p>解决方法：强制调高词频</p>
+<p><cite>jieba.add_word(‘台中’)</cite> 或者 <cite>jieba.suggest_freq(‘台中’, True)</cite></p>
+<p>## 3. “今天天气 不错”应该被切成“今天 天气 不错”？（以及类似情况）</p>
+<p>解决方法：强制调低词频</p>
+<p><cite>jieba.suggest_freq((‘今天’, ‘天气’), True)</cite></p>
+<p>或者直接删除该词 <cite>jieba.del_word(‘今天天气’)</cite></p>
+<p>## 4. 切出了词典中没有的词语，效果不理想？</p>
+<p>解决方法：关闭新词发现</p>
+<p><cite>jieba.cut(‘丰田太省了’, HMM=False)</cite>
+<cite>jieba.cut(‘我们中出了一个叛徒’, HMM=False)</cite></p>
+<p><strong>更多问题请点击</strong>：<a class="reference external" href="https://github.com/fxsjy/jieba/issues?sort=updated&amp;state=closed">https://github.com/fxsjy/jieba/issues?sort=updated&amp;state=closed</a></p>
+</section>
+<section id="id41">
+<h1>修订历史<a class="headerlink" href="#id41" title="永久链接至标题"></a></h1>
+<p><a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/Changelog">https://github.com/fxsjy/jieba/blob/master/Changelog</a></p>
+</section>
+<hr class="docutils" />
+<section id="jieba">
+<h1>jieba<a class="headerlink" href="#jieba" title="永久链接至标题"></a></h1>
+<p>“Jieba” (Chinese for “to stutter”) Chinese text segmentation: built to be the best Python Chinese word segmentation module.</p>
+</section>
+<section id="features">
+<h1>Features<a class="headerlink" href="#features" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>Support three types of segmentation mode:</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Accurate Mode attempts to cut the sentence into the most accurate segmentations, which is suitable for text analysis.</p></li>
+<li><p>Full Mode gets all the possible words from the sentence. Fast but not accurate.</p></li>
+<li><p>Search Engine Mode, based on the Accurate Mode, attempts to cut long words into several short words, which can raise the recall rate. Suitable for search engines.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Supports Traditional Chinese</p></li>
+<li><p>Supports customized dictionaries</p></li>
+<li><p>MIT License</p></li>
+</ul>
+</section>
+<section id="online-demo">
+<h1>Online demo<a class="headerlink" href="#online-demo" title="永久链接至标题"></a></h1>
+<p><a class="reference external" href="http://jiebademo.ap01.aws.af.cm/">http://jiebademo.ap01.aws.af.cm/</a></p>
+<p>(Powered by Appfog)</p>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>Fully automatic installation: <cite>easy_install jieba</cite> or <cite>pip install jieba</cite></p></li>
+<li><p>Semi-automatic installation: Download <a class="reference external" href="http://pypi.python.org/pypi/jieba/">http://pypi.python.org/pypi/jieba/</a> , run <cite>python setup.py install</cite> after extracting.</p></li>
+<li><p>Manual installation: place the <cite>jieba</cite> directory in the current directory or python <cite>site-packages</cite> directory.</p></li>
+<li><p><cite>import jieba</cite>.</p></li>
+</ul>
+</section>
+<section id="algorithm">
+<h1>Algorithm<a class="headerlink" href="#algorithm" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>Based on a prefix dictionary structure to achieve efficient word graph scanning. Build a directed acyclic graph (DAG) for all possible word combinations.</p></li>
+<li><p>Use dynamic programming to find the most probable combination based on the word frequency.</p></li>
+<li><p>For unknown words, a HMM-based model is used with the Viterbi algorithm.</p></li>
+</ul>
+</section>
+<section id="main-functions">
+<h1>Main Functions<a class="headerlink" href="#main-functions" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>The <cite>jieba.cut</cite> function accepts three input parameters: the first parameter is the string to be cut; the second parameter is <cite>cut_all</cite>, controlling the cut mode; the third parameter is to control whether to use the Hidden Markov Model.</p></li>
+<li><p><cite>jieba.cut_for_search</cite> accepts two parameter: the string to be cut; whether to use the Hidden Markov Model. This will cut the sentence into short words suitable for search engines.</p></li>
+<li><p>The input string can be an unicode/str object, or a str/bytes object which is encoded in UTF-8 or GBK. Note that using GBK encoding is not recommended because it may be unexpectly decoded as UTF-8.</p></li>
+<li><p><cite>jieba.cut</cite> and <cite>jieba.cut_for_search</cite> returns an generator, from which you can use a <cite>for</cite> loop to get the segmentation result (in unicode).</p></li>
+<li><p><cite>jieba.lcut</cite> and <cite>jieba.lcut_for_search</cite> returns a list.</p></li>
+<li><p><cite>jieba.Tokenizer(dictionary=DEFAULT_DICT)</cite> creates a new customized Tokenizer, which enables you to use different dictionaries at the same time. <cite>jieba.dt</cite> is the default Tokenizer, to which almost all global functions are mapped.</p></li>
+</ul>
+<p><strong>Code example: segmentation</strong></p>
+<p><a href="#id42"><span class="problematic" id="id43">``</span></a><a href="#id44"><span class="problematic" id="id45">`</span></a>python
+#encoding=utf-8
+import jieba</p>
+<p>seg_list = jieba.cut(“我来到北京清华大学”, cut_all=True)
+print(“Full Mode: ” + “/ “.join(seg_list))  # 全模式</p>
+<p>seg_list = jieba.cut(“我来到北京清华大学”, cut_all=False)
+print(“Default Mode: ” + “/ “.join(seg_list))  # 默认模式</p>
+<p>seg_list = jieba.cut(“他来到了网易杭研大厦”)
+print(”, “.join(seg_list))</p>
+<p>seg_list = jieba.cut_for_search(“小明硕士毕业于中国科学院计算所，后在日本京都大学深造”)  # 搜索引擎模式
+print(”, “.join(seg_list))
+<a href="#id46"><span class="problematic" id="id47">``</span></a><a href="#id48"><span class="problematic" id="id49">`</span></a></p>
+<p>Output:</p>
+<blockquote>
+<div><p>[Full Mode]: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学</p>
+<p>[Accurate Mode]: 我/ 来到/ 北京/ 清华大学</p>
+<p>[Unknown Words Recognize] 他, 来到, 了, 网易, 杭研, 大厦    (In this case, “杭研” is not in the dictionary, but is identified by the Viterbi algorithm)</p>
+<p>[Search Engine Mode]： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造</p>
+</div></blockquote>
+<p>### Load dictionary</p>
+<ul class="simple">
+<li><p>Developers can specify their own custom dictionary to be included in the jieba default dictionary. Jieba is able to identify new words, but you can add your own new words can ensure a higher accuracy.</p></li>
+<li><p>Usage： <cite>jieba.load_userdict(file_name)</cite> # file_name is a file-like object or the path of the custom dictionary</p></li>
+<li><p>The dictionary format is the same as that of <cite>dict.txt</cite>: one word per line; each line is divided into three parts separated by a space: word, word frequency, POS tag. If <cite>file_name</cite> is a path or a file opened in binary mode, the dictionary must be UTF-8 encoded.</p></li>
+<li><p>The word frequency and POS tag can be omitted respectively. The word frequency will be filled with a suitable value if omitted.</p></li>
+</ul>
+<p><strong>For example:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">创新办</span> <span class="pre">3</span> <span class="pre">i</span>
+<span class="pre">云计算</span> <span class="pre">5</span>
+<span class="pre">凱特琳</span> <span class="pre">nz</span>
+<span class="pre">台中</span>
+<span class="pre">`</span></code></p>
+<ul>
+<li><p>Change a Tokenizer’s <cite>tmp_dir</cite> and <cite>cache_file</cite> to specify the path of the cache file, for using on a restricted file system.</p></li>
+<li><p>Example:</p>
+<blockquote>
+<div><p>云计算 5
+李小福 2
+创新办 3</p>
+<p>[Before]： 李小福 / 是 / 创新 / 办 / 主任 / 也 / 是 / 云 / 计算 / 方面 / 的 / 专家 /</p>
+<p>[After]：　李小福 / 是 / 创新办 / 主任 / 也 / 是 / 云计算 / 方面 / 的 / 专家 /</p>
+</div></blockquote>
+</li>
+</ul>
+<p>### Modify dictionary</p>
+<ul class="simple">
+<li><p>Use <cite>add_word(word, freq=None, tag=None)</cite> and <cite>del_word(word)</cite> to modify the dictionary dynamically in programs.</p></li>
+<li><p>Use <cite>suggest_freq(segment, tune=True)</cite> to adjust the frequency of a single word so that it can (or cannot) be segmented.</p></li>
+<li><p>Note that HMM may affect the final result.</p></li>
+</ul>
+<p>Example:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`pycon</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('如果放到post中将出错。',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">如果/放到/post/中将/出错/。</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">jieba.suggest_freq(('中',</span> <span class="pre">'将'),</span> <span class="pre">True)</span>
+<span class="pre">494</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('如果放到post中将出错。',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">如果/放到/post/中/将/出错/。</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('「台中」正确应该不会被切开',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">「/台/中/」/正确/应该/不会/被/切开</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">jieba.suggest_freq('台中',</span> <span class="pre">True)</span>
+<span class="pre">69</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print('/'.join(jieba.cut('「台中」正确应该不会被切开',</span> <span class="pre">HMM=False)))</span>
+<span class="pre">「/台中/」/正确/应该/不会/被/切开</span>
+<span class="pre">`</span></code></p>
+<p><cite>import jieba.analyse</cite></p>
+<ul class="simple">
+<li><p><cite>jieba.analyse.extract_tags(sentence, topK=20, withWeight=False, allowPOS=())</cite>
+* <cite>sentence</cite>: the text to be extracted
+* <cite>topK</cite>: return how many keywords with the highest TF/IDF weights. The default value is 20
+* <cite>withWeight</cite>: whether return TF/IDF weights with the keywords. The default value is False
+* <cite>allowPOS</cite>: filter words with which POSs are included. Empty for no filtering.</p></li>
+<li><p><cite>jieba.analyse.TFIDF(idf_path=None)</cite> creates a new TFIDF instance, <cite>idf_path</cite> specifies IDF file path.</p></li>
+</ul>
+<p>Example (keyword extraction)</p>
+<p><a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py</a></p>
+<p>Developers can specify their own custom IDF corpus in jieba keyword extraction</p>
+<ul class="simple">
+<li><p>Usage： <cite>jieba.analyse.set_idf_path(file_name) # file_name is the path for the custom corpus</cite></p></li>
+<li><p>Custom Corpus Sample：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big">https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big</a></p></li>
+<li><p>Sample Code：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py</a></p></li>
+</ul>
+<p>Developers can specify their own custom stop words corpus in jieba keyword extraction</p>
+<ul class="simple">
+<li><p>Usage： <cite>jieba.analyse.set_stop_words(file_name) # file_name is the path for the custom corpus</cite></p></li>
+<li><p>Custom Corpus Sample：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt">https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt</a></p></li>
+<li><p>Sample Code：<a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py">https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py</a></p></li>
+</ul>
+<p>There’s also a [TextRank](<a class="reference external" href="http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf</a>) implementation available.</p>
+<p>Use: <cite>jieba.analyse.textrank(sentence, topK=20, withWeight=False, allowPOS=(‘ns’, ‘n’, ‘vn’, ‘v’))</cite></p>
+<p>Note that it filters POS by default.</p>
+<p><cite>jieba.analyse.TextRank()</cite> creates a new TextRank instance.</p>
+<ul class="simple">
+<li><p><cite>jieba.posseg.POSTokenizer(tokenizer=None)</cite> creates a new customized Tokenizer. <cite>tokenizer</cite> specifies the jieba.Tokenizer to internally use. <cite>jieba.posseg.dt</cite> is the default POSTokenizer.</p></li>
+<li><p>Tags the POS of each word after segmentation, using labels compatible with ictclas.</p></li>
+<li><p>Example:</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">`pycon</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">import</span> <span class="pre">jieba.posseg</span> <span class="pre">as</span> <span class="pre">pseg</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">words</span> <span class="pre">=</span> <span class="pre">pseg.cut(&quot;我爱北京天安门&quot;)</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">for</span> <span class="pre">w</span> <span class="pre">in</span> <span class="pre">words:</span>
+<span class="pre">...</span>&#160;&#160;&#160; <span class="pre">print('%s</span> <span class="pre">%s'</span> <span class="pre">%</span> <span class="pre">(w.word,</span> <span class="pre">w.flag))</span>
+<span class="pre">...</span>
+<span class="pre">我</span> <span class="pre">r</span>
+<span class="pre">爱</span> <span class="pre">v</span>
+<span class="pre">北京</span> <span class="pre">ns</span>
+<span class="pre">天安门</span> <span class="pre">ns</span>
+<span class="pre">`</span></code></p>
+<ul class="simple">
+<li><p>Principle: Split target text by line, assign the lines into multiple Python processes, and then merge the results, which is considerably faster.</p></li>
+<li><p>Based on the multiprocessing module of Python.</p></li>
+<li><dl class="simple">
+<dt>Usage:</dt><dd><ul>
+<li><p><cite>jieba.enable_parallel(4)</cite> # Enable parallel processing. The parameter is the number of processes.</p></li>
+<li><p><cite>jieba.disable_parallel()</cite> # Disable parallel processing.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Example:</dt><dd><p><a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py">https://github.com/fxsjy/jieba/blob/master/test/parallel/test_file.py</a></p>
+</dd>
+</dl>
+</li>
+<li><p>Result: On a four-core 3.4GHz Linux machine, do accurate word segmentation on Complete Works of Jin Yong, and the speed reaches 1MB/s, which is 3.3 times faster than the single-process version.</p></li>
+<li><p><strong>Note</strong> that parallel processing supports only default tokenizers, <cite>jieba.dt</cite> and <cite>jieba.posseg.dt</cite>.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The input must be unicode</p></li>
+<li><p>Default mode</p></li>
+</ul>
+<p><a href="#id50"><span class="problematic" id="id51">``</span></a><a href="#id52"><span class="problematic" id="id53">`</span></a>python
+result = jieba.tokenize(u’永和服装饰品有限公司’)
+for tk in result:</p>
+<blockquote>
+<div><p>print(“word %stt start: %d tt end:%d” % (tk[0],tk[1],tk[2]))</p>
+</div></blockquote>
+<p><a href="#id54"><span class="problematic" id="id55">``</span></a><a href="#id56"><span class="problematic" id="id57">`</span></a></p>
+<p><a href="#id58"><span class="problematic" id="id59">``</span></a>`
+word 永和                start: 0                end:2
+word 服装                start: 2                end:4
+word 饰品                start: 4                end:6
+word 有限公司            start: 6                end:10</p>
+<p><a href="#id60"><span class="problematic" id="id61">``</span></a><a href="#id62"><span class="problematic" id="id63">`</span></a></p>
+<ul class="simple">
+<li><p>Search mode</p></li>
+</ul>
+<p><a href="#id64"><span class="problematic" id="id65">``</span></a><a href="#id66"><span class="problematic" id="id67">`</span></a>python
+result = jieba.tokenize(u’永和服装饰品有限公司’,mode=’search’)
+for tk in result:</p>
+<blockquote>
+<div><p>print(“word %stt start: %d tt end:%d” % (tk[0],tk[1],tk[2]))</p>
+</div></blockquote>
+<p><a href="#id68"><span class="problematic" id="id69">``</span></a><a href="#id70"><span class="problematic" id="id71">`</span></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">word</span> <span class="pre">永和</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:2</span>
+<span class="pre">word</span> <span class="pre">服装</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">2</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:4</span>
+<span class="pre">word</span> <span class="pre">饰品</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">4</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:6</span>
+<span class="pre">word</span> <span class="pre">有限</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">6</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:8</span>
+<span class="pre">word</span> <span class="pre">公司</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">8</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:10</span>
+<span class="pre">word</span> <span class="pre">有限公司</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">start:</span> <span class="pre">6</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">end:10</span>
+<span class="pre">`</span></code></p>
+<ul class="simple">
+<li><p><cite>from jieba.analyse import ChineseAnalyzer</cite></p></li>
+<li><p>Example: <a class="reference external" href="https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py">https://github.com/fxsjy/jieba/blob/master/test/test_whoosh.py</a></p></li>
+</ul>
+<blockquote>
+<div><p>$&gt; python -m jieba –help
+Jieba command line interface.</p>
+<dl>
+<dt>positional arguments:</dt><dd><p>filename              input file</p>
+</dd>
+<dt>optional arguments:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>-d [DELIM], –delimiter [DELIM]</dt><dd><p>use DELIM instead of ‘ / ‘ for word delimiter; or a
+space if it is used without DELIM</p>
+</dd>
+<dt>-p [DELIM], –pos [DELIM]</dt><dd><p>enable POS tagging; if DELIM is specified, use DELIM
+instead of ‘_’ for POS delimiter</p>
+</dd>
+</dl>
+<dl class="option-list">
+<dt><kbd><span class="option">-D <var>DICT</var></span>, <span class="option">--dict <var>DICT</var></span></kbd></dt>
+<dd><p>use DICT as dictionary</p>
+</dd>
+<dt><kbd><span class="option">-u <var>USER_DICT</var></span>, <span class="option">--user-dict <var>USER_DICT</var></span></kbd></dt>
+<dd><p>use USER_DICT together with the default dictionary or
+DICT (if specified)</p>
+</dd>
+<dt><kbd><span class="option">-a</span>, <span class="option">--cut-all</span></kbd></dt>
+<dd><p>full pattern cutting (ignored with POS tagging)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--no-hmm</span></kbd></dt>
+<dd><p>don’t use the Hidden Markov Model</p>
+</dd>
+<dt><kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></dt>
+<dd><p>don’t print loading messages to stderr</p>
+</dd>
+<dt><kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></dt>
+<dd><p>show program’s version number and exit</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>If no filename specified, use STDIN instead.</p>
+</div></blockquote>
+<p>By default, Jieba don’t build the prefix dictionary unless it’s necessary. This takes 1-3 seconds, after which it is not initialized again. If you want to initialize Jieba manually, you can call:</p>
+<blockquote>
+<div><p>import jieba
+jieba.initialize()  # (optional)</p>
+</div></blockquote>
+<p>You can also specify the dictionary (not supported before version 0.28) :</p>
+<blockquote>
+<div><p>jieba.set_dictionary(‘data/dict.txt.big’)</p>
+</div></blockquote>
+</section>
+<section id="using-other-dictionaries">
+<h1>Using Other Dictionaries<a class="headerlink" href="#using-other-dictionaries" title="永久链接至标题"></a></h1>
+<p>It is possible to use your own dictionary with Jieba, and there are also two dictionaries ready for download:</p>
+<p>1. A smaller dictionary for a smaller memory footprint:
+<a class="reference external" href="https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small">https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.small</a></p>
+<p>2. There is also a bigger dictionary that has better support for traditional Chinese (繁體):
+<a class="reference external" href="https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big">https://github.com/fxsjy/jieba/raw/master/extra_dict/dict.txt.big</a></p>
+<p>By default, an in-between dictionary is used, called <cite>dict.txt</cite> and included in the distribution.</p>
+<p>In either case, download the file you want, and then call <cite>jieba.set_dictionary(‘data/dict.txt.big’)</cite> or just replace the existing <cite>dict.txt</cite>.</p>
+</section>
+<section id="segmentation-speed">
+<h1>Segmentation speed<a class="headerlink" href="#segmentation-speed" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p>1.5 MB / Second in Full Mode</p></li>
+<li><p>400 KB / Second in Default Mode</p></li>
+<li><p>Test Env: Intel(R) Core(TM) i7-2600 CPU &#64; 3.4GHz；《围城》.txt</p></li>
+</ul>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="永久链接至标题"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">模块索引</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">搜索页面</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="func-token.html" class="btn btn-neutral float-right" title="1. 功能简介" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2022, fxsjy with 39 other contributors.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

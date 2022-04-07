@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. 模块列表 &mdash; jieba 0.42.1 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="1. 功能简介" href="func-token.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> jieba
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="func-token.html">1. 功能简介</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 模块列表</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jieba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">2. </span>模块列表</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/all_module.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-jieba">
+<span id="id1"></span><h1><span class="section-number">2. </span>模块列表<a class="headerlink" href="#module-jieba" title="永久链接至标题"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.setLogLevel">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">setLogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.setLogLevel" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jieba.Tokenizer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">Tokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.__init__" title="永久链接至目标"></a></dt>
+<dd><p>新建自定义分词器，可用于同时使用不同词典。</p>
+<p><cite>jieba.dt</cite> 为默认分词器，所有全局分词相关函数都是该分词器的映射。</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.gen_pfdict">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gen_pfdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.gen_pfdict" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.initialize" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.check_initialized">
+<span class="sig-name descname"><span class="pre">check_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.check_initialized" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DAG</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.calc" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.get_DAG">
+<span class="sig-name descname"><span class="pre">get_DAG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.get_DAG" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.cut" title="永久链接至目标"></a></dt>
+<dd><blockquote>
+<div><p>对序列进行不带词性的切分</p>
+<p>The main function that segments an entire sentence that contains
+Chinese characters into separated words.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> (<em>str/unicode</em>) – 需要分词的字符串
+The str(unicode) to be segmented.</p></li>
+<li><p><strong>HMM</strong> – 是否使用HMM模型.
+Whether to use the Hidden Markov Model or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个遍历结果的生成器,每个元素为str/unicode.
+A generator that iterates through the tokenized str/unicode</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>generator[str/unicode]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.cut_for_search">
+<span class="sig-name descname"><span class="pre">cut_for_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.cut_for_search" title="永久链接至目标"></a></dt>
+<dd><p>Finer segmentation for search engines.
+适合用于搜索引擎构建倒排索引的分词，粒度比较细</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> – 需要分词的字符串</p></li>
+<li><p><strong>HMM</strong> – 是否使用 HMM 模型</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个分词结果的`generator`(?)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.lcut">
+<span class="sig-name descname"><span class="pre">lcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.lcut" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.lcut_for_search">
+<span class="sig-name descname"><span class="pre">lcut_for_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.lcut_for_search" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.get_dict_file">
+<span class="sig-name descname"><span class="pre">get_dict_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.get_dict_file" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.load_userdict">
+<span class="sig-name descname"><span class="pre">load_userdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.load_userdict" title="永久链接至目标"></a></dt>
+<dd><p>Load personalized dict to improve detect rate.</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>f<span class="classifier">A plain text file contains words and their ocurrences.</span></dt><dd><p>Can be a file-like object, or the path of the dictionary file,
+whose encoding must be utf-8.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Structure of dict file:
+word1 freq1 word_type1
+word2 freq2 word_type2
+…
+Word type may be ignored</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.add_word">
+<span class="sig-name descname"><span class="pre">add_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.add_word" title="永久链接至目标"></a></dt>
+<dd><p>Add a word to dictionary.</p>
+<p>freq and tag can be omitted, freq defaults to be a calculated value
+that ensures the word can be cut out.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.del_word">
+<span class="sig-name descname"><span class="pre">del_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.del_word" title="永久链接至目标"></a></dt>
+<dd><p>Convenient function for deleting a word.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.suggest_freq">
+<span class="sig-name descname"><span class="pre">suggest_freq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tune</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.suggest_freq" title="永久链接至目标"></a></dt>
+<dd><p>Suggest word frequency to force the characters in a word to be
+joined or splitted.</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>segment<span class="classifier">The segments that the word is expected to be cut into,</span></dt><dd><p>If the word should be treated as a whole, use a str.</p>
+</dd>
+</dl>
+</li>
+<li><p>tune : If True, tune the word frequency.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Note that HMM may affect the final result. If the result doesn’t change,
+set HMM=False.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.tokenize">
+<span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unicode_sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.tokenize" title="永久链接至目标"></a></dt>
+<dd><p>Tokenize a sentence and yields tuples of (word, start, end)</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><p>sentence: the str(unicode) to be segmented.</p></li>
+<li><p>mode: “default” or “search”, “search” is for finer segmentation.</p></li>
+<li><p>HMM: whether to use the Hidden Markov Model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.Tokenizer.set_dictionary">
+<span class="sig-name descname"><span class="pre">set_dictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer.set_dictionary" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.get_FREQ">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">get_FREQ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.get_FREQ" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.add_word">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">add_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.add_word" title="永久链接至目标"></a></dt>
+<dd><p>Add a word to dictionary.</p>
+<p>freq and tag can be omitted, freq defaults to be a calculated value
+that ensures the word can be cut out.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.calc">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DAG</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.calc" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.cut">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.cut" title="永久链接至目标"></a></dt>
+<dd><blockquote>
+<div><p>对序列进行不带词性的切分</p>
+<p>The main function that segments an entire sentence that contains
+Chinese characters into separated words.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> (<em>str/unicode</em>) – 需要分词的字符串
+The str(unicode) to be segmented.</p></li>
+<li><p><strong>HMM</strong> – 是否使用HMM模型.
+Whether to use the Hidden Markov Model or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个遍历结果的生成器,每个元素为str/unicode.
+A generator that iterates through the tokenized str/unicode</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>generator[str/unicode]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.lcut">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">lcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.lcut" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.cut_for_search">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">cut_for_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.cut_for_search" title="永久链接至目标"></a></dt>
+<dd><p>Finer segmentation for search engines.
+适合用于搜索引擎构建倒排索引的分词，粒度比较细</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> – 需要分词的字符串</p></li>
+<li><p><strong>HMM</strong> – 是否使用 HMM 模型</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个分词结果的`generator`(?)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.lcut_for_search">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">lcut_for_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.lcut_for_search" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.del_word">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">del_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.del_word" title="永久链接至目标"></a></dt>
+<dd><p>Convenient function for deleting a word.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.get_DAG">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">get_DAG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.get_DAG" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.get_dict_file">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">get_dict_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.get_dict_file" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.initialize">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.initialize" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.load_userdict">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">load_userdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.load_userdict" title="永久链接至目标"></a></dt>
+<dd><p>Load personalized dict to improve detect rate.</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>f<span class="classifier">A plain text file contains words and their ocurrences.</span></dt><dd><p>Can be a file-like object, or the path of the dictionary file,
+whose encoding must be utf-8.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Structure of dict file:
+word1 freq1 word_type1
+word2 freq2 word_type2
+…
+Word type may be ignored</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.set_dictionary">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">set_dictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.set_dictionary" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.suggest_freq">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">suggest_freq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tune</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.suggest_freq" title="永久链接至目标"></a></dt>
+<dd><p>Suggest word frequency to force the characters in a word to be
+joined or splitted.</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>segment<span class="classifier">The segments that the word is expected to be cut into,</span></dt><dd><p>If the word should be treated as a whole, use a str.</p>
+</dd>
+</dl>
+</li>
+<li><p>tune : If True, tune the word frequency.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Note that HMM may affect the final result. If the result doesn’t change,
+set HMM=False.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.tokenize">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unicode_sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.tokenize" title="永久链接至目标"></a></dt>
+<dd><p>Tokenize a sentence and yields tuples of (word, start, end)</p>
+<dl class="simple">
+<dt>Parameter:</dt><dd><ul class="simple">
+<li><p>sentence: the str(unicode) to be segmented.</p></li>
+<li><p>mode: “default” or “search”, “search” is for finer segmentation.</p></li>
+<li><p>HMM: whether to use the Hidden Markov Model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.enable_parallel">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">enable_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.enable_parallel" title="永久链接至目标"></a></dt>
+<dd><p>Change the module’s <cite>cut</cite> and <cite>cut_for_search</cite> functions to the
+parallel version.</p>
+<p>Note that this only works using dt, custom Tokenizer
+instances are not supported.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.disable_parallel">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">disable_parallel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.disable_parallel" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-jieba.posseg"></span><dl class="py function">
+<dt class="sig sig-object py" id="jieba.posseg.load_model">
+<span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.load_model" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jieba.posseg.pair">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.pair" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.pair.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.pair.__init__" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.pair.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.pair.encode" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">POSTokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.__init__" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.initialize" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.load_word_tag">
+<span class="sig-name descname"><span class="pre">load_word_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.load_word_tag" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.makesure_userdict_loaded">
+<span class="sig-name descname"><span class="pre">makesure_userdict_loaded</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.makesure_userdict_loaded" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.cut" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jieba.posseg.POSTokenizer.lcut">
+<span class="sig-name descname"><span class="pre">lcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.POSTokenizer.lcut" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.posseg.initialize">
+<span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.initialize" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.posseg.cut">
+<span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.cut" title="永久链接至目标"></a></dt>
+<dd><p>对序列进行带词性的切分</p>
+<p>Global <cite>cut</cite> function that supports parallel processing.</p>
+<p>Note that this only works using dt, custom POSTokenizer
+instances are not supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> – 需要分词的字符串</p></li>
+<li><p><strong>HMM</strong> – HMM  是否使用 HMM 模型</p></li>
+<li><p><strong>use_paddle</strong> – 是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个分词结果的`generator`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.posseg.lcut">
+<span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">lcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.lcut" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="func-token.html" class="btn btn-neutral float-left" title="1. 功能简介" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2022, fxsjy with 39 other contributors.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

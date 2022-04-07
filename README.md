@@ -6,6 +6,7 @@ jieba
 
 - _Scroll down for English documentation._
 
+- Documentation 文档: https://shouldsee.github.io/jieba/
 
 特点
 ========
@@ -56,9 +57,9 @@ jieba
     - 适合用于搜索引擎构建倒排索引的分词，粒度比较细
   - 输出:
     - 一个分词结果的`generator`(?)
-* `jieba.Tokenizer(dictionary=DEFAULT_DICT)`: 
+* `jieba.Tokenizer(dictionary=DEFAULT_DICT)`:
   - 作用: 新建自定义分词器，可用于同时使用不同词典。`jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
-  - 输入: 
+  - 输入:
     - dictionary: 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`
 * `sentence`: 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
 * `jieba.lcut` 以及 `jieba.lcut_for_search` 直接返回 list
@@ -802,4 +803,3 @@ Segmentation speed
 * 1.5 MB / Second in Full Mode
 * 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
-

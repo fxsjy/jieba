@@ -246,6 +246,7 @@ class POSTokenizer(object):
         return list(self.__cut_internal(sentence, False))
 
     def cut(self, sentence, HMM=True):
+
         for w in self.__cut_internal(sentence, HMM=HMM):
             yield w
 
@@ -271,12 +272,20 @@ def _lcut_internal_no_hmm(s):
 
 
 def cut(sentence, HMM=True, use_paddle=False):
-    """
+    '''
+    对序列进行带词性的切分
+    
     Global `cut` function that supports parallel processing.
 
     Note that this only works using dt, custom POSTokenizer
     instances are not supported.
-    """
+
+    :param sentence: 需要分词的字符串
+    :param HMM: HMM  是否使用 HMM 模型
+    :param use_paddle: 是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；
+    :return: 一个分词结果的`generator`
+    '''
+
     is_paddle_installed = check_paddle_install['is_paddle_installed']
     if use_paddle and is_paddle_installed:
         # if sentence is null, it will raise core exception in paddle.

@@ -288,13 +288,24 @@ class Tokenizer(object):
 
     def cut(self, sentence, cut_all=False, HMM=True, use_paddle=False):
         """
+        对序列进行不带词性的切分
+
         The main function that segments an entire sentence that contains
         Chinese characters into separated words.
 
-        Parameter:
-            - sentence: The str(unicode) to be segmented.
-            - cut_all: Model type. True for full pattern, False for accurate pattern.
-            - HMM: Whether to use the Hidden Markov Model.
+       :param sentence:
+         需要分词的字符串
+         The str(unicode) to be segmented.
+       :type sentence:
+         str/unicode
+       :param HMM:
+         是否使用HMM模型.
+         Whether to use the Hidden Markov Model or not
+       :return:
+         一个遍历结果的生成器,每个元素为str/unicode.
+         A generator that iterates through the tokenized str/unicode
+       :rtype: generator[str/unicode]
+
         """
         is_paddle_installed = check_paddle_install['is_paddle_installed']
         sentence = strdecode(sentence)
@@ -520,6 +531,8 @@ class Tokenizer(object):
 dt = Tokenizer()
 
 # global functions
+
+
 
 get_FREQ = lambda k, d=None: dt.FREQ.get(k, d)
 add_word = dt.add_word

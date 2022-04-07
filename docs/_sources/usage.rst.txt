@@ -1,0 +1,13 @@
+分词
+----------------
+
+用``jieba.cut``对序列进行不带词性的切分
+
+.. py:function:: jieba.cut(sentence, cut_all=False, HMM=True, use_paddle=False)
+
+   Return a list of random ingredients as strings.
+
+   :param sentence: 需要分词的字符串
+   :type sentence: str or unicode
+   :return: 一个遍历结果的generator,每个元素为str/unicode
+   :rtype: generator[str,unicode]

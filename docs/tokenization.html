@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>分词 &#8212; jieba 0.42.1 文档</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>分词<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.cut">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.cut" title="永久链接至目标">¶</a></dt>
+<dt class="sig sig-object py" id="id0">
+<span id="对序列进行不带词性的切分"></span><span class="sig-name descname"><span class="pre">对序列进行不带词性的切分</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="永久链接至目标">¶</a></dt>
+<dd><blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param sentence</dt>
+<dd class="field-odd"><p>需要分词的字符串</p>
+</dd>
+<dt class="field-even">type sentence</dt>
+<dd class="field-even"><p>str or unicode</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>一个遍历结果的generator,每个元素为str/unicode</p>
+</dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>generator[str,unicode]</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.posseg.cut">
+<span class="sig-prename descclassname"><span class="pre">jieba.posseg.</span></span><span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_paddle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.posseg.cut" title="永久链接至目标">¶</a></dt>
+<dt class="sig sig-object py" id="id2">
+<span id="对序列进行带词性的切分"></span><span class="sig-name descname"><span class="pre">对序列进行带词性的切分</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> – 需要分词的字符串</p></li>
+<li><p><strong>cut_all</strong> – 是否采用全模式</p></li>
+<li><p><strong>HMM</strong> – HMM  是否使用 HMM 模型</p></li>
+<li><p><strong>use_paddle</strong> – 是否使用paddle模式下的分词模式，paddle模式采用延迟加载方式，通过enable_paddle接口安装paddlepaddle-tiny，并且import相关代码；</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个分词结果的`generator`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.cut_for_search">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">cut_for_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HMM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.cut_for_search" title="永久链接至目标">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">适合用于搜索引擎构建倒排索引的分词，粒度比较细</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentence</strong> – 需要分词的字符串</p></li>
+<li><p><strong>HMM</strong> – 是否使用 HMM 模型</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>一个分词结果的`generator`(?)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jieba.Tokenizer">
+<span class="sig-prename descclassname"><span class="pre">jieba.</span></span><span class="sig-name descname"><span class="pre">Tokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_DICT</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jieba.Tokenizer" title="永久链接至目标">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">新建自定义分词器，可用于同时使用不同词典。`jieba.dt`</span> <span class="pre">为默认分词器，所有全局分词相关函数都是该分词器的映射。</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="id3">
+<h2>备注<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p><cite>sentence</cite>: 待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8
+<cite>jieba.lcut</cite> 以及 <cite>jieba.lcut_for_search</cite> 直接返回 list</p>
+</section>
+<section id="id4">
+<h2>代码示例<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># encoding=utf-8</span>
+<span class="kn">import</span> <span class="nn">jieba</span>
+
+<span class="n">jieba</span><span class="o">.</span><span class="n">enable_paddle</span><span class="p">()</span><span class="c1"># 启动paddle模式。 0.40版之后开始支持，早期版本不支持</span>
+<span class="n">strs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;我来到北京清华大学&quot;</span><span class="p">,</span><span class="s2">&quot;乒乓球拍卖完了&quot;</span><span class="p">,</span><span class="s2">&quot;中国科学技术大学&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="nb">str</span> <span class="ow">in</span> <span class="n">strs</span><span class="p">:</span>
+    <span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">use_paddle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># 使用paddle模式</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Paddle Mode: &quot;</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)))</span>
+
+<span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="s2">&quot;我来到北京清华大学&quot;</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full Mode: &quot;</span> <span class="o">+</span> <span class="s2">&quot;/ &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seg_list</span><span class="p">))</span>  <span class="c1"># 全模式</span>
+
+<span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="s2">&quot;我来到北京清华大学&quot;</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Default Mode: &quot;</span> <span class="o">+</span> <span class="s2">&quot;/ &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seg_list</span><span class="p">))</span>  <span class="c1"># 精确模式</span>
+
+<span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="s2">&quot;他来到了网易杭研大厦&quot;</span><span class="p">)</span>  <span class="c1"># 默认是精确模式</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seg_list</span><span class="p">))</span>
+
+<span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut_for_search</span><span class="p">(</span><span class="s2">&quot;小明硕士毕业于中国科学院计算所，后在日本京都大学深造&quot;</span><span class="p">)</span>  <span class="c1"># 搜索引擎模式</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seg_list</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+
+【精确模式】: 我/ 来到/ 北京/ 清华大学
+
+【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
+
+【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">jieba</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="token_module.html">module package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, fxsjy with 39 other contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/tokenization.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -54,7 +54,9 @@ class Tokenizer(object):
 
     def __init__(self, dictionary=DEFAULT_DICT):
         '''
+
         新建自定义分词器，可用于同时使用不同词典。
+
         `jieba.dt` 为默认分词器，所有全局分词相关函数都是该分词器的映射。
 
         :param dictionary: 一个指向自定义字典的文件名,文件格式见`jieba/dict.txt`
@@ -296,6 +298,7 @@ class Tokenizer(object):
 
     def cut(self, sentence, cut_all=False, HMM=True, use_paddle=False):
         """
+        
         对序列进行不带词性的切分
 
         The main function that segments an entire sentence that contains

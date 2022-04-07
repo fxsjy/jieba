@@ -10,6 +10,7 @@ jieba 中文分词：做最好的 Python 中文分词组件
 built to be the best Python Chinese word segmentation module.
 
 Github: https://github.com/fxsjy/jieba
+
 Github-doc: https://github.com/shouldsee/jieba
 
 

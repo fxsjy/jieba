@@ -1,45 +1,89 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html lang="zh_CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>1. 功能简介 &#8212; jieba 0.42.1 文档</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/translations.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. 功能简介 &mdash; jieba 0.42.1 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
     <link rel="next" title="2. 模块列表" href="all_module.html" />
-    <link rel="prev" title="jieba 中文分词：做最好的 Python 中文分词组件" href="index.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="jieba 中文分词：做最好的 Python 中文分词组件" href="index.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> jieba
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. 功能简介</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">1.1. 分词</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#jieba-cut-jieba-lcut">1.1.1. 不带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jieba-posseg-cut-jieba-posseg-lcut">1.1.2. 带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.lcut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jieba-cut-for-search">1.1.3. 适合用于搜索引擎构建倒排索引的分词，粒度比较细 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut_for_search()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jieba-tokenizer-init">1.1.4. 新建自定义分词器，可用于同时使用不同词典。参见 <code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">1.1.5. 备注</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="all_module.html">2. 模块列表</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jieba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">1. </span>功能简介</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/func-token.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="id1">
-<h1><span class="section-number">1. </span>功能简介<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<h1><span class="section-number">1. </span>功能简介<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
 <section id="id2">
-<h2><span class="section-number">1.1. </span>分词<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<h2><span class="section-number">1.1. </span>分词<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <section id="jieba-cut-jieba-lcut">
-<h3><span class="section-number">1.1.1. </span>不带词性的切分: 参见 <a class="reference internal" href="all_module.html#jieba.cut" title="jieba.cut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut()</span></code></a>, <a class="reference internal" href="all_module.html#jieba.lcut" title="jieba.lcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a><a class="headerlink" href="#jieba-cut-jieba-lcut" title="永久链接至标题">¶</a></h3>
+<h3><span class="section-number">1.1.1. </span>不带词性的切分: 参见 <a class="reference internal" href="all_module.html#jieba.cut" title="jieba.cut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut()</span></code></a>, <a class="reference internal" href="all_module.html#jieba.lcut" title="jieba.lcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a><a class="headerlink" href="#jieba-cut-jieba-lcut" title="永久链接至标题"></a></h3>
 <p>默认使用带HMM的精确模式,不使用paddle, 调用默认分词器 <a class="reference internal" href="all_module.html#jieba.Tokenizer.cut" title="jieba.Tokenizer.cut"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.cut()</span></code></a>
 对序列进行不带词性的切分.</p>
 <p>例子:</p>
@@ -77,16 +121,16 @@
 </div>
 </section>
 <section id="jieba-posseg-cut-jieba-posseg-lcut">
-<h3><span class="section-number">1.1.2. </span>带词性的切分: 参见 <a class="reference internal" href="all_module.html#jieba.posseg.cut" title="jieba.posseg.cut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.cut()</span></code></a>, <a class="reference internal" href="all_module.html#jieba.posseg.lcut" title="jieba.posseg.lcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.lcut()</span></code></a><a class="headerlink" href="#jieba-posseg-cut-jieba-posseg-lcut" title="永久链接至标题">¶</a></h3>
+<h3><span class="section-number">1.1.2. </span>带词性的切分: 参见 <a class="reference internal" href="all_module.html#jieba.posseg.cut" title="jieba.posseg.cut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.cut()</span></code></a>, <a class="reference internal" href="all_module.html#jieba.posseg.lcut" title="jieba.posseg.lcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.lcut()</span></code></a><a class="headerlink" href="#jieba-posseg-cut-jieba-posseg-lcut" title="永久链接至标题"></a></h3>
 </section>
 <section id="jieba-cut-for-search">
-<h3><span class="section-number">1.1.3. </span>适合用于搜索引擎构建倒排索引的分词，粒度比较细 参见 <a class="reference internal" href="all_module.html#jieba.cut_for_search" title="jieba.cut_for_search"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut_for_search()</span></code></a><a class="headerlink" href="#jieba-cut-for-search" title="永久链接至标题">¶</a></h3>
+<h3><span class="section-number">1.1.3. </span>适合用于搜索引擎构建倒排索引的分词，粒度比较细 参见 <a class="reference internal" href="all_module.html#jieba.cut_for_search" title="jieba.cut_for_search"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut_for_search()</span></code></a><a class="headerlink" href="#jieba-cut-for-search" title="永久链接至标题"></a></h3>
 </section>
 <section id="jieba-tokenizer-init">
-<h3><span class="section-number">1.1.4. </span>新建自定义分词器，可用于同时使用不同词典。参见 <a class="reference internal" href="all_module.html#jieba.Tokenizer.__init__" title="jieba.Tokenizer.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.__init__()</span></code></a><a class="headerlink" href="#jieba-tokenizer-init" title="永久链接至标题">¶</a></h3>
+<h3><span class="section-number">1.1.4. </span>新建自定义分词器，可用于同时使用不同词典。参见 <a class="reference internal" href="all_module.html#jieba.Tokenizer.__init__" title="jieba.Tokenizer.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.__init__()</span></code></a><a class="headerlink" href="#jieba-tokenizer-init" title="永久链接至标题"></a></h3>
 </section>
 <section id="id3">
-<h3><span class="section-number">1.1.5. </span>备注<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<h3><span class="section-number">1.1.5. </span>备注<a class="headerlink" href="#id3" title="永久链接至标题"></a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sentence</span></code> :  待分词的字符串可以是 unicode 或 UTF-8 字符串、GBK 字符串。注意：不建议直接输入 GBK 字符串，可能无法预料地错误解码成 UTF-8</p></li>
 <li><p><a class="reference internal" href="all_module.html#jieba.lcut" title="jieba.lcut"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a>  以及  <a class="reference internal" href="all_module.html#jieba.lcut_for_search" title="jieba.lcut_for_search"><code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut_for_search()</span></code></a> 直接返回 list</p></li>
@@ -96,83 +140,34 @@
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="jieba 中文分词：做最好的 Python 中文分词组件" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="all_module.html" class="btn btn-neutral float-right" title="2. 模块列表" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2022, fxsjy with 39 other contributors.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用了 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a>开发.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">jieba</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>导航</h3>
-<p class="caption" role="heading"><span class="caption-text">jieba分词:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. 功能简介</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">1.1. 分词</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#jieba-cut-jieba-lcut">1.1.1. 不带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.lcut()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jieba-posseg-cut-jieba-posseg-lcut">1.1.2. 带词性的切分: 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.cut()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.posseg.lcut()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jieba-cut-for-search">1.1.3. 适合用于搜索引擎构建倒排索引的分词，粒度比较细 参见 <code class="xref py py-func docutils literal notranslate"><span class="pre">jieba.cut_for_search()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jieba-tokenizer-init">1.1.4. 新建自定义分词器，可用于同时使用不同词典。参见 <code class="xref py py-meth docutils literal notranslate"><span class="pre">jieba.Tokenizer.__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">1.1.5. 备注</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="all_module.html">2. 模块列表</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="上一章">jieba 中文分词：做最好的 Python 中文分词组件</a></li>
-      <li>Next: <a href="all_module.html" title="下一章"><span class="section-number">2. </span>模块列表</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">快速搜索</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="转向" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, fxsjy with 39 other contributors.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/func-token.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

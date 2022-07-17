@@ -382,7 +382,7 @@ class Tokenizer(object):
         Load personalized dict to improve detect rate.
 
         Parameter:
-            - f : A plain text file contains words and their ocurrences.
+            - f : A plain text file contains words and their occurrences.
                   Can be a file-like object, or the path of the dictionary file,
                   whose encoding must be utf-8.
 

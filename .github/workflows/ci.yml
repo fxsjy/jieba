@@ -18,4 +18,11 @@ jobs:
       - run: pip install pytest ruff
       - run: pip install --editable .
       - run: ruff . || true
+      - run: python -m jieba --help
+      - run: python -m jieba --version
+      - shell: python
+        run: |
+          import jieba
+          print(dir(jieba))
+          # jieba.initialize()  # (optional)
       - run: pytest

@@ -1,0 +1,29 @@
+name: tox
+on: [push, pull_request]
+jobs:
+  tox:
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix:
+        os: [ubuntu-latest]  # [macos-latest, ubuntu-latest, windows-latest]
+        python: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy-3.9', 'pypy-3.10']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install --upgrade pip
+      - run: pip install pytest ruff
+      - run: pip install --editable .
+      - run: ruff . || true
+      - run: python -m jieba --help
+      - run: python -m jieba --version
+      - shell: python
+        run: |
+          import jieba
+          print(dir(jieba))
+          jieba.initialize()  # (optional)
+      - run: python test/test.py
+      - run: pytest || true

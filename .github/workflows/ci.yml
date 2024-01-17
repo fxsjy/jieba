@@ -24,5 +24,5 @@ jobs:
         run: |
           import jieba
           print(dir(jieba))
-          # jieba.initialize()  # (optional)
+          jieba.initialize()  # (optional)
       - run: pytest

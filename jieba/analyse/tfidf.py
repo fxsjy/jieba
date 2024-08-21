@@ -1,5 +1,7 @@
 # encoding=utf-8
 from __future__ import absolute_import
+
+import math
 import os
 import jieba
 import jieba.posseg
@@ -72,7 +74,7 @@ class TFIDF(KeywordExtractor):
         self.idf_loader.set_new_path(new_abs_path)
         self.idf_freq, self.median_idf = self.idf_loader.get_idf()
 
-    def extract_tags(self, sentence, topK=20, withWeight=False, allowPOS=(), withFlag=False):
+    def extract_tags(self, sentence, topK=20, withWeight=False, allowPOS=(), withFlag=False, logTF=False):
         """
         Extract keywords from sentence using TF-IDF algorithm.
         Parameter:
@@ -84,6 +86,8 @@ class TFIDF(KeywordExtractor):
             - withFlag: only work with allowPOS is not empty.
                         if True, return a list of pair(word, weight) like posseg.cut
                         if False, return a list of words
+            - logTF: if True, use log2(TF) to weigh the word frequency
+                     if False, use raw TF
         """
         if allowPOS:
             allowPOS = frozenset(allowPOS)
@@ -104,7 +108,10 @@ class TFIDF(KeywordExtractor):
         total = sum(freq.values())
         for k in freq:
             kw = k.word if allowPOS and withFlag else k
-            freq[k] *= self.idf_freq.get(kw, self.median_idf) / total
+            if logTF:
+                freq[k] *= math.log2(self.idf_freq.get(kw, self.median_idf)) / total
+            else:
+                freq[k] *= self.idf_freq.get(kw, self.median_idf) / total
 
         if withWeight:
             tags = sorted(freq.items(), key=itemgetter(1), reverse=True)

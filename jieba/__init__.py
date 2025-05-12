@@ -5,6 +5,7 @@ __license__ = 'MIT'
 
 import marshal
 import re
+import io
 import tempfile
 import threading
 import time
@@ -33,17 +34,17 @@ DICT_WRITING = {}
 
 pool = None
 
-re_userdict = re.compile('^(.+?)( [0-9]+)?( [a-z]+)?$', re.U)
+re_userdict = re.compile(r'^(.+?)( [0-9]+)?( [a-z]+)?$', re.U)
 
-re_eng = re.compile('[a-zA-Z0-9]', re.U)
+re_eng = re.compile(r'[a-zA-Z0-9]', re.U)
 
 # \u4E00-\u9FD5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
 # \r\n|\s : whitespace characters. Will not be handled.
 # re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
 # Adding "-" symbol in re_han_default
-re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%\-]+)", re.U)
+re_han_default = re.compile(r"([\u4E00-\u9FD5a-zA-Z0-9+#&\._%\-]+)", re.U)
 
-re_skip_default = re.compile("(\r\n|\s)", re.U)
+re_skip_default = re.compile(r"(\r\n|\s)", re.U)
 
 
 def setLogLevel(log_level):
@@ -414,6 +415,8 @@ class Tokenizer(object):
             if tag is not None:
                 tag = tag.strip()
             self.add_word(word, freq, tag)
+        if isinstance(f, io.IOBase):
+            f.close()
 
     def add_word(self, word, freq=None, tag=None):
         """

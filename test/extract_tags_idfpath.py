@@ -23,7 +23,8 @@ if opt.topK is None:
 else:
     topK = int(opt.topK)
 
-content = open(file_name, 'rb').read()
+with open(file_name, 'rb') as f:
+    content = f.read()
 
 jieba.analyse.set_idf_path("../extra_dict/idf.txt.big");
 

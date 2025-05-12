@@ -32,7 +32,8 @@ else:
     else:
         withWeight = False
 
-content = open(file_name, 'rb').read()
+with open(file_name, 'rb') as f:
+    content = f.read()
 
 tags = jieba.analyse.extract_tags(content, topK=topK, withWeight=withWeight)
 

@@ -6,7 +6,8 @@ import jieba
 jieba.enable_parallel()
 
 url = sys.argv[1]
-content = open(url,"rb").read()
+with open(url, 'rb') as f:
+    content = f.read()
 t1 = time.time()
 words = "/ ".join(jieba.cut(content))
 
@@ -15,6 +16,7 @@ tm_cost = t2-t1
 
 log_f = open("1.log","wb")
 log_f.write(words.encode('utf-8'))
+log_f.close()
 
 print('speed %s bytes/second' % (len(content)/tm_cost))
 

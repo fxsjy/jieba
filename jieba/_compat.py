@@ -2,6 +2,7 @@
 import logging
 import os
 import sys
+import importlib.resources
 
 log_console = logging.StreamHandler(sys.stderr)
 default_logger = logging.getLogger(__name__)
@@ -14,15 +15,9 @@ def setLogLevel(log_level):
 
 check_paddle_install = {'is_paddle_installed': False}
 
-try:
-    import pkg_resources
-
-    get_module_res = lambda *res: pkg_resources.resource_stream(__name__,
-                                                                os.path.join(*res))
-except ImportError:
-    get_module_res = lambda *res: open(os.path.normpath(os.path.join(
-        os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
-
+def get_module_res(*res):
+    return importlib.resources.open_binary(__name__,
+                                           os.path.join(*res))
 
 def enable_paddle():
     try:

@@ -1,0 +1,21 @@
+[project]
+name = "jieba"
+version = "0.42.1"
+description = '"Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.'
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "paddlepaddle>=3.2.0",
+    "setuptools>=80.9.0",
+    "whoosh>=2.7.4",
+]
+
+[tool.uv.sources]
+paddlepaddle = [
+    { index = "paddlepaddle-cpu" },
+]
+
+[[tool.uv.index]]
+name = "paddlepaddle-cpu"
+url = "https://www.paddlepaddle.org.cn/packages/stable/cpu/"
+explicit = true

@@ -72,7 +72,7 @@ wheels = [
 
 [[package]]
 name = "jieba"
-version = "0.42.1"
+version = "0.42.2"
 source = { virtual = "." }
 dependencies = [
     { name = "paddlepaddle" },

@@ -1,8 +1,7 @@
 [project]
 name = "jieba"
-version = "0.42.1"
+version = "0.42.2"
 description = '"Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.'
-readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "paddlepaddle>=3.2.0",

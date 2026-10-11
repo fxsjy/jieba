@@ -218,8 +218,12 @@ class Tokenizer(object):
             else:
                 for j in L:
                     if j > k:
+                        if eng_scan == 1:
+                            yield eng_buf
+                            eng_scan = 0
                         yield sentence[k:j + 1]
-                        old_j = j
+                        # A nested word does not shorten the covered prefix.
+                        old_j = max(old_j, j)
         if eng_scan == 1:
             yield eng_buf
 

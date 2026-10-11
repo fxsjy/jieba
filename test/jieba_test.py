@@ -4,6 +4,7 @@ import sys
 sys.path.append("../")
 import unittest
 import types
+from io import BytesIO
 import jieba
 if sys.version_info[0] > 2:
     from imp import reload
@@ -105,6 +106,31 @@ class JiebaTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def testCutAllNestedWords(self):
+        cases = [
+            (['acarbose', 'arb'], 'acarbose', ['acarbose', 'arb']),
+            (['acarbose', 'arb'], 'acarboseX', ['acarbose', 'arb', 'X']),
+            (['acarbose', 'arb'], 'Xacarbose', ['Xacarbose', 'arb']),
+            (['acarbose', 'arb', '中国'], 'acarbose中国',
+             ['acarbose', 'arb', '中国']),
+            (['bc', 'bcd'], 'abcde', ['a', 'bc', 'bcd', 'e']),
+            (['甲乙丙丁戊己', '乙丙丁'], '甲乙丙丁戊己',
+             ['甲乙丙丁戊己', '乙丙丁']),
+            (['甲乙丙丁戊己', '乙丙丁'], '甲乙丙丁戊己庚',
+             ['甲乙丙丁戊己', '乙丙丁', '庚']),
+            (['甲乙丙丁', '丙丁戊己'], '甲乙丙丁戊己',
+             ['甲乙丙丁', '丙丁戊己']),
+            (['abc'], 'abcdef', ['abcdef']),
+        ]
+        for words, text, expected in cases:
+            dictionary = ''.join('%s 1\n' % word for word in words)
+            tokenizer = jieba.Tokenizer()
+            tokenizer.FREQ, tokenizer.total = tokenizer.gen_pfdict(
+                BytesIO(dictionary.encode('utf-8')))
+            tokenizer.initialized = True
+            self.assertEqual(list(tokenizer.cut(text, cut_all=True)),
+                             expected, text)
 
     def testDefaultCut(self):
         for content in test_contents:

@@ -4,6 +4,10 @@ import sys
 sys.path.append("../")
 import unittest
 import types
+import os
+import shutil
+import subprocess
+import tempfile
 import jieba
 if sys.version_info[0] > 2:
     from imp import reload
@@ -200,6 +204,85 @@ class JiebaTestCase(unittest.TestCase):
             assert isinstance(result, list), "Test CutForSearch error on content: %s" % content
             print(" , ".join(result), file=sys.stderr)
         print("testCutForSearch_NOHMM", file=sys.stderr)
+
+
+class JiebaCommandLineTestCase(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.mkdtemp(prefix='jieba-cli-')
+        self.dictionary = self.write_file(
+            'dict.txt', '自定义词汇 100 nz\n北京 100 customtag\n')
+
+    def tearDown(self):
+        shutil.rmtree(self.directory)
+
+    def write_file(self, name, content):
+        path = os.path.join(self.directory, name)
+        with open(path, 'wb') as stream:
+            stream.write(content.encode('utf-8'))
+        return path
+
+    def run_cli(self, arguments, content):
+        environment = os.environ.copy()
+        environment['PYTHONIOENCODING'] = 'utf-8'
+        process = subprocess.Popen(
+            [sys.executable, '-m', 'jieba', '-q'] + arguments,
+            cwd=os.path.dirname(os.path.dirname(os.path.abspath(jieba.__file__))),
+            env=environment, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate(content.encode('utf-8'))
+        self.assertEqual(process.returncode, 0, error.decode('utf-8'))
+        return output.decode('utf-8').strip()
+
+    def testPossegCustomDictionary(self):
+        for hmm_options in ([], ['--no-hmm']):
+            output = self.run_cli(
+                ['-D', self.dictionary, '-p'] + hmm_options, '自定义词汇北京')
+            self.assertEqual(output, '自定义词汇_nz / 北京_customtag')
+
+    def testPossegCustomDictionaryFromFile(self):
+        filename = self.write_file('input.txt', '自定义词汇北京\n')
+        output = self.run_cli(
+            ['--dict', self.dictionary, '--pos=:', filename], '')
+        self.assertEqual(output, '自定义词汇:nz / 北京:customtag')
+
+    def testPossegCustomDictionaryWithUserDictionary(self):
+        user_dictionary = self.write_file('user.txt', '自定义词汇 100 usertag\n')
+        output = self.run_cli(
+            ['-D', self.dictionary, '-u', user_dictionary, '-p'], '自定义词汇北京')
+        self.assertEqual(output, '自定义词汇_usertag / 北京_customtag')
+
+    def testPossegCustomDictionaryWithOptionalTags(self):
+        for dictionary, expected in (
+                ('自定义词汇 100\n北京 100\n', '自定义词汇_x / 北京_x'),
+                ('自定义词汇 100\n北京 100 customtag\n',
+                 '自定义词汇_x / 北京_customtag')):
+            self.write_file('dict.txt', dictionary)
+            for hmm_options in ([], ['--no-hmm']):
+                output = self.run_cli(
+                    ['-D', self.dictionary, '-p'] + hmm_options,
+                    '自定义词汇北京')
+                self.assertEqual(output, expected)
+
+    def testPossegDictionaryEntryValidation(self):
+        import jieba.posseg
+        for entry, expected_tag in (('北京 100\n', 'x'),
+                                    ('北京 100 customtag\n', 'customtag')):
+            self.write_file('dict.txt', entry)
+            tokenizer = jieba.posseg.POSTokenizer(jieba.Tokenizer(self.dictionary))
+            self.assertEqual(tokenizer.word_tag_tab, {'北京': expected_tag})
+        for entry in ('北京\n', '北京 100 ns extra\n'):
+            self.write_file('dict.txt', entry)
+            with self.assertRaises(ValueError):
+                jieba.posseg.POSTokenizer(jieba.Tokenizer(self.dictionary))
+
+    def testCustomDictionaryWithoutPosseg(self):
+        output = self.run_cli(['-D', self.dictionary], '自定义词汇北京')
+        self.assertEqual(output, '自定义词汇 / 北京')
+
+    def testPossegDefaultDictionary(self):
+        output = self.run_cli(['-p'], '北京')
+        self.assertEqual(output, '北京_ns')
+
 
 if __name__ == "__main__":
     unittest.main()

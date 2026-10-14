@@ -102,7 +102,10 @@ class POSTokenizer(object):
                 line = line.strip().decode("utf-8")
                 if not line:
                     continue
-                word, _, tag = line.split(" ")
+                parts = line.split(" ")
+                if len(parts) == 2:
+                    parts.append('x')
+                word, _, tag = parts
                 self.word_tag_tab[word] = tag
             except Exception:
                 raise ValueError(

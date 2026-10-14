@@ -28,6 +28,11 @@ args = parser.parse_args()
 
 if args.quiet:
     jieba.setLogLevel(60)
+if args.dict:
+    jieba.initialize(args.dict)
+else:
+    jieba.initialize()
+
 if args.pos:
     import jieba.posseg
     posdelim = args.pos
@@ -42,10 +47,6 @@ cutall = args.cutall
 hmm = args.hmm
 fp = open(args.filename, 'r') if args.filename else sys.stdin
 
-if args.dict:
-    jieba.initialize(args.dict)
-else:
-    jieba.initialize()
 if args.user_dict:
     jieba.load_userdict(args.user_dict)
 

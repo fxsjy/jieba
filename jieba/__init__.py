@@ -421,12 +421,13 @@ class Tokenizer(object):
 
         freq and tag can be omitted, freq defaults to be a calculated value
         that ensures the word can be cut out.
+        Replacing an existing word updates the total by the frequency difference.
         """
         self.check_initialized()
         word = strdecode(word)
         freq = int(freq) if freq is not None else self.suggest_freq(word, False)
+        self.total += freq - self.FREQ.get(word, 0)
         self.FREQ[word] = freq
-        self.total += freq
         if tag:
             self.user_word_tag_tab[word] = tag
         for ch in xrange(len(word)):
